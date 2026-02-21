@@ -1,16 +1,16 @@
 {
   "site": {
-    "name": "TrendAccom",
-    "description": "Find and book the perfect accommodation",
-    "url": "https://app.trendaccom.com",
-    "contactEmail": "hello@trendaccom.com",
+    "name": "Cascade Ski Apartments",
+    "description": "Cascade Apartment 4 - Alpine Ski Accommodation at Mt Baw Baw",
+    "url": "https://www.cascadeskiapartments.com",
+    "contactEmail": "hello@cascadeskiapartments.com",
     "contactPhone": "+61 2 1234 5678",
     "timezone": "Australia/Sydney",
     "currency": "AUD",
     "locale": "en-AU"
   },
   "business": {
-    "name": "TrendAccom Properties Pty Ltd",
+    "name": "Cascade Ski Apartments Pty Ltd",
     "abn": "12 345 678 901",
     "address": "Level 10, 100 George Street, Sydney NSW 2000"
   },
@@ -92,8 +92,8 @@
     "primaryColor": "#0f2744",
     "secondaryColor": "#c9a84c",
     "backgroundColor": "#faf8f4",
-    "heroTitle": "Find Your Perfect Stay",
-    "heroSubtitle": "Discover unique hotels, cosy apartments, scenic caravan parks and charming holiday retreats",
+    "heroTitle": "Welcome to Cascade Apartment 4",
+    "heroSubtitle": "Your alpine retreat at Mt Baw Baw - ski-in/ski-out luxury accommodation",
     "showFeaturedProperties": true,
     "showTestimonials": true
   }

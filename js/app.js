@@ -1,5 +1,5 @@
 /**
- * TrendAccom - Main Application JavaScript
+ * Cascade Ski Apartments - Main Application JavaScript
  * Handles: Navigation, hero slideshow, parallax, scroll animations,
  * mobile menu, tabs, modals, toasts, and general UI interactions
  */
@@ -156,9 +156,9 @@
   // ============================================
   // Toast Notifications
   // ============================================
-  window.TrendAccom = window.TrendAccom || {};
+  window.Cascade Ski Apartments = window.Cascade Ski Apartments || {};
 
-  window.TrendAccom.showToast = function(message, type = 'info', duration = 4000) {
+  window.Cascade Ski Apartments.showToast = function(message, type = 'info', duration = 4000) {
     let container = document.querySelector('.toast-container');
     if (!container) {
       container = document.createElement('div');
@@ -186,7 +186,7 @@
   // ============================================
   // Modal
   // ============================================
-  window.TrendAccom.openModal = function(modalId) {
+  window.Cascade Ski Apartments.openModal = function(modalId) {
     const backdrop = document.getElementById(modalId);
     if (backdrop) {
       backdrop.classList.add('active');
@@ -194,7 +194,7 @@
     }
   };
 
-  window.TrendAccom.closeModal = function(modalId) {
+  window.Cascade Ski Apartments.closeModal = function(modalId) {
     const backdrop = document.getElementById(modalId);
     if (backdrop) {
       backdrop.classList.remove('active');
@@ -231,7 +231,7 @@
         btn.classList.toggle('active');
 
         const isActive = btn.classList.contains('active');
-        window.TrendAccom.showToast(
+        window.Cascade Ski Apartments.showToast(
           isActive ? 'Added to favorites' : 'Removed from favorites',
           isActive ? 'success' : 'info'
         );
@@ -328,14 +328,14 @@
   // ============================================
   // URL Parameter Helpers
   // ============================================
-  window.TrendAccom.getUrlParams = function() {
+  window.Cascade Ski Apartments.getUrlParams = function() {
     return Object.fromEntries(new URLSearchParams(window.location.search));
   };
 
   // ============================================
   // Format Currency
   // ============================================
-  window.TrendAccom.formatCurrency = function(amount, currency = 'AUD') {
+  window.Cascade Ski Apartments.formatCurrency = function(amount, currency = 'AUD') {
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: currency,
@@ -347,7 +347,7 @@
   // ============================================
   // Format Date
   // ============================================
-  window.TrendAccom.formatDate = function(dateStr) {
+  window.Cascade Ski Apartments.formatDate = function(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-AU', {
       weekday: 'short',
