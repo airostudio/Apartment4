@@ -319,9 +319,9 @@ h6 { font-size: var(--font-size-md); }
   gap: var(--space-sm);
 }
 
-.logo svg {
-  width: 32px;
-  height: 32px;
+.logo img {
+  height: 48px;
+  width: auto;
 }
 
 .nav-main {
@@ -1557,6 +1557,11 @@ h6 { font-size: var(--font-size-md); }
 .footer-brand .logo {
   color: var(--color-white);
   margin-bottom: var(--space-md);
+}
+
+.footer-brand .logo img {
+  height: 36px;
+  width: auto;
 }
 
 .footer-brand p {
