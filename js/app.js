@@ -358,6 +358,67 @@
   };
 
   // ============================================
+  // Lightbox
+  // ============================================
+  function initLightbox() {
+    const backdrop = document.getElementById('lightbox');
+    if (!backdrop) return;
+
+    const imgEl    = document.getElementById('lightboxImg');
+    const counter  = document.getElementById('lightboxCounter');
+    const caption  = document.getElementById('lightboxCaption');
+    const closeBtn = document.getElementById('lightboxClose');
+    const prevBtn  = document.getElementById('lightboxPrev');
+    const nextBtn  = document.getElementById('lightboxNext');
+
+    const images = [];
+    let current = 0;
+
+    // Expose open so the "Show all photos" button can call it
+    window.CascadeApt4.openLightbox = function(idx) { open(idx); };
+
+    // Collect all items marked with data-lightbox
+    document.querySelectorAll('[data-lightbox]').forEach((el) => {
+      const img = el.tagName === 'IMG' ? el : el.querySelector('img');
+      if (!img) return;
+      const idx = images.length;
+      images.push({ src: img.src, alt: img.alt || '' });
+      el.style.cursor = 'pointer';
+      el.addEventListener('click', () => open(idx));
+    });
+
+    if (!images.length) return;
+
+    function open(idx) {
+      current = ((idx % images.length) + images.length) % images.length;
+      imgEl.src = images[current].src;
+      if (caption) caption.textContent = images[current].alt;
+      if (counter) counter.textContent = (current + 1) + ' / ' + images.length;
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+      imgEl.src = '';
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (prevBtn)  prevBtn.addEventListener('click',  () => open(current - 1));
+    if (nextBtn)  nextBtn.addEventListener('click',  () => open(current + 1));
+
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (!backdrop.classList.contains('active')) return;
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowLeft')  open(current - 1);
+      if (e.key === 'ArrowRight') open(current + 1);
+    });
+  }
+
+  // ============================================
   // Initialize Everything
   // ============================================
   function init() {
@@ -370,6 +431,7 @@
     initAdminSidebar();
     autoAddAnimations();
     initScrollAnimations();
+    initLightbox();
 
     // Scroll event listeners
     let ticking = false;
