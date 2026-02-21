@@ -1,5 +1,5 @@
 /**
- * Cascade Ski Apartments - Calendar Widget
+ * Cascade Apartment 4 - Calendar Widget
  * Handles: Availability calendar rendering, date range selection,
  * booking visualization, and admin calendar management
  */
@@ -309,8 +309,8 @@
   }
 
   // Expose globally
-  window.Cascade Ski Apartments = window.Cascade Ski Apartments || {};
-  window.Cascade Ski Apartments.AvailabilityCalendar = AvailabilityCalendar;
+  window.CascadeApt4 = window.CascadeApt4 || {};
+  window.CascadeApt4.AvailabilityCalendar = AvailabilityCalendar;
 
   // Auto-init calendars with data attributes
   function initCalendars() {

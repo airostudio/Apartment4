@@ -1,5 +1,5 @@
 /**
- * Cascade Ski Apartments - Stripe Connect Integration
+ * Cascade Apartment 4 - Stripe Connect Integration
  * Handles: Stripe Connect onboarding, payment processing,
  * payment intents, and checkout flow
  *
@@ -177,7 +177,7 @@
       // Simulated redirect URL
       const onboardingUrl = 'https://connect.stripe.com/setup/s/demo';
 
-      window.Cascade Ski Apartments?.showToast('Redirecting to Stripe Connect...', 'info');
+      window.CascadeApt4?.showToast('Redirecting to Stripe Connect...', 'info');
 
       // In production: window.location.href = onboardingUrl;
       return { url: onboardingUrl };
@@ -249,12 +249,12 @@
         });
 
         if (result.success) {
-          window.Cascade Ski Apartments?.showToast('Payment successful!', 'success');
+          window.CascadeApt4?.showToast('Payment successful!', 'success');
           window.location.href = 'confirmation.html?ref=' +
-            (window.Cascade Ski Apartments?.BookingEngine?.generateReference() || 'TRA-2026-00001');
+            (window.CascadeApt4?.BookingEngine?.generateReference() || 'TRA-2026-00001');
         }
       } catch (error) {
-        window.Cascade Ski Apartments?.showToast(error.message || 'Payment failed. Please try again.', 'error');
+        window.CascadeApt4?.showToast(error.message || 'Payment failed. Please try again.', 'error');
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -279,7 +279,7 @@
     if (disconnectBtn) {
       disconnectBtn.addEventListener('click', () => {
         if (confirm('Are you sure you want to disconnect your Stripe account?')) {
-          window.Cascade Ski Apartments?.showToast('Stripe account disconnected', 'warning');
+          window.CascadeApt4?.showToast('Stripe account disconnected', 'warning');
         }
       });
     }
@@ -300,6 +300,6 @@
     init();
   }
 
-  window.Cascade Ski Apartments = window.Cascade Ski Apartments || {};
-  window.Cascade Ski Apartments.StripeConnect = StripeConnect;
+  window.CascadeApt4 = window.CascadeApt4 || {};
+  window.CascadeApt4.StripeConnect = StripeConnect;
 })();

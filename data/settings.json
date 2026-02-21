@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Cascade Ski Apartments",
+    "name": "Cascade Apartment 4",
     "description": "Cascade Apartment 4 - Alpine Ski Accommodation at Mt Baw Baw",
     "url": "https://www.cascadeskiapartments.com",
     "contactEmail": "hello@cascadeskiapartments.com",
@@ -10,7 +10,7 @@
     "locale": "en-AU"
   },
   "business": {
-    "name": "Cascade Ski Apartments Pty Ltd",
+    "name": "Cascade Apartment 4 Pty Ltd",
     "abn": "12 345 678 901",
     "address": "Level 10, 100 George Street, Sydney NSW 2000"
   },

@@ -1,5 +1,5 @@
 /**
- * Cascade Ski Apartments - Search & Filter
+ * Cascade Apartment 4 - Search & Filter
  * Handles: Property search, filtering, sorting, and results display
  */
 
@@ -256,6 +256,6 @@
     Search.init();
   }
 
-  window.Cascade Ski Apartments = window.Cascade Ski Apartments || {};
-  window.Cascade Ski Apartments.Search = Search;
+  window.CascadeApt4 = window.CascadeApt4 || {};
+  window.CascadeApt4.Search = Search;
 })();

@@ -1,5 +1,5 @@
 /**
- * Cascade Ski Apartments - Main Application JavaScript
+ * Cascade Apartment 4 - Main Application JavaScript
  * Handles: Navigation, hero slideshow, parallax, scroll animations,
  * mobile menu, tabs, modals, toasts, and general UI interactions
  */
@@ -156,9 +156,9 @@
   // ============================================
   // Toast Notifications
   // ============================================
-  window.Cascade Ski Apartments = window.Cascade Ski Apartments || {};
+  window.CascadeApt4 = window.CascadeApt4 || {};
 
-  window.Cascade Ski Apartments.showToast = function(message, type = 'info', duration = 4000) {
+  window.CascadeApt4.showToast = function(message, type = 'info', duration = 4000) {
     let container = document.querySelector('.toast-container');
     if (!container) {
       container = document.createElement('div');
@@ -186,7 +186,7 @@
   // ============================================
   // Modal
   // ============================================
-  window.Cascade Ski Apartments.openModal = function(modalId) {
+  window.CascadeApt4.openModal = function(modalId) {
     const backdrop = document.getElementById(modalId);
     if (backdrop) {
       backdrop.classList.add('active');
@@ -194,7 +194,7 @@
     }
   };
 
-  window.Cascade Ski Apartments.closeModal = function(modalId) {
+  window.CascadeApt4.closeModal = function(modalId) {
     const backdrop = document.getElementById(modalId);
     if (backdrop) {
       backdrop.classList.remove('active');
@@ -231,7 +231,7 @@
         btn.classList.toggle('active');
 
         const isActive = btn.classList.contains('active');
-        window.Cascade Ski Apartments.showToast(
+        window.CascadeApt4.showToast(
           isActive ? 'Added to favorites' : 'Removed from favorites',
           isActive ? 'success' : 'info'
         );
@@ -328,14 +328,14 @@
   // ============================================
   // URL Parameter Helpers
   // ============================================
-  window.Cascade Ski Apartments.getUrlParams = function() {
+  window.CascadeApt4.getUrlParams = function() {
     return Object.fromEntries(new URLSearchParams(window.location.search));
   };
 
   // ============================================
   // Format Currency
   // ============================================
-  window.Cascade Ski Apartments.formatCurrency = function(amount, currency = 'AUD') {
+  window.CascadeApt4.formatCurrency = function(amount, currency = 'AUD') {
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: currency,
@@ -347,7 +347,7 @@
   // ============================================
   // Format Date
   // ============================================
-  window.Cascade Ski Apartments.formatDate = function(dateStr) {
+  window.CascadeApt4.formatDate = function(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-AU', {
       weekday: 'short',
