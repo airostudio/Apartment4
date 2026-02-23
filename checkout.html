@@ -491,42 +491,46 @@
 
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-in:</strong> Sat, 14 Mar 2026</span>
+            <span><strong>Check-in:</strong> <span id="coCheckin">–</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-out:</strong> Wed, 18 Mar 2026</span>
+            <span><strong>Check-out:</strong> <span id="coCheckout">–</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span><strong>Guests:</strong> 2 Adults, 0 Children</span>
+            <span><strong>Guests:</strong> <span id="coGuests">–</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>4 nights &middot; Entire Apartment</span>
+            <span id="coNights">–</span>
           </div>
 
           <div class="summary-divider"></div>
 
           <div class="price-breakdown">
             <div class="price-row">
-              <span>$285 x 4 nights</span>
-              <span>$1,140.00</span>
+              <span id="coRateLine">–</span>
+              <span id="coBaseTotal">–</span>
             </div>
             <div class="price-row">
               <span>Cleaning fee</span>
-              <span>$150.00</span>
+              <span id="coCleaningFee">$150</span>
+            </div>
+            <div class="price-row">
+              <span>Stripe processing fee</span>
+              <span id="coStripeFee">–</span>
             </div>
             <div class="price-row price-row--total">
               <span>Total</span>
-              <span>$1,290.00</span>
+              <span id="coTotal">–</span>
             </div>
           </div>
 
           <div class="pay-now-cta">
             <button type="submit" form="paymentForm" class="btn btn--primary btn--lg" id="payNowBtn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              Pay Now &mdash; $1,290.00
+              Pay Now &mdash; <span id="coPayLabel">–</span>
             </button>
           </div>
 
@@ -606,5 +610,95 @@
 
   <script src="js/app.js"></script>
   <script src="js/stripe-connect.js"></script>
+  <script>
+  (function() {
+    var CLEANING_FEE = 150;
+    var DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function fmtDate(d) {
+      return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function fmtAUD(n) {
+      return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function fmtAUDInt(n) {
+      return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    // 2026 VIC school holiday date ranges [startYear, startMonth0, startDay, endYear, endMonth0, endDay]
+    var VIC_HOLIDAYS = [
+      [2025, 11, 20, 2026,  0, 27],
+      [2026,  2, 28, 2026,  3, 13],
+      [2026,  5, 27, 2026,  6, 13],
+      [2026,  8, 19, 2026,  9,  5],
+      [2026, 11, 19, 2027,  0, 27]
+    ];
+    function isVicSchoolHoliday(date) {
+      var t = date.getTime();
+      for (var i = 0; i < VIC_HOLIDAYS.length; i++) {
+        var h = VIC_HOLIDAYS[i];
+        var s = new Date(h[0], h[1], h[2]).getTime();
+        var e = new Date(h[3], h[4], h[5] + 1).getTime();
+        if (t >= s && t < e) return true;
+      }
+      return false;
+    }
+    function getNightlyRate(date) {
+      var m = date.getMonth();
+      var d = date.getDay();
+      var hol = isVicSchoolHoliday(date);
+      if (m >= 5 && m <= 7) {
+        var base = (d === 5 || d === 6) ? 450 : 385;
+        return hol ? Math.round(base * 1.30) : base;
+      }
+      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
+        return hol ? Math.round(285 * 1.20) : 285;
+      }
+      return 220;
+    }
+
+    function set(id, val) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = val;
+    }
+
+    var params = new URLSearchParams(window.location.search);
+    var ciStr  = params.get('checkin');
+    var coStr  = params.get('checkout');
+    var guests = parseInt(params.get('guests')) || 2;
+
+    if (ciStr && coStr) {
+      var checkin  = new Date(ciStr);
+      var checkout = new Date(coStr);
+      var msPerDay = 86400000;
+      var nights   = Math.round((checkout - checkin) / msPerDay);
+
+      if (nights > 0) {
+        var baseTotal = 0;
+        var cur = new Date(checkin);
+        for (var i = 0; i < nights; i++) {
+          baseTotal += getNightlyRate(cur);
+          cur = new Date(cur.getTime() + msPerDay);
+        }
+        var avgRate  = Math.round(baseTotal / nights);
+        var subtotal = baseTotal + CLEANING_FEE;
+        var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
+        var total    = Math.round((subtotal + stripeFee) * 100) / 100;
+
+        set('coCheckin',  fmtDate(checkin));
+        set('coCheckout', fmtDate(checkout));
+        set('coGuests',   guests + ' Guest' + (guests > 1 ? 's' : ''));
+        set('coNights',   nights + ' night' + (nights > 1 ? 's' : '') + ' · Entire Apartment');
+        set('coRateLine', fmtAUDInt(avgRate) + ' avg × ' + nights + ' night' + (nights > 1 ? 's' : ''));
+        set('coBaseTotal',  fmtAUD(baseTotal));
+        set('coCleaningFee', fmtAUD(CLEANING_FEE));
+        set('coStripeFee',  fmtAUD(stripeFee));
+        set('coTotal',    fmtAUD(total));
+        set('coPayLabel', fmtAUD(total));
+      }
+    }
+  })();
+  </script>
 </body>
 </html>

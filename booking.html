@@ -550,11 +550,36 @@
       return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     }
 
+    // 2026 VIC school holiday date ranges [startYear, startMonth0, startDay, endYear, endMonth0, endDay]
+    var VIC_HOLIDAYS = [
+      [2025, 11, 20, 2026,  0, 27],  // Summer:  Dec 20 2025 – Jan 27 2026
+      [2026,  2, 28, 2026,  3, 13],  // Autumn:  Mar 28 – Apr 13
+      [2026,  5, 27, 2026,  6, 13],  // Winter:  Jun 27 – Jul 13
+      [2026,  8, 19, 2026,  9,  5],  // Spring:  Sep 19 – Oct 5
+      [2026, 11, 19, 2027,  0, 27]   // Summer:  Dec 19 2026 – Jan 27 2027
+    ];
+    function isVicSchoolHoliday(date) {
+      var t = date.getTime();
+      for (var i = 0; i < VIC_HOLIDAYS.length; i++) {
+        var h = VIC_HOLIDAYS[i];
+        var s = new Date(h[0], h[1], h[2]).getTime();
+        var e = new Date(h[3], h[4], h[5] + 1).getTime();
+        if (t >= s && t < e) return true;
+      }
+      return false;
+    }
+
     function getNightlyRate(date) {
       var m = date.getMonth();
       var d = date.getDay();
-      if (m >= 5 && m <= 7) { return (d === 5 || d === 6) ? 450 : 385; }
-      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) { return 285; }
+      var hol = isVicSchoolHoliday(date);
+      if (m >= 5 && m <= 7) {
+        var base = (d === 5 || d === 6) ? 450 : 385;
+        return hol ? Math.round(base * 1.30) : base;
+      }
+      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
+        return hol ? Math.round(285 * 1.20) : 285;
+      }
       return 220;
     }
 
