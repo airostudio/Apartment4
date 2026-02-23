@@ -1065,11 +1065,17 @@
         <!-- Location Tab -->
         <div class="tab-content" id="tab-location">
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">Where you'll be</h3>
-          <div class="location-map-placeholder">
-            <div class="map-pin">
-              <svg viewBox="0 0 24 24" fill="#1a73a7" stroke="#fff" stroke-width="1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>
-              <span style="font-weight:600;">Baw Baw Village, Mt Baw Baw, VIC</span>
-            </div>
+          <div style="width:100%;height:380px;border-radius:12px;overflow:hidden;margin-bottom:24px;border:1px solid #e5e7eb;">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3154.8!2d146.267!3d-37.837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b277e8e2e0b2e1f%3A0xa1c1e2c1e2c1e2c1!2sMt%20Baw%20Baw%20Alpine%20Resort%2C%20VIC%203833!5e0!3m2!1sen!2sau!4v1700000000000!5m2!1sen!2sau"
+              width="100%"
+              height="380"
+              style="border:0;display:block;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Cascade Apartment 4 location map">
+            </iframe>
           </div>
           <div class="location-details">
             <div class="location-detail-card">
@@ -1096,9 +1102,9 @@
       </div>
 
       <!-- Booking Sidebar -->
-      <aside class="booking-sidebar">
+      <aside class="booking-sidebar" id="booking">
         <div class="booking-price-header">
-          <span class="price">$285</span>
+          <span class="price" id="sidebarPrice">$285</span>
           <span class="per-night">/ night</span>
         </div>
 
@@ -1106,46 +1112,46 @@
           <div class="booking-form-row">
             <div class="booking-form-field">
               <label for="checkin">Check-in</label>
-              <input type="date" id="checkin" value="2026-03-15">
+              <input type="date" id="checkin">
             </div>
             <div class="booking-form-field">
               <label for="checkout">Check-out</label>
-              <input type="date" id="checkout" value="2026-03-20">
+              <input type="date" id="checkout">
             </div>
           </div>
           <div class="booking-form-field" style="border-top:1px solid #ddd;">
             <label for="guests">Guests</label>
             <select id="guests">
-              <option>1 Guest</option>
-              <option selected>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4 Guests</option>
-              <option>5 Guests</option>
-              <option>6 Guests</option>
-              <option>7 Guests</option>
+              <option value="1">1 Guest</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="5">5 Guests</option>
+              <option value="6">6 Guests</option>
+              <option value="7">7 Guests</option>
             </select>
           </div>
         </div>
 
-        <button class="btn-book">Book Now</button>
+        <button class="btn-book" id="btnBook">Book Now</button>
         <p class="booking-note">You won't be charged yet</p>
 
-        <div class="price-breakdown">
+        <div class="price-breakdown" id="priceBreakdown">
           <div class="price-row">
-            <span class="label" title="Nightly rate multiplied by number of nights">$285 x 5 nights</span>
-            <span>$1,425</span>
+            <span class="label" id="priceNightsLabel" title="Nightly rate × number of nights">Select dates to see pricing</span>
+            <span id="priceNightsTotal"></span>
           </div>
           <div class="price-row">
             <span class="label" title="One-time cleaning fee">Cleaning fee</span>
             <span>$150</span>
           </div>
           <div class="price-row">
-            <span class="label" title="Service charge">Service fee</span>
-            <span>$0</span>
+            <span class="label" title="Stripe payment processing fee (1.75% + $0.30) — paid by guest">Stripe fee</span>
+            <span id="priceStripeFee">—</span>
           </div>
           <div class="price-row total">
             <span>Total</span>
-            <span>$1,575</span>
+            <span id="priceTotal">—</span>
           </div>
         </div>
 
@@ -1215,19 +1221,115 @@
 
   <script src="js/app.js"></script>
   <script>
-    // Property page tab switching
+    // ── Tab switching ──
     document.querySelectorAll('.property-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        // Remove active from all tabs and content
         document.querySelectorAll('.property-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-        // Activate clicked tab and its content
         tab.classList.add('active');
         const targetId = 'tab-' + tab.getAttribute('data-tab');
         document.getElementById(targetId).classList.add('active');
       });
     });
+
+    // ── Dynamic Price Calculation ──
+    (function() {
+      var CLEANING_FEE = 150;
+
+      // Return nightly rate for a given Date object (the night starting on that date)
+      function getNightlyRate(date) {
+        var m = date.getMonth(); // 0=Jan
+        var d = date.getDay();   // 0=Sun, 5=Fri, 6=Sat
+        if (m >= 5 && m <= 7) {
+          // Ski season: Jun-Aug
+          // Weekend nights = Fri night (guests staying Fri→Sat) or Sat night
+          return (d === 5 || d === 6) ? 450 : 385;
+        } else if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
+          // Standard: Mar-May, Sep-Nov
+          return 285;
+        } else {
+          // Off-peak: Dec-Feb
+          return 220;
+        }
+      }
+
+      function calcPricing(checkin, checkout) {
+        var msPerDay = 86400000;
+        var nights = Math.round((checkout - checkin) / msPerDay);
+        if (nights <= 0) return null;
+
+        var baseTotal = 0;
+        var cur = new Date(checkin);
+        for (var i = 0; i < nights; i++) {
+          baseTotal += getNightlyRate(cur);
+          cur = new Date(cur.getTime() + msPerDay);
+        }
+
+        var subtotal = baseTotal + CLEANING_FEE;
+        var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
+        var total = Math.round((subtotal + stripeFee) * 100) / 100;
+
+        return { nights: nights, baseTotal: baseTotal, subtotal: subtotal, stripeFee: stripeFee, total: total };
+      }
+
+      function fmt(n) { return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+
+      function updatePricing() {
+        var ci = document.getElementById('checkin').value;
+        var co = document.getElementById('checkout').value;
+        if (!ci || !co) return;
+
+        var checkinDate = new Date(ci);
+        var checkoutDate = new Date(co);
+        if (checkoutDate <= checkinDate) return;
+
+        var p = calcPricing(checkinDate, checkoutDate);
+        if (!p) return;
+
+        var avgRate = Math.round(p.baseTotal / p.nights);
+        document.getElementById('sidebarPrice').textContent = '$' + avgRate;
+        document.getElementById('priceNightsLabel').textContent =
+          fmt(avgRate) + ' avg × ' + p.nights + ' night' + (p.nights > 1 ? 's' : '');
+        document.getElementById('priceNightsTotal').textContent = fmt(p.baseTotal);
+        document.getElementById('priceStripeFee').textContent = '$' + p.stripeFee.toFixed(2);
+        document.getElementById('priceTotal').textContent = fmt(p.total);
+      }
+
+      document.getElementById('checkin').addEventListener('change', updatePricing);
+      document.getElementById('checkout').addEventListener('change', updatePricing);
+      document.getElementById('guests').addEventListener('change', updatePricing);
+
+      // Pre-fill from URL params (carry-over from search/index page)
+      var params = new URLSearchParams(window.location.search);
+      var ci = params.get('checkin');
+      var co = params.get('checkout');
+      var g = params.get('guests');
+      if (ci) document.getElementById('checkin').value = ci;
+      if (co) document.getElementById('checkout').value = co;
+      if (g) {
+        var sel = document.getElementById('guests');
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === g) { sel.selectedIndex = i; break; }
+        }
+      }
+      if (ci && co) updatePricing();
+
+      // Book Now button
+      document.getElementById('btnBook').addEventListener('click', function() {
+        var ci = document.getElementById('checkin').value;
+        var co = document.getElementById('checkout').value;
+        var g = document.getElementById('guests').value;
+        if (!ci || !co) {
+          alert('Please select your check-in and check-out dates.');
+          document.getElementById('checkin').focus();
+          return;
+        }
+        var url = 'booking.html?checkin=' + encodeURIComponent(ci)
+          + '&checkout=' + encodeURIComponent(co)
+          + '&guests=' + encodeURIComponent(g);
+        window.location.href = url;
+      });
+    })();
   </script>
 
   <!-- Lightbox -->

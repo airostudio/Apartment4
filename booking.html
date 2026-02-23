@@ -419,27 +419,6 @@
                 <span class="addon-option__price">+ $30</span>
               </label>
 
-              <label class="addon-option">
-                <div class="addon-option__left">
-                  <input type="checkbox" id="airportTransfer" name="airportTransfer" value="85">
-                  <div>
-                    <div class="addon-option__label">Airport Transfer</div>
-                    <div class="addon-option__desc">Private return transfer from the airport to the property</div>
-                  </div>
-                </div>
-                <span class="addon-option__price">+ $85</span>
-              </label>
-
-              <label class="addon-option">
-                <div class="addon-option__left">
-                  <input type="checkbox" id="breakfastPackage" name="breakfastPackage" value="25">
-                  <div>
-                    <div class="addon-option__label">Breakfast Package</div>
-                    <div class="addon-option__desc">Full buffet breakfast for all guests, per night</div>
-                  </div>
-                </div>
-                <span class="addon-option__price">+ $25 /night</span>
-              </label>
             </div>
 
           </form>
@@ -457,35 +436,39 @@
 
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-in:</strong> Sat, 14 Mar 2026</span>
+            <span><strong>Check-in:</strong> <span id="sumCheckin">—</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-out:</strong> Wed, 18 Mar 2026</span>
+            <span><strong>Check-out:</strong> <span id="sumCheckout">—</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span><strong>Guests:</strong> 2 Adults, 0 Children</span>
+            <span><strong>Guests:</strong> <span id="sumGuests">—</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>4 nights &middot; Entire Apartment</span>
+            <span id="sumNights">— nights · Entire Apartment</span>
           </div>
 
           <div class="summary-divider"></div>
 
           <div class="price-breakdown">
             <div class="price-row">
-              <span>$285 x 4 nights</span>
-              <span>$1,140.00</span>
+              <span id="sumRateLine">Nightly rate</span>
+              <span id="sumBaseTotal">—</span>
             </div>
             <div class="price-row">
               <span>Cleaning fee</span>
-              <span>$150.00</span>
+              <span>$150</span>
+            </div>
+            <div class="price-row">
+              <span title="Stripe payment processing (1.75% + $0.30)">Stripe fee</span>
+              <span id="sumStripeFee">—</span>
             </div>
             <div class="price-row price-row--total">
               <span>Total</span>
-              <span>$1,290.00</span>
+              <span id="sumTotal">—</span>
             </div>
           </div>
 
@@ -554,5 +537,118 @@
 
   <script src="js/app.js"></script>
   <script src="js/booking-engine.js"></script>
+  <script>
+  (function() {
+    var CLEANING_FEE = 150;
+    var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function fmtDate(d) {
+      return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function fmtAUD(n) {
+      return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function getNightlyRate(date) {
+      var m = date.getMonth();
+      var d = date.getDay();
+      if (m >= 5 && m <= 7) { return (d === 5 || d === 6) ? 450 : 385; }
+      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) { return 285; }
+      return 220;
+    }
+
+    function updateSummary() {
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      var adults = parseInt(document.getElementById('numAdults').value) || 2;
+      var children = parseInt(document.getElementById('numChildren').value) || 0;
+
+      if (ci) document.getElementById('sumCheckin').textContent = fmtDate(new Date(ci));
+      if (co) document.getElementById('sumCheckout').textContent = fmtDate(new Date(co));
+      document.getElementById('sumGuests').textContent = adults + ' Adult' + (adults > 1 ? 's' : '') +
+        (children > 0 ? ', ' + children + ' Child' + (children > 1 ? 'ren' : '') : '');
+
+      if (!ci || !co) return;
+      var checkinDate = new Date(ci);
+      var checkoutDate = new Date(co);
+      var msPerDay = 86400000;
+      var nights = Math.round((checkoutDate - checkinDate) / msPerDay);
+      if (nights <= 0) return;
+
+      var baseTotal = 0;
+      var cur = new Date(checkinDate);
+      for (var i = 0; i < nights; i++) {
+        baseTotal += getNightlyRate(cur);
+        cur = new Date(cur.getTime() + msPerDay);
+      }
+      var avgRate = Math.round(baseTotal / nights);
+      var subtotal = baseTotal + CLEANING_FEE;
+      var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
+      var total = Math.round((subtotal + stripeFee) * 100) / 100;
+
+      document.getElementById('sumNights').textContent = nights + ' night' + (nights > 1 ? 's' : '') + ' · Entire Apartment';
+      document.getElementById('sumRateLine').textContent = fmtAUD(avgRate) + ' avg × ' + nights + ' night' + (nights > 1 ? 's' : '');
+      document.getElementById('sumBaseTotal').textContent = fmtAUD(baseTotal);
+      document.getElementById('sumStripeFee').textContent = '$' + stripeFee.toFixed(2);
+      document.getElementById('sumTotal').textContent = fmtAUD(total);
+    }
+
+    // Pre-fill from URL params
+    var params = new URLSearchParams(window.location.search);
+    var ci = params.get('checkin');
+    var co = params.get('checkout');
+    var g = params.get('guests');
+    if (ci) document.getElementById('checkinDate').value = ci;
+    if (co) document.getElementById('checkoutDate').value = co;
+    if (g) {
+      var adults = parseInt(g);
+      var adultSel = document.getElementById('numAdults');
+      for (var i = 0; i < adultSel.options.length; i++) {
+        if (parseInt(adultSel.options[i].value) === adults) { adultSel.selectedIndex = i; break; }
+      }
+    }
+    updateSummary();
+
+    // Live updates
+    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', updateSummary);
+    });
+
+    // Form validation
+    document.getElementById('continueToPayment').addEventListener('click', function(e) {
+      e.preventDefault();
+      var required = ['firstName','lastName','email','phone','checkinDate','checkoutDate'];
+      var firstError = null;
+      required.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (!el.value.trim()) {
+          el.style.borderColor = '#ef4444';
+          el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+          if (!firstError) firstError = el;
+          el.addEventListener('input', function() {
+            el.style.borderColor = '';
+            el.style.boxShadow = '';
+          }, { once: true });
+        }
+      });
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstError.focus();
+        return;
+      }
+      // Carry booking data to checkout
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      var adults = document.getElementById('numAdults').value;
+      var url = 'checkout.html?checkin=' + encodeURIComponent(ci)
+        + '&checkout=' + encodeURIComponent(co)
+        + '&guests=' + encodeURIComponent(adults);
+      window.location.href = url;
+    });
+  })();
+  </script>
 </body>
 </html>
