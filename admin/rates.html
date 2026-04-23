@@ -3,50 +3,747 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rates &amp; Pricing - Cascade Apartment 4 Admin</title>
+    <title>Rates &amp; Pricing — Cascade Apartment 4 Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <script src="../js/admin-auth.js"></script>
+    <style>
+        /* -------------------------------------------------------
+           RATES PAGE — LOCAL STYLES
+        ------------------------------------------------------- */
+
+        /* Season card wrapper */
+        .rates-season-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 28px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+        }
+
+        .rates-season-card__header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .rates-season-card__title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+            flex: 1;
+        }
+
+        .rates-season-card__dates {
+            font-size: 0.82rem;
+            color: #6b7280;
+            font-weight: 400;
+            margin-left: 6px;
+        }
+
+        /* Season badges */
+        .season-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .season-badge--peak {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .season-badge--standard {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .season-badge--low {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        /* Rate type rows inside ski season */
+        .rates-split-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rates-split-table thead tr {
+            background: #f9fafb;
+        }
+
+        .rates-split-table th {
+            padding: 10px 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .rates-split-table th:not(:first-child) {
+            text-align: right;
+        }
+
+        .rates-split-table td {
+            padding: 14px 20px;
+            font-size: 0.88rem;
+            color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: top;
+        }
+
+        .rates-split-table td:not(:first-child) {
+            text-align: right;
+        }
+
+        .rates-split-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rates-split-table .rate-type-label {
+            font-weight: 600;
+            color: #111827;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .rates-split-table .rate-type-sublabel {
+            font-size: 0.78rem;
+            color: #9ca3af;
+        }
+
+        .rates-split-table .rate-base-price {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #111827;
+            display: block;
+        }
+
+        .rates-split-table .rate-holiday-price {
+            font-size: 0.82rem;
+            color: #6b7280;
+            display: block;
+        }
+
+        .rates-split-table .rate-holiday-price.is-active {
+            color: #b45309;
+            font-weight: 600;
+        }
+
+        /* Breakdown sub-table */
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+            background: #f9fafb;
+        }
+
+        .breakdown-table th {
+            padding: 8px 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: right;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f3f4f6;
+        }
+
+        .breakdown-table th:first-child {
+            text-align: left;
+        }
+
+        .breakdown-table td {
+            padding: 9px 20px;
+            font-size: 0.82rem;
+            color: #4b5563;
+            text-align: right;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breakdown-table td:first-child {
+            text-align: left;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .breakdown-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .breakdown-table .breakdown-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        /* Flat-rate season layout */
+        .rates-flat-body {
+            padding: 20px 24px;
+        }
+
+        .rates-flat-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .rates-flat-price-block {
+            flex: 0 0 auto;
+        }
+
+        .rates-flat-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1;
+        }
+
+        .rates-flat-price-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-top: 3px;
+        }
+
+        .rates-flat-edit-btn {
+            margin-top: 10px;
+        }
+
+        /* Holiday toggle section */
+        .holiday-toggle-section {
+            padding: 14px 24px;
+            background: #fffbeb;
+            border-top: 1px solid #fde68a;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .holiday-toggle-section--no-holiday {
+            background: #f9fafb;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .holiday-toggle-label {
+            flex: 1;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #78350f;
+        }
+
+        .holiday-toggle-label--no-holiday {
+            color: #9ca3af;
+        }
+
+        .holiday-toggle-sublabel {
+            font-size: 0.78rem;
+            color: #92400e;
+            font-weight: 400;
+            display: block;
+        }
+
+        .holiday-toggle-sublabel--no-holiday {
+            color: #d1d5db;
+        }
+
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-switch__slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #d1d5db;
+            border-radius: 24px;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch__slider::before {
+            content: '';
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            top: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,.2);
+        }
+
+        .toggle-switch input:checked + .toggle-switch__slider {
+            background: #f59e0b;
+        }
+
+        .toggle-switch input:checked + .toggle-switch__slider::before {
+            transform: translateX(20px);
+        }
+
+        /* Edit button */
+        .rate-edit-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            color: #374151;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+            white-space: nowrap;
+        }
+
+        .rate-edit-btn:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        /* -------------------------------------------------------
+           MODAL
+        ------------------------------------------------------- */
+        .rates-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.45);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rates-modal-overlay.is-open {
+            display: flex;
+        }
+
+        .rates-modal {
+            background: #fff;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 520px;
+            margin: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,.18);
+            overflow: hidden;
+        }
+
+        .rates-modal__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .rates-modal__title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
+        .rates-modal__subtitle {
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin: 2px 0 0;
+        }
+
+        .rates-modal__close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            border-radius: 6px;
+            transition: color 0.15s, background 0.15s;
+        }
+
+        .rates-modal__close:hover {
+            color: #374151;
+            background: #f3f4f6;
+        }
+
+        .rates-modal__body {
+            padding: 24px;
+        }
+
+        .rates-modal__field-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .rates-modal__input-wrap {
+            position: relative;
+        }
+
+        .rates-modal__input-prefix {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6b7280;
+            pointer-events: none;
+        }
+
+        .rates-modal__input {
+            width: 100%;
+            padding: 10px 14px 10px 28px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #111827;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.15s;
+        }
+
+        .rates-modal__input:focus {
+            border-color: #6366f1;
+        }
+
+        .rates-modal__preview {
+            margin-top: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .rates-modal__preview-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 10px 16px 8px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f3f4f6;
+        }
+
+        .rates-modal__preview-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rates-modal__preview-table th {
+            padding: 8px 16px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            text-align: right;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .rates-modal__preview-table th:first-child {
+            text-align: left;
+        }
+
+        .rates-modal__preview-table td {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            color: #374151;
+            text-align: right;
+        }
+
+        .rates-modal__preview-table td:first-child {
+            text-align: left;
+        }
+
+        .rates-modal__footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            padding: 16px 24px 20px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .btn-cancel {
+            padding: 9px 20px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #fff;
+            color: #374151;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-cancel:hover {
+            background: #f9fafb;
+        }
+
+        .btn-save {
+            padding: 9px 22px;
+            border: none;
+            border-radius: 8px;
+            background: #4f46e5;
+            color: #fff;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-save:hover {
+            background: #4338ca;
+        }
+
+        /* -------------------------------------------------------
+           BOOKING RULES CARD
+        ------------------------------------------------------- */
+        .booking-rules-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+        }
+
+        .booking-rules-card__header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 24px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .booking-rules-card__header-icon {
+            color: #6366f1;
+        }
+
+        .booking-rules-card__title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
+        .booking-rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0;
+        }
+
+        .booking-rules-item {
+            padding: 18px 24px;
+            border-right: 1px solid #f3f4f6;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .booking-rules-item:nth-child(3n) {
+            border-right: none;
+        }
+
+        .booking-rules-item__label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .booking-rules-item__value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .booking-rules-item__sub {
+            font-size: 0.78rem;
+            color: #9ca3af;
+        }
+
+        .booking-rules-item--editable {
+            cursor: default;
+        }
+
+        .booking-rules-item__edit-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .booking-rules-item__input {
+            width: 60px;
+            padding: 4px 8px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #111827;
+            outline: none;
+            text-align: center;
+        }
+
+        .booking-rules-item__input:focus {
+            border-color: #6366f1;
+        }
+
+        .booking-rules-item__input-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .booking-rules-notice {
+            padding: 14px 24px;
+            background: #eff6ff;
+            border-top: 1px solid #dbeafe;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .booking-rules-notice__icon {
+            color: #3b82f6;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .booking-rules-notice__text {
+            font-size: 0.83rem;
+            color: #1e40af;
+            line-height: 1.5;
+        }
+
+        .booking-rules-notice__text strong {
+            font-weight: 700;
+        }
+
+        /* highlight helper */
+        .amt-highlight {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .amt-green {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        .amt-muted {
+            color: #9ca3af;
+        }
+
+        /* Sidebar toggle for mobile */
+        .topbar-sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .topbar-sidebar-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body class="admin-body">
 
-    <!-- ============ SIDEBAR ============ -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-header">
-            <a href="dashboard.html" class="sidebar-logo">
-                <span class="logo-text">Cascade Apartment 4</span>
-                <span class="logo-badge">Admin</span>
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-sidebar__header">
+            <a href="index.html" class="admin-sidebar__logo">
+                <span class="admin-sidebar__logo-text">Cascade Apartment 4</span>
+                <span class="admin-sidebar__logo-badge">Admin</span>
             </a>
         </div>
 
-        <nav class="sidebar-nav">
+        <nav class="admin-sidebar__nav">
+
             <!-- MAIN -->
-            <div class="nav-section">
-                <span class="nav-section-title">MAIN</span>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="dashboard.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">MAIN</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item">
+                        <a href="index.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                            </svg>
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="properties.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            <span>Properties</span>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="properties.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                            <span>Property</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="bookings.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="bookings.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
                             <span>Bookings</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="calendar.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="calendar.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
                             <span>Calendar</span>
                         </a>
                     </li>
@@ -54,24 +751,30 @@
             </div>
 
             <!-- MANAGEMENT -->
-            <div class="nav-section">
-                <span class="nav-section-title">MANAGEMENT</span>
-                <ul class="nav-list">
-                    <li class="nav-item active">
-                        <a href="rates.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">MANAGEMENT</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item">
+                        <a href="rates.html" class="admin-sidebar__menu-link admin-sidebar__menu-link--active">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
                             <span>Rates &amp; Pricing</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="guests.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="guests.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
                             <span>Guests</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="reviews.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="reviews.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
                             <span>Reviews</span>
                         </a>
                     </li>
@@ -79,456 +782,794 @@
             </div>
 
             <!-- INTEGRATIONS -->
-            <div class="nav-section">
-                <span class="nav-section-title">INTEGRATIONS</span>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="ical-sync.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">INTEGRATIONS</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item">
+                        <a href="ical-sync.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                            </svg>
                             <span>iCal Sync</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="stripe-connect.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            <span>Stripe Connect</span>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="payments.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
+                            </svg>
+                            <span>Stripe Settings</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
             <!-- SYSTEM -->
-            <div class="nav-section">
-                <span class="nav-section-title">SYSTEM</span>
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="settings.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">SYSTEM</span>
+                <ul class="admin-sidebar__menu">
+                    <li class="admin-sidebar__menu-item">
+                        <a href="settings.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
                             <span>Settings</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="reports.html" class="nav-link">
-                            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="reports.html" class="admin-sidebar__menu-link">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
                             <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="admin-sidebar__menu-item">
+                        <a href="../index.html" class="admin-sidebar__menu-link" target="_blank">
+                            <svg class="admin-sidebar__menu-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                            </svg>
+                            <span>View Website</span>
                         </a>
                     </li>
                 </ul>
             </div>
+
         </nav>
     </aside>
 
-    <!-- ============ MAIN CONTENT ============ -->
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
     <main class="admin-main">
 
-        <!-- Top Bar -->
+        <!-- TOPBAR -->
         <header class="admin-topbar">
-            <div class="topbar-left">
-                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <div class="admin-topbar__left">
+                <button class="topbar-sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
                 </button>
-                <nav class="breadcrumb">
-                    <a href="dashboard.html" class="breadcrumb-link">Dashboard</a>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-current">Rates &amp; Pricing</span>
-                </nav>
+                <div class="admin-topbar__breadcrumb">
+                    <a href="index.html" class="admin-topbar__breadcrumb-link">Dashboard</a>
+                    <span class="admin-topbar__breadcrumb-separator">&rsaquo;</span>
+                    <span class="admin-topbar__breadcrumb-current">Rates &amp; Pricing</span>
+                </div>
             </div>
-            <div class="topbar-right">
-                <div class="topbar-avatar">
-                    <span class="avatar-initials">AD</span>
+            <div class="admin-topbar__actions">
+                <button class="admin-topbar__notification-btn" aria-label="Notifications">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                </button>
+                <div class="admin-topbar__user">
+                    <div class="admin-topbar__user-avatar" id="topbarAvatar">AD</div>
+                    <span class="admin-topbar__user-name" id="topbarName">Admin</span>
                 </div>
             </div>
         </header>
 
-        <!-- Page Content -->
+        <!-- PAGE CONTENT -->
         <div class="admin-content">
 
             <!-- Page Header -->
-            <div class="page-header">
-                <div class="page-header-info">
-                    <h1 class="page-title">Rates &amp; Pricing</h1>
-                    <p class="page-subtitle">Set seasonal rates and pricing rules</p>
-                </div>
-                <div class="page-header-actions">
-                    <div class="select-wrapper">
-                        <select class="form-select" id="propertySelector">
-                            <option value="all">All Properties</option>
-                            <option value="sunset-villa">Sunset Villa</option>
-                            <option value="ocean-breeze">Ocean Breeze Resort</option>
-                            <option value="mountain-lodge">Mountain Lodge</option>
-                            <option value="city-center">City Center Apartments</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary">
-                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                        Add Rate Rule
-                    </button>
+            <div class="admin-page-header">
+                <div class="admin-page-header__info">
+                    <h1 class="admin-page-header__title">Rates &amp; Pricing</h1>
+                    <p class="admin-page-header__description">Manage nightly rates, seasonal pricing, and booking rules for Cascade Apartment 4</p>
                 </div>
             </div>
 
-            <!-- Base Rates Card -->
-            <div class="admin-card">
-                <div class="admin-card-header">
-                    <h2 class="admin-card-title">
-                        <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        Base Rates
+            <!-- ================================================
+                 SKI SEASON CARD
+            ================================================= -->
+            <div class="rates-season-card" id="card-ski">
+                <div class="rates-season-card__header">
+                    <h2 class="rates-season-card__title">
+                        Ski Season
+                        <span class="rates-season-card__dates">June 1 – August 31</span>
                     </h2>
+                    <span class="season-badge season-badge--peak">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                        Peak
+                    </span>
                 </div>
-                <div class="admin-card-body">
-                    <div class="table-responsive">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Room Type</th>
-                                    <th>Base Rate / Night</th>
-                                    <th>Weekend Rate</th>
-                                    <th>Weekly Discount</th>
-                                    <th>Monthly Discount</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="room-type-cell">
-                                            <span class="room-type-dot" style="background-color: #3b82f6;"></span>
-                                            <span class="room-type-name">Standard Room</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="rate-amount">$149</span></td>
-                                    <td><span class="rate-amount">$179</span></td>
-                                    <td><span class="badge badge-success">10% off</span></td>
-                                    <td><span class="badge badge-success">20% off</span></td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="room-type-cell">
-                                            <span class="room-type-dot" style="background-color: #8b5cf6;"></span>
-                                            <span class="room-type-name">Deluxe Suite</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="rate-amount">$289</span></td>
-                                    <td><span class="rate-amount">$329</span></td>
-                                    <td><span class="badge badge-success">10% off</span></td>
-                                    <td><span class="badge badge-success">25% off</span></td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="room-type-cell">
-                                            <span class="room-type-dot" style="background-color: #10b981;"></span>
-                                            <span class="room-type-name">Family Room</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="rate-amount">$199</span></td>
-                                    <td><span class="rate-amount">$229</span></td>
-                                    <td><span class="badge badge-success">15% off</span></td>
-                                    <td><span class="badge badge-success">20% off</span></td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="room-type-cell">
-                                            <span class="room-type-dot" style="background-color: #f59e0b;"></span>
-                                            <span class="room-type-name">Penthouse</span>
-                                        </div>
-                                    </td>
-                                    <td><span class="rate-amount">$489</span></td>
-                                    <td><span class="rate-amount">$559</span></td>
-                                    <td><span class="badge badge-success">5% off</span></td>
-                                    <td><span class="badge badge-success">15% off</span></td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                <!-- Holiday Toggle -->
+                <div class="holiday-toggle-section" id="skiHolidayToggleSection">
+                    <div style="flex:1">
+                        <span class="holiday-toggle-label">VIC School Holiday Premium</span>
+                        <span class="holiday-toggle-sublabel">+30% applied on all ski season rates when active</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:0.82rem;color:#92400e;font-weight:500;" id="skiHolidayStatus">Off</span>
+                        <label class="toggle-switch" title="Toggle VIC school holiday premium">
+                            <input type="checkbox" id="skiHolidayToggle">
+                            <span class="toggle-switch__slider"></span>
+                        </label>
                     </div>
                 </div>
+
+                <!-- Split rate table -->
+                <table class="rates-split-table">
+                    <thead>
+                        <tr>
+                            <th>Rate Type</th>
+                            <th>Base Rate</th>
+                            <th>With Holiday Premium</th>
+                            <th style="text-align:right;padding-right:20px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Midweek row -->
+                        <tr id="row-ski-midweek">
+                            <td>
+                                <span class="rate-type-label">Mid-week</span>
+                                <span class="rate-type-sublabel">Sunday night – Thursday night</span>
+                            </td>
+                            <td>
+                                <span class="rate-base-price" id="ski-midweek-base-display">$385.00</span>
+                                <span class="rate-type-sublabel">per night</span>
+                            </td>
+                            <td>
+                                <span class="rate-base-price" id="ski-midweek-holiday-display" style="font-size:1.1rem;">$500.50</span>
+                                <span class="rate-holiday-price" id="ski-midweek-holiday-label">+30% premium</span>
+                            </td>
+                            <td style="text-align:right;padding-right:20px;vertical-align:middle;">
+                                <button class="rate-edit-btn" onclick="openModal('ski-midweek')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                    Edit Rate
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Midweek breakdown -->
+                        <tr id="breakdown-ski-midweek">
+                            <td colspan="4" style="padding:0;background:#f9fafb;border-top:1px dashed #e5e7eb;">
+                                <table class="breakdown-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Scenario</th>
+                                            <th>Base Rate</th>
+                                            <th>Guest Pays (inc. Stripe fee)</th>
+                                            <th>Admin Earns (98.3%)</th>
+                                            <th>Owner Earns (1.7%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="breakdown-ski-midweek-body">
+                                        <!-- JS-rendered -->
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- Weekend row -->
+                        <tr id="row-ski-weekend" style="border-top:2px solid #e5e7eb;">
+                            <td>
+                                <span class="rate-type-label">Weekend</span>
+                                <span class="rate-type-sublabel">Friday night – Saturday night</span>
+                            </td>
+                            <td>
+                                <span class="rate-base-price" id="ski-weekend-base-display">$450.00</span>
+                                <span class="rate-type-sublabel">per night</span>
+                            </td>
+                            <td>
+                                <span class="rate-base-price" id="ski-weekend-holiday-display" style="font-size:1.1rem;">$585.00</span>
+                                <span class="rate-holiday-price" id="ski-weekend-holiday-label">+30% premium</span>
+                            </td>
+                            <td style="text-align:right;padding-right:20px;vertical-align:middle;">
+                                <button class="rate-edit-btn" onclick="openModal('ski-weekend')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                    Edit Rate
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Weekend breakdown -->
+                        <tr id="breakdown-ski-weekend">
+                            <td colspan="4" style="padding:0;background:#f9fafb;border-top:1px dashed #e5e7eb;">
+                                <table class="breakdown-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Scenario</th>
+                                            <th>Base Rate</th>
+                                            <th>Guest Pays (inc. Stripe fee)</th>
+                                            <th>Admin Earns (98.3%)</th>
+                                            <th>Owner Earns (1.7%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="breakdown-ski-weekend-body">
+                                        <!-- JS-rendered -->
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Seasonal Rates Card -->
-            <div class="admin-card">
-                <div class="admin-card-header">
-                    <h2 class="admin-card-title">
-                        <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        Seasonal Rates
+            <!-- ================================================
+                 STANDARD SEASON CARD
+            ================================================= -->
+            <div class="rates-season-card" id="card-standard">
+                <div class="rates-season-card__header">
+                    <h2 class="rates-season-card__title">
+                        Standard Season
+                        <span class="rates-season-card__dates">Mar–May &amp; Sep–Nov</span>
                     </h2>
+                    <span class="season-badge season-badge--standard">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Standard
+                    </span>
                 </div>
-                <div class="admin-card-body">
-                    <div class="rate-cards-grid">
 
-                        <!-- Peak Season -->
-                        <div class="rate-card rate-card--peak">
-                            <div class="rate-card-header">
-                                <div class="rate-card-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                                </div>
-                                <div class="rate-card-info">
-                                    <h3 class="rate-card-title">Peak Season</h3>
-                                    <span class="rate-card-dates">December &ndash; February</span>
-                                </div>
-                                <div class="rate-card-modifier rate-card-modifier--up">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-                                    +30%
-                                </div>
-                            </div>
-                            <div class="rate-card-bar">
-                                <div class="rate-card-bar-fill" style="width: 100%; background: linear-gradient(90deg, #ef4444, #f97316);"></div>
-                            </div>
-                        </div>
-
-                        <!-- Standard Season -->
-                        <div class="rate-card rate-card--standard">
-                            <div class="rate-card-header">
-                                <div class="rate-card-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>
-                                </div>
-                                <div class="rate-card-info">
-                                    <h3 class="rate-card-title">Standard Season</h3>
-                                    <span class="rate-card-dates">Mar &ndash; May, Sep &ndash; Nov</span>
-                                </div>
-                                <div class="rate-card-modifier rate-card-modifier--base">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                                    Base rate
-                                </div>
-                            </div>
-                            <div class="rate-card-bar">
-                                <div class="rate-card-bar-fill" style="width: 65%; background: linear-gradient(90deg, #3b82f6, #6366f1);"></div>
-                            </div>
-                        </div>
-
-                        <!-- Off-Peak Season -->
-                        <div class="rate-card rate-card--offpeak">
-                            <div class="rate-card-header">
-                                <div class="rate-card-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="16 18 12 22 8 18"/></svg>
-                                </div>
-                                <div class="rate-card-info">
-                                    <h3 class="rate-card-title">Off-Peak</h3>
-                                    <span class="rate-card-dates">June &ndash; August</span>
-                                </div>
-                                <div class="rate-card-modifier rate-card-modifier--down">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                                    -15%
-                                </div>
-                            </div>
-                            <div class="rate-card-bar">
-                                <div class="rate-card-bar-fill" style="width: 40%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
-                            </div>
-                        </div>
-
+                <!-- Holiday Toggle -->
+                <div class="holiday-toggle-section" id="standardHolidayToggleSection">
+                    <div style="flex:1">
+                        <span class="holiday-toggle-label">VIC School Holiday Premium</span>
+                        <span class="holiday-toggle-sublabel" id="standardHolidaySubLabel">+20% applied when active</span>
                     </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:0.82rem;color:#92400e;font-weight:500;" id="standardHolidayStatus">Off</span>
+                        <label class="toggle-switch" title="Toggle VIC school holiday premium">
+                            <input type="checkbox" id="standardHolidayToggle">
+                            <span class="toggle-switch__slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="rates-flat-body">
+                    <div class="rates-flat-row">
+                        <div class="rates-flat-price-block">
+                            <div class="rates-flat-price" id="standard-base-display">$285.00</div>
+                            <div class="rates-flat-price-label">Base rate / night</div>
+                            <div style="margin-top:8px;font-size:0.85rem;color:#6b7280;">
+                                With holiday premium: <strong id="standard-holiday-display">$342.00</strong>
+                                <span style="font-size:0.78rem;color:#9ca3af;">&nbsp;(+20%)</span>
+                            </div>
+                            <button class="rate-edit-btn rates-flat-edit-btn" onclick="openModal('standard')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                                Edit Rate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Standard breakdown -->
+                <div style="border-top:1px dashed #e5e7eb;">
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Base Rate</th>
+                                <th>Guest Pays (inc. Stripe fee)</th>
+                                <th>Admin Earns (98.3%)</th>
+                                <th>Owner Earns (1.7%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdown-standard-body">
+                            <!-- JS-rendered -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Special Pricing Rules Card -->
-            <div class="admin-card">
-                <div class="admin-card-header">
-                    <h2 class="admin-card-title">
-                        <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        Special Pricing Rules
+            <!-- ================================================
+                 OFF-PEAK SEASON CARD
+            ================================================= -->
+            <div class="rates-season-card" id="card-offpeak">
+                <div class="rates-season-card__header">
+                    <h2 class="rates-season-card__title">
+                        Off-Peak Season
+                        <span class="rates-season-card__dates">December – February</span>
                     </h2>
+                    <span class="season-badge season-badge--low">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                        Off-Peak
+                    </span>
                 </div>
-                <div class="admin-card-body">
-                    <div class="rules-list">
 
-                        <!-- Rule 1 -->
-                        <div class="rule-item">
-                            <div class="rule-icon rule-icon--discount">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            </div>
-                            <div class="rule-details">
-                                <h4 class="rule-name">Minimum 7-Night Stay Discount</h4>
-                                <p class="rule-condition">When guest books 7 or more consecutive nights</p>
-                            </div>
-                            <div class="rule-value">
-                                <span class="badge badge-success">10% discount</span>
-                            </div>
-                            <div class="rule-actions">
-                                <button class="btn-icon-action" title="Edit">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                </button>
-                                <button class="btn-icon-action btn-icon-action--danger" title="Delete">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                </button>
-                            </div>
+                <!-- No holiday notice -->
+                <div class="holiday-toggle-section holiday-toggle-section--no-holiday">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span class="holiday-toggle-label holiday-toggle-label--no-holiday" style="color:#9ca3af;">
+                        No VIC School Holiday Premium applies in off-peak season
+                    </span>
+                </div>
+
+                <div class="rates-flat-body">
+                    <div class="rates-flat-row">
+                        <div class="rates-flat-price-block">
+                            <div class="rates-flat-price" id="offpeak-base-display">$220.00</div>
+                            <div class="rates-flat-price-label">Base rate / night</div>
+                            <button class="rate-edit-btn rates-flat-edit-btn" onclick="openModal('offpeak')">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                </svg>
+                                Edit Rate
+                            </button>
                         </div>
-
-                        <!-- Rule 2 -->
-                        <div class="rule-item">
-                            <div class="rule-icon rule-icon--earlybird">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            </div>
-                            <div class="rule-details">
-                                <h4 class="rule-name">Early Bird Discount</h4>
-                                <p class="rule-condition">When booking is made 60+ days in advance</p>
-                            </div>
-                            <div class="rule-value">
-                                <span class="badge badge-success">15% discount</span>
-                            </div>
-                            <div class="rule-actions">
-                                <button class="btn-icon-action" title="Edit">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                </button>
-                                <button class="btn-icon-action btn-icon-action--danger" title="Delete">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Rule 3 -->
-                        <div class="rule-item">
-                            <div class="rule-icon rule-icon--lastminute">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            </div>
-                            <div class="rule-details">
-                                <h4 class="rule-name">Last Minute Discount</h4>
-                                <p class="rule-condition">When booking is made within 3 days of check-in</p>
-                            </div>
-                            <div class="rule-value">
-                                <span class="badge badge-warning">10% discount</span>
-                            </div>
-                            <div class="rule-actions">
-                                <button class="btn-icon-action" title="Edit">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                </button>
-                                <button class="btn-icon-action btn-icon-action--danger" title="Delete">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                                </button>
-                            </div>
-                        </div>
-
                     </div>
+                </div>
+
+                <!-- Off-peak breakdown -->
+                <div style="border-top:1px dashed #e5e7eb;">
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Base Rate</th>
+                                <th>Guest Pays (inc. Stripe fee)</th>
+                                <th>Admin Earns (98.3%)</th>
+                                <th>Owner Earns (1.7%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdown-offpeak-body">
+                            <!-- JS-rendered -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Additional Fees Card -->
-            <div class="admin-card">
-                <div class="admin-card-header">
-                    <h2 class="admin-card-title">
-                        <svg class="card-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                        Additional Fees
-                    </h2>
+            <!-- ================================================
+                 BOOKING RULES CARD
+            ================================================= -->
+            <div class="booking-rules-card">
+                <div class="booking-rules-card__header">
+                    <svg class="booking-rules-card__header-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <h2 class="booking-rules-card__title">Booking Rules</h2>
                 </div>
-                <div class="admin-card-body">
-                    <div class="table-responsive">
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>Fee Name</th>
-                                    <th>Amount</th>
-                                    <th>Type</th>
-                                    <th>Required</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><span class="fee-name">Cleaning Fee</span></td>
-                                    <td><span class="rate-amount">$75</span></td>
-                                    <td><span class="badge badge-info">Per Stay</span></td>
-                                    <td>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" checked>
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="fee-name">Service Fee</span></td>
-                                    <td><span class="rate-amount">5%</span></td>
-                                    <td><span class="badge badge-info">Per Stay</span></td>
-                                    <td>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" checked>
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="fee-name">Extra Guest</span></td>
-                                    <td><span class="rate-amount">$25</span></td>
-                                    <td><span class="badge badge-secondary">Per Night</span></td>
-                                    <td>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><span class="fee-name">Pet Fee</span></td>
-                                    <td><span class="rate-amount">$50</span></td>
-                                    <td><span class="badge badge-info">Per Stay</span></td>
-                                    <td>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox">
-                                            <span class="toggle-slider"></span>
-                                        </label>
-                                    </td>
-                                    <td>
-                                        <div class="table-actions">
-                                            <button class="btn-icon-action" title="Edit">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                <div class="booking-rules-grid">
+                    <!-- Ski Midweek min nights -->
+                    <div class="booking-rules-item booking-rules-item--editable">
+                        <span class="booking-rules-item__label">Ski Season — Mid-week min. stay</span>
+                        <div class="booking-rules-item__edit-row">
+                            <input type="number" class="booking-rules-item__input" id="rule-ski-midweek" value="2" min="1" max="30" aria-label="Ski midweek minimum nights">
+                            <span class="booking-rules-item__input-label">nights minimum</span>
+                        </div>
+                    </div>
+                    <!-- Ski Weekend min nights -->
+                    <div class="booking-rules-item booking-rules-item--editable">
+                        <span class="booking-rules-item__label">Ski Season — Weekend min. stay</span>
+                        <div class="booking-rules-item__edit-row">
+                            <input type="number" class="booking-rules-item__input" id="rule-ski-weekend" value="2" min="1" max="30" aria-label="Ski weekend minimum nights">
+                            <span class="booking-rules-item__input-label">nights minimum</span>
+                        </div>
+                    </div>
+                    <!-- Ski School Holidays min nights -->
+                    <div class="booking-rules-item booking-rules-item--editable">
+                        <span class="booking-rules-item__label">Ski Season — School Holidays min. stay</span>
+                        <div class="booking-rules-item__edit-row">
+                            <input type="number" class="booking-rules-item__input" id="rule-ski-holidays" value="3" min="1" max="30" aria-label="Ski school holidays minimum nights">
+                            <span class="booking-rules-item__input-label">nights minimum</span>
+                        </div>
+                    </div>
+                    <!-- Standard min nights -->
+                    <div class="booking-rules-item booking-rules-item--editable">
+                        <span class="booking-rules-item__label">Standard Season min. stay</span>
+                        <div class="booking-rules-item__edit-row">
+                            <input type="number" class="booking-rules-item__input" id="rule-standard" value="2" min="1" max="30" aria-label="Standard season minimum nights">
+                            <span class="booking-rules-item__input-label">nights minimum</span>
+                        </div>
+                    </div>
+                    <!-- Off-peak min nights -->
+                    <div class="booking-rules-item booking-rules-item--editable">
+                        <span class="booking-rules-item__label">Off-Peak Season min. stay</span>
+                        <div class="booking-rules-item__edit-row">
+                            <input type="number" class="booking-rules-item__input" id="rule-offpeak" value="2" min="1" max="30" aria-label="Off-peak season minimum nights">
+                            <span class="booking-rules-item__input-label">nights minimum</span>
+                        </div>
+                    </div>
+                    <!-- Check-in time -->
+                    <div class="booking-rules-item">
+                        <span class="booking-rules-item__label">Check-in Time</span>
+                        <span class="booking-rules-item__value">3:00 PM</span>
+                        <span class="booking-rules-item__sub">Self check-in via lockbox</span>
+                    </div>
+                    <!-- Check-out time -->
+                    <div class="booking-rules-item">
+                        <span class="booking-rules-item__label">Check-out Time</span>
+                        <span class="booking-rules-item__value">10:00 AM</span>
+                        <span class="booking-rules-item__sub">Keys returned to lockbox</span>
                     </div>
                 </div>
+
+                <!-- Winter vehicle access notice -->
+                <div class="booking-rules-notice">
+                    <svg class="booking-rules-notice__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <p class="booking-rules-notice__text">
+                        <strong>Winter vehicle access note:</strong> During ski season (June–August), Mt Baw Baw resort road may require snow chains. Guests are advised that vehicle access to the resort is subject to road conditions set by the Alpine Resort Management Board. This is communicated to all guests in the pre-arrival information pack.
+                    </p>
+                </div>
             </div>
+            <!-- end booking rules -->
 
         </div>
+        <!-- end admin-content -->
     </main>
+    <!-- end admin-main -->
 
+    <!-- =====================================================
+         EDIT RATE MODAL
+    ====================================================== -->
+    <div class="rates-modal-overlay" id="rateModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="rates-modal">
+            <div class="rates-modal__header">
+                <div>
+                    <h2 class="rates-modal__title" id="modalTitle">Edit Rate</h2>
+                    <p class="rates-modal__subtitle" id="modalSubtitle"></p>
+                </div>
+                <button class="rates-modal__close" onclick="closeModal()" aria-label="Close">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="rates-modal__body">
+                <label class="rates-modal__field-label" for="modalRateInput">Base Rate (AUD per night)</label>
+                <div class="rates-modal__input-wrap">
+                    <span class="rates-modal__input-prefix">$</span>
+                    <input type="number" class="rates-modal__input" id="modalRateInput" min="0" step="0.01" placeholder="0.00">
+                </div>
+
+                <!-- Live preview -->
+                <div class="rates-modal__preview">
+                    <div class="rates-modal__preview-title">Pricing Breakdown Preview</div>
+                    <table class="rates-modal__preview-table">
+                        <thead>
+                            <tr>
+                                <th>Scenario</th>
+                                <th>Base Rate</th>
+                                <th>Guest Pays</th>
+                                <th>Admin (98.3%)</th>
+                                <th>Owner (1.7%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalPreviewBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="rates-modal__footer">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" onclick="saveRate()">Save Rate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         SCRIPTS
+    ====================================================== -->
     <script src="../js/app.js"></script>
     <script src="../js/admin.js"></script>
+    <script>
+    /* =========================================================
+       RATES PAGE — CORE LOGIC
+    ========================================================= */
+
+    // ---- Rate state ----
+    const rates = {
+        'ski-midweek':  385,
+        'ski-weekend':  450,
+        'standard':     285,
+        'offpeak':      220
+    };
+
+    // Holiday premium multipliers
+    const HOLIDAY_PREMIUM = {
+        'ski':      1.30,   // +30%
+        'standard': 1.20    // +20%
+    };
+
+    // Holiday toggle state
+    const holidayActive = {
+        ski:      false,
+        standard: false
+    };
+
+    // Track which rate key is currently being edited in the modal
+    let currentEditKey = null;
+
+    /* ----------------------------------------------------------
+       STRIPE FEE (Australian rate)
+       Guest pays: base × 1.0175 + 0.30
+    ---------------------------------------------------------- */
+    function calcGuestPays(base) {
+        return base * 1.0175 + 0.30;
+    }
+
+    function calcAdminEarns(guestPays) {
+        return guestPays * 0.983;
+    }
+
+    function calcOwnerEarns(guestPays) {
+        return guestPays * 0.017;
+    }
+
+    function fmt(n) {
+        return '$' + n.toFixed(2);
+    }
+
+    /* ----------------------------------------------------------
+       Build a breakdown row for a given scenario label + base
+    ---------------------------------------------------------- */
+    function buildBreakdownRow(label, base) {
+        const gp  = calcGuestPays(base);
+        const ae  = calcAdminEarns(gp);
+        const oe  = calcOwnerEarns(gp);
+        return `<tr>
+            <td>${label}</td>
+            <td>${fmt(base)}</td>
+            <td class="amt-highlight">${fmt(gp)}</td>
+            <td class="amt-green">${fmt(ae)}</td>
+            <td class="amt-muted">${fmt(oe)}</td>
+        </tr>`;
+    }
+
+    /* ----------------------------------------------------------
+       Render breakdown tables
+    ---------------------------------------------------------- */
+    function renderSkiMidweekBreakdown() {
+        const base    = rates['ski-midweek'];
+        const withHol = base * HOLIDAY_PREMIUM.ski;
+        let html = buildBreakdownRow('Standard rate', base);
+        html    += buildBreakdownRow('With VIC school holiday premium (+30%)', withHol);
+        document.getElementById('breakdown-ski-midweek-body').innerHTML = html;
+    }
+
+    function renderSkiWeekendBreakdown() {
+        const base    = rates['ski-weekend'];
+        const withHol = base * HOLIDAY_PREMIUM.ski;
+        let html = buildBreakdownRow('Standard rate', base);
+        html    += buildBreakdownRow('With VIC school holiday premium (+30%)', withHol);
+        document.getElementById('breakdown-ski-weekend-body').innerHTML = html;
+    }
+
+    function renderStandardBreakdown() {
+        const base    = rates['standard'];
+        const withHol = base * HOLIDAY_PREMIUM.standard;
+        let html = buildBreakdownRow('Standard rate', base);
+        html    += buildBreakdownRow('With VIC school holiday premium (+20%)', withHol);
+        document.getElementById('breakdown-standard-body').innerHTML = html;
+    }
+
+    function renderOffpeakBreakdown() {
+        const base = rates['offpeak'];
+        let html = buildBreakdownRow('Off-peak rate', base);
+        document.getElementById('breakdown-offpeak-body').innerHTML = html;
+    }
+
+    /* ----------------------------------------------------------
+       Update all display elements for a given rate key
+    ---------------------------------------------------------- */
+    function updateSkiDisplays() {
+        const mw     = rates['ski-midweek'];
+        const wk     = rates['ski-weekend'];
+        const mwHol  = mw * HOLIDAY_PREMIUM.ski;
+        const wkHol  = wk * HOLIDAY_PREMIUM.ski;
+        const on     = holidayActive.ski;
+
+        document.getElementById('ski-midweek-base-display').textContent    = fmt(mw);
+        document.getElementById('ski-weekend-base-display').textContent     = fmt(wk);
+        document.getElementById('ski-midweek-holiday-display').textContent  = fmt(mwHol);
+        document.getElementById('ski-weekend-holiday-display').textContent  = fmt(wkHol);
+
+        // Highlight holiday price when toggle is on
+        const mwHolLabel = document.getElementById('ski-midweek-holiday-label');
+        const wkHolLabel = document.getElementById('ski-weekend-holiday-label');
+        if (on) {
+            mwHolLabel.classList.add('is-active');
+            wkHolLabel.classList.add('is-active');
+            document.getElementById('ski-midweek-holiday-display').style.color = '#b45309';
+            document.getElementById('ski-weekend-holiday-display').style.color = '#b45309';
+        } else {
+            mwHolLabel.classList.remove('is-active');
+            wkHolLabel.classList.remove('is-active');
+            document.getElementById('ski-midweek-holiday-display').style.color = '';
+            document.getElementById('ski-weekend-holiday-display').style.color = '';
+        }
+
+        renderSkiMidweekBreakdown();
+        renderSkiWeekendBreakdown();
+    }
+
+    function updateStandardDisplays() {
+        const base   = rates['standard'];
+        const holAmt = base * HOLIDAY_PREMIUM.standard;
+        document.getElementById('standard-base-display').textContent    = fmt(base);
+        document.getElementById('standard-holiday-display').textContent = fmt(holAmt);
+        document.getElementById('standardHolidaySubLabel').textContent  =
+            '+20% applied when active — ' + fmt(holAmt) + '/night';
+        renderStandardBreakdown();
+    }
+
+    function updateOffpeakDisplays() {
+        document.getElementById('offpeak-base-display').textContent = fmt(rates['offpeak']);
+        renderOffpeakBreakdown();
+    }
+
+    /* ----------------------------------------------------------
+       Holiday toggle handlers
+    ---------------------------------------------------------- */
+    document.getElementById('skiHolidayToggle').addEventListener('change', function () {
+        holidayActive.ski = this.checked;
+        document.getElementById('skiHolidayStatus').textContent = this.checked ? 'Active' : 'Off';
+        document.getElementById('skiHolidayStatus').style.color = this.checked ? '#b45309' : '#92400e';
+        updateSkiDisplays();
+    });
+
+    document.getElementById('standardHolidayToggle').addEventListener('change', function () {
+        holidayActive.standard = this.checked;
+        document.getElementById('standardHolidayStatus').textContent = this.checked ? 'Active' : 'Off';
+        document.getElementById('standardHolidayStatus').style.color = this.checked ? '#b45309' : '#92400e';
+        updateStandardDisplays();
+    });
+
+    /* ----------------------------------------------------------
+       MODAL — open / close / live preview
+    ---------------------------------------------------------- */
+    const MODAL_META = {
+        'ski-midweek': {
+            title:    'Edit Mid-week Rate',
+            subtitle: 'Ski Season (June 1 – August 31) · Sunday night – Thursday night',
+            hasHoliday: true,
+            holidayPct: 30,
+            holidayLabel: 'VIC school holiday premium'
+        },
+        'ski-weekend': {
+            title:    'Edit Weekend Rate',
+            subtitle: 'Ski Season (June 1 – August 31) · Friday night – Saturday night',
+            hasHoliday: true,
+            holidayPct: 30,
+            holidayLabel: 'VIC school holiday premium'
+        },
+        'standard': {
+            title:    'Edit Standard Season Rate',
+            subtitle: 'Standard Season (Mar–May & Sep–Nov) · Flat nightly rate',
+            hasHoliday: true,
+            holidayPct: 20,
+            holidayLabel: 'VIC school holiday premium'
+        },
+        'offpeak': {
+            title:    'Edit Off-Peak Season Rate',
+            subtitle: 'Off-Peak Season (December – February) · Flat nightly rate',
+            hasHoliday: false,
+            holidayPct: 0,
+            holidayLabel: ''
+        }
+    };
+
+    function buildModalPreview(base, meta) {
+        if (!base || isNaN(base) || base <= 0) {
+            return '<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:14px;">Enter a rate above to see the breakdown</td></tr>';
+        }
+        let html = buildBreakdownRow('Standard rate', base);
+        if (meta.hasHoliday) {
+            const mult = 1 + meta.holidayPct / 100;
+            const withHol = base * mult;
+            html += buildBreakdownRow(
+                meta.holidayLabel + ' (+' + meta.holidayPct + '%)',
+                withHol
+            );
+        }
+        return html;
+    }
+
+    function openModal(key) {
+        currentEditKey = key;
+        const meta = MODAL_META[key];
+
+        document.getElementById('modalTitle').textContent    = meta.title;
+        document.getElementById('modalSubtitle').textContent = meta.subtitle;
+
+        const input = document.getElementById('modalRateInput');
+        input.value = rates[key].toFixed(2);
+
+        // Render initial preview
+        document.getElementById('modalPreviewBody').innerHTML =
+            buildModalPreview(rates[key], meta);
+
+        document.getElementById('rateModal').classList.add('is-open');
+        setTimeout(() => input.focus(), 60);
+    }
+
+    function closeModal() {
+        document.getElementById('rateModal').classList.remove('is-open');
+        currentEditKey = null;
+    }
+
+    // Live preview as user types
+    document.getElementById('modalRateInput').addEventListener('input', function () {
+        const val  = parseFloat(this.value);
+        const meta = MODAL_META[currentEditKey];
+        if (!meta) return;
+        document.getElementById('modalPreviewBody').innerHTML =
+            buildModalPreview(val, meta);
+    });
+
+    function saveRate() {
+        const val = parseFloat(document.getElementById('modalRateInput').value);
+        if (!val || isNaN(val) || val <= 0) {
+            document.getElementById('modalRateInput').style.borderColor = '#ef4444';
+            document.getElementById('modalRateInput').focus();
+            setTimeout(() => {
+                document.getElementById('modalRateInput').style.borderColor = '';
+            }, 1500);
+            return;
+        }
+
+        rates[currentEditKey] = val;
+
+        // Refresh relevant displays
+        if (currentEditKey === 'ski-midweek' || currentEditKey === 'ski-weekend') {
+            updateSkiDisplays();
+        } else if (currentEditKey === 'standard') {
+            updateStandardDisplays();
+        } else if (currentEditKey === 'offpeak') {
+            updateOffpeakDisplays();
+        }
+
+        closeModal();
+    }
+
+    // Close modal on overlay click
+    document.getElementById('rateModal').addEventListener('click', function (e) {
+        if (e.target === this) closeModal();
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.getElementById('rateModal').classList.contains('is-open')) {
+            closeModal();
+        }
+    });
+
+    /* ----------------------------------------------------------
+       Sidebar toggle (mobile)
+    ---------------------------------------------------------- */
+    document.getElementById('sidebarToggle').addEventListener('click', function () {
+        document.getElementById('adminSidebar').classList.toggle('is-open');
+    });
+
+    /* ----------------------------------------------------------
+       Initial render
+    ---------------------------------------------------------- */
+    updateSkiDisplays();
+    updateStandardDisplays();
+    updateOffpeakDisplays();
+    </script>
+
 </body>
 </html>
