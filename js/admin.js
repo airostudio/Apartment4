@@ -19,6 +19,7 @@
       this.initCalendarView();
       this.initSettingsForm();
       this.initDataTables();
+      this.initGuestEmail();
       this.highlightActiveSidebarLink();
     },
 
@@ -350,6 +351,116 @@
 
           rows.forEach(row => tbody.appendChild(row));
         });
+      });
+    },
+
+    /**
+     * Guest email dropdown and compose modal
+     */
+    initGuestEmail() {
+      const dropdown = document.getElementById('emailDropdown');
+      const backdrop = document.getElementById('emailModalBackdrop');
+      if (!dropdown || !backdrop) return;
+
+      let currentGuest = null;
+
+      const templates = {
+        custom: {
+          subject: '',
+          body: () => ''
+        },
+        'pre-arrival': {
+          subject: 'Pre-arrival Information for Your Upcoming Stay',
+          body: (name) =>
+            `Dear ${name},\n\nWe're looking forward to welcoming you to Cascade Apartment 4 at Mt Baw Baw!\n\nHere are some important details for your upcoming stay:\n\n• Check-in time: 3:00 PM\n• Check-out time: 10:00 AM\n• Address: Mt Baw Baw Alpine Village, Victoria\n• Parking: On-site parking available\n\nPlease don't hesitate to reach out if you have any questions before your arrival.\n\nWarm regards,\nCascade Apartment 4`
+        },
+        'check-in': {
+          subject: 'Check-in Instructions — Cascade Apartment 4',
+          body: (name) =>
+            `Dear ${name},\n\nWelcome! Here are your check-in instructions for Cascade Apartment 4:\n\n• Key collection: Key safe at front entrance\n• WiFi network: CascadeApt4\n• WiFi password: [password]\n• Parking: Allocated space at rear of building\n• Emergency contact: [phone number]\n\nWe hope you have a fantastic stay. Please reach out if you need anything.\n\nWarm regards,\nCascade Apartment 4`
+        },
+        'post-stay': {
+          subject: 'Thank You for Staying at Cascade Apartment 4',
+          body: (name) =>
+            `Dear ${name},\n\nThank you so much for choosing Cascade Apartment 4 for your recent stay at Mt Baw Baw. We hope you had a wonderful time!\n\nIt was a pleasure having you, and we'd love to welcome you back. Keep an eye on our availability for upcoming dates.\n\nWarm regards,\nCascade Apartment 4`
+        },
+        review: {
+          subject: "We'd Love Your Feedback — Cascade Apartment 4",
+          body: (name) =>
+            `Dear ${name},\n\nThank you for your recent stay at Cascade Apartment 4! We hope everything was to your satisfaction.\n\nYour feedback is incredibly valuable to us and helps us continue to improve. If you have a moment, we'd really appreciate it if you could leave us a review.\n\nThank you for being such a wonderful guest — we hope to see you again soon!\n\nWarm regards,\nCascade Apartment 4`
+        }
+      };
+
+      // Open dropdown on email button click
+      document.querySelectorAll('.email-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentGuest = {
+            name: btn.dataset.guestName,
+            email: btn.dataset.guestEmail
+          };
+
+          const rect = btn.getBoundingClientRect();
+          const dropdownWidth = 210;
+          let left = rect.right - dropdownWidth;
+          if (left < 8) left = 8;
+          dropdown.style.top = `${rect.bottom + 4}px`;
+          dropdown.style.left = `${left}px`;
+
+          const isOpen = dropdown.classList.contains('active');
+          dropdown.classList.toggle('active', !isOpen);
+        });
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) {
+          dropdown.classList.remove('active');
+        }
+      });
+
+      // Template item click — open compose modal
+      dropdown.querySelectorAll('.email-dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+          dropdown.classList.remove('active');
+          const template = templates[item.dataset.template];
+          if (!template || !currentGuest) return;
+
+          const firstName = currentGuest.name.split(' ')[0];
+          document.getElementById('emailTo').value = `${currentGuest.name} <${currentGuest.email}>`;
+          document.getElementById('emailSubject').value = template.subject;
+          document.getElementById('emailBody').value = template.body(firstName);
+          document.getElementById('emailModalTitle').textContent = `Email ${currentGuest.name}`;
+
+          backdrop.classList.add('active');
+          document.getElementById('emailSubject').focus();
+        });
+      });
+
+      // Close modal helpers
+      const closeModal = () => backdrop.classList.remove('active');
+      document.getElementById('emailModalClose').addEventListener('click', closeModal);
+      document.getElementById('emailModalCancel').addEventListener('click', closeModal);
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+
+      // Send email
+      document.getElementById('emailModalSend').addEventListener('click', () => {
+        const subject = document.getElementById('emailSubject').value.trim();
+        const body = document.getElementById('emailBody').value.trim();
+        if (!subject) {
+          window.CascadeApt4?.showToast('Please enter a subject', 'error');
+          document.getElementById('emailSubject').focus();
+          return;
+        }
+        if (!body) {
+          window.CascadeApt4?.showToast('Please enter a message', 'error');
+          document.getElementById('emailBody').focus();
+          return;
+        }
+        closeModal();
+        window.CascadeApt4?.showToast(`Email sent to ${currentGuest?.name}`, 'success');
       });
     },
 
