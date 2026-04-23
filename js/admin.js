@@ -391,30 +391,65 @@
         }
       };
 
+      // Position dropdown with viewport boundary detection
+      const positionDropdown = (anchorRect) => {
+        const DROPDOWN_W = 218;
+        const DROPDOWN_H = 210;
+        const GAP = 6;
+        const MARGIN = 8;
+
+        // Horizontal: right-align to button, clamp to viewport
+        let left = anchorRect.right - DROPDOWN_W;
+        left = Math.max(MARGIN, Math.min(left, window.innerWidth - DROPDOWN_W - MARGIN));
+
+        // Vertical: below by default, flip above if too close to bottom
+        const spaceBelow = window.innerHeight - anchorRect.bottom;
+        const top = spaceBelow >= DROPDOWN_H + GAP
+          ? anchorRect.bottom + GAP
+          : anchorRect.top - DROPDOWN_H - GAP;
+
+        dropdown.style.left = `${left}px`;
+        dropdown.style.top = `${top}px`;
+      };
+
       // Open dropdown on email button click
       document.querySelectorAll('.email-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
+
+          // Close if clicking the same button while already open for this guest
+          const isSameGuest = currentGuest &&
+            currentGuest.email === btn.dataset.guestEmail &&
+            dropdown.classList.contains('active');
+
           currentGuest = {
             name: btn.dataset.guestName,
             email: btn.dataset.guestEmail
           };
 
-          const rect = btn.getBoundingClientRect();
-          const dropdownWidth = 210;
-          let left = rect.right - dropdownWidth;
-          if (left < 8) left = 8;
-          dropdown.style.top = `${rect.bottom + 4}px`;
-          dropdown.style.left = `${left}px`;
+          if (isSameGuest) {
+            dropdown.classList.remove('active');
+            return;
+          }
 
-          const isOpen = dropdown.classList.contains('active');
-          dropdown.classList.toggle('active', !isOpen);
+          positionDropdown(btn.getBoundingClientRect());
+          dropdown.classList.add('active');
         });
       });
 
+      // Reposition on scroll/resize so the menu stays anchored
+      const repositionOnScroll = () => {
+        if (!dropdown.classList.contains('active')) return;
+        const activeBtn = document.querySelector('.email-btn.email-btn--open');
+        if (activeBtn) positionDropdown(activeBtn.getBoundingClientRect());
+        else dropdown.classList.remove('active');
+      };
+      window.addEventListener('scroll', repositionOnScroll, { passive: true });
+      window.addEventListener('resize', repositionOnScroll, { passive: true });
+
       // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
-        if (!dropdown.contains(e.target)) {
+        if (!dropdown.contains(e.target) && !e.target.closest('.email-btn')) {
           dropdown.classList.remove('active');
         }
       });
@@ -433,7 +468,11 @@
           document.getElementById('emailModalTitle').textContent = `Email ${currentGuest.name}`;
 
           backdrop.classList.add('active');
-          document.getElementById('emailSubject').focus();
+          // Focus subject if blank (custom), else focus body for editing
+          const focusEl = template.subject
+            ? document.getElementById('emailBody')
+            : document.getElementById('emailSubject');
+          setTimeout(() => focusEl.focus(), 50);
         });
       });
 
@@ -444,11 +483,18 @@
       backdrop.addEventListener('click', (e) => {
         if (e.target === backdrop) closeModal();
       });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (backdrop.classList.contains('active')) closeModal();
+          else dropdown.classList.remove('active');
+        }
+      });
 
-      // Send email
+      // Send email via mailto — opens system email client with all fields pre-filled
       document.getElementById('emailModalSend').addEventListener('click', () => {
         const subject = document.getElementById('emailSubject').value.trim();
         const body = document.getElementById('emailBody').value.trim();
+
         if (!subject) {
           window.CascadeApt4?.showToast('Please enter a subject', 'error');
           document.getElementById('emailSubject').focus();
@@ -459,8 +505,21 @@
           document.getElementById('emailBody').focus();
           return;
         }
+
+        const mailtoHref = `mailto:${encodeURIComponent(currentGuest.email)}`
+          + `?subject=${encodeURIComponent(subject)}`
+          + `&body=${encodeURIComponent(body)}`;
+
+        // Use a hidden anchor so mailto doesn't navigate away from the page
+        const anchor = document.createElement('a');
+        anchor.href = mailtoHref;
+        anchor.style.display = 'none';
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+
         closeModal();
-        window.CascadeApt4?.showToast(`Email sent to ${currentGuest?.name}`, 'success');
+        window.CascadeApt4?.showToast(`Email opened for ${currentGuest.name}`, 'success');
       });
     },
 
