@@ -10,13 +10,183 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
     <script src="../js/admin-auth.js"></script>
+    <style>
+        /* Page header */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .page-header-info { flex: 1; }
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+        }
+        .page-subtitle {
+            font-size: 13px;
+            color: #888;
+            margin: 3px 0 0;
+        }
+        .page-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #888;
+        }
+        .breadcrumb-link { color: #888; text-decoration: none; }
+        .breadcrumb-link:hover { color: #2980b9; }
+        .breadcrumb-separator { color: #ccc; }
+        .breadcrumb-current { color: #333; font-weight: 500; }
+
+        /* Search bar */
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-input-icon {
+            position: absolute;
+            left: 10px;
+            color: #9ca3af;
+            pointer-events: none;
+            width: 16px;
+            height: 16px;
+        }
+        .search-input { padding-left: 34px !important; min-width: 220px; }
+
+        /* Buttons */
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: #fff;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .btn-secondary:hover { background: #f4f5f9; }
+        .btn-secondary .btn-icon { width: 15px; height: 15px; }
+
+        /* Table */
+        .table-responsive { overflow-x: auto; }
+
+        /* Guest rows */
+        .guest-cell { display: flex; align-items: center; gap: 10px; }
+        .guest-info { display: flex; flex-direction: column; }
+        .guest-name { font-weight: 600; color: #1a1a2e; font-size: 13px; }
+        .guest-email { font-size: 11px; color: #888; margin-top: 1px; }
+        .avatar-initials { font-size: 11px; font-weight: 700; }
+        .booking-count {
+            display: inline-block;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .amount-spent { font-weight: 600; color: #111827; }
+
+        /* Status badges */
+        .badge-vip {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .badge-active {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* Row actions */
+        .table-actions { display: flex; align-items: center; gap: 4px; }
+        .btn-icon-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #6b7280;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-icon-action:hover { background: #f4f5f9; color: #2980b9; border-color: #2980b9; }
+        .btn-icon-action svg { width: 14px; height: 14px; }
+
+        /* Pagination */
+        .table-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0 4px;
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .pagination-info { color: #888; }
+        .pagination-controls { display: flex; align-items: center; gap: 4px; }
+        .pagination-btn {
+            min-width: 30px;
+            height: 30px;
+            padding: 0 6px;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .pagination-btn:hover:not(:disabled) { border-color: #2980b9; color: #2980b9; }
+        .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .pagination-btn svg { width: 14px; height: 14px; }
+        .pagination-btn--active { background: #2980b9; color: #fff; border-color: #2980b9; }
+    </style>
 </head>
 <body class="admin-body">
 
     <!-- ============ SIDEBAR ============ -->
     <aside class="admin-sidebar">
         <div class="sidebar-header">
-            <a href="dashboard.html" class="sidebar-logo">
+            <a href="index.html" class="sidebar-logo">
                 <span class="logo-text">Cascade Apartment 4</span>
                 <span class="logo-badge">Admin</span>
             </a>
@@ -28,7 +198,7 @@
                 <span class="nav-section-title">MAIN</span>
                 <ul class="nav-list">
                     <li class="nav-item">
-                        <a href="dashboard.html" class="nav-link">
+                        <a href="index.html" class="nav-link">
                             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                             <span>Dashboard</span>
                         </a>
