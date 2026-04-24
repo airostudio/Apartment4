@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emails — Cascade Apartment 4 Admin</title>
+    <script src="../js/admin-auth.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+    <!-- ======================================================
+         SIDEBAR
+    ======================================================= -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-logo">
+            <a href="index.html" class="sidebar-logo-link">
+                <span class="sidebar-logo-text">Cascade Apartment 4</span>
+                <span class="sidebar-logo-badge">Admin</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Main</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="index.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="properties.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Properties</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="bookings.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/><line x1="9" y1="18" x2="12" y2="18"/></svg>
+                            <span>Bookings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="calendar.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span>Calendar</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Management</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="rates.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <span>Rates &amp; Pricing</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="guests.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Guests</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="reviews.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span>Reviews</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Communications</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item active">
+                        <a href="emails.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <span>Emails</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="email-templates.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span>Email Templates</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Integrations</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="ical-sync.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+                            <span>iCal Sync</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="payments.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <span>Stripe Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">System</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="settings.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1.08 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1.08z"/></svg>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="reports.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ======================================================
+         MAIN
+    ======================================================= -->
+    <div class="admin-main">
+
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="topbar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <nav class="topbar-breadcrumb" aria-label="Breadcrumb">
+                    <a href="index.html" class="breadcrumb-item breadcrumb-item--link">Dashboard</a>
+                    <span class="breadcrumb-separator">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                    <span class="breadcrumb-item">Emails</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <span class="topbar-user-avatar" id="topbarAvatar">AD</span>
+                    <span class="topbar-user-name" id="topbarName">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-content">
+
+            <div class="admin-page-header">
+                <div class="admin-page-header-text">
+                    <h1 class="admin-page-title">Emails</h1>
+                    <p class="admin-page-subtitle">Compose and send emails to guests</p>
+                </div>
+                <a href="email-templates.html" class="btn btn-secondary admin-page-action">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Manage Templates
+                </a>
+            </div>
+
+            <!-- Two-column layout -->
+            <div class="emails-layout">
+
+                <!-- Compose Panel -->
+                <div class="emails-compose-panel">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h2 class="admin-card-title">Compose Email</h2>
+                        </div>
+                        <div class="admin-card-body">
+
+                            <div class="admin-form-group">
+                                <label class="admin-label" for="composeTemplate">Load Template</label>
+                                <select id="composeTemplate" class="admin-input">
+                                    <option value="">— Select a template (optional) —</option>
+                                </select>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-label" for="composeTo">To</label>
+                                <select id="composeTo" class="admin-input">
+                                    <option value="">— Select a guest —</option>
+                                    <option value="all">All Guests (broadcast)</option>
+                                </select>
+                                <p class="compose-hint">Select a guest from your guest list, or send to all guests.</p>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-label" for="composeEmail">Email Address</label>
+                                <input type="email" id="composeEmail" class="admin-input" placeholder="guest@example.com">
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-label" for="composeSubject">Subject</label>
+                                <input type="text" id="composeSubject" class="admin-input" placeholder="Email subject">
+            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-label" for="composeBody">Message</label>
+                                <textarea id="composeBody" class="admin-textarea compose-body" rows="14" placeholder="Write your message here..."></textarea>
+                            </div>
+
+                            <div class="compose-footer">
+                                <button class="btn btn-secondary" id="composeClear">Clear</button>
+                                <button class="btn btn-primary" id="composeSend">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    Send Email
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sent Log Panel -->
+                <div class="emails-log-panel">
+                    <div class="admin-card">
+                        <div class="admin-card-header">
+                            <h2 class="admin-card-title">Sent Emails</h2>
+                            <button class="btn btn-secondary btn-sm" id="clearLogBtn">Clear Log</button>
+                        </div>
+                        <div class="admin-card-body" style="padding: 0;">
+                            <div id="sentLog"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ======================================================
+         SEND CONFIRMATION TOAST
+    ======================================================= -->
+    <div id="toast" class="compose-toast" role="alert" aria-live="polite"></div>
+
+    <style>
+        /* Emails layout */
+        .emails-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 960px) {
+            .emails-layout { grid-template-columns: 1fr; }
+        }
+
+        .compose-body { resize: vertical; }
+
+        .compose-hint {
+            margin-top: 5px;
+            font-size: 12px;
+            color: var(--gray-500, #64748b);
+        }
+
+        .compose-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        /* Sent log */
+        .sent-log-empty {
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--gray-400, #94a3b8);
+            font-size: 14px;
+        }
+
+        .sent-log-item {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--gray-100, #f1f5f9);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sent-log-item:last-child { border-bottom: none; }
+
+        .sent-log-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .sent-log-to {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-800, #1e293b);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sent-log-date {
+            font-size: 11px;
+            color: var(--gray-400, #94a3b8);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .sent-log-subject {
+            font-size: 13px;
+            color: var(--gray-600, #475569);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sent-log-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        /* Toast */
+        .compose-toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--gray-900, #0f172a);
+            color: #fff;
+            font-size: 14px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 9999;
+        }
+
+        .compose-toast.show { opacity: 1; pointer-events: auto; }
+    </style>
+
+    <script>
+    (function () {
+        'use strict';
+
+        /* ---- Helpers ---- */
+        function getTemplates() {
+            var saved = localStorage.getItem('emailTemplates');
+            if (saved) return JSON.parse(saved);
+            return [];
+        }
+
+        function getSentLog() {
+            var saved = localStorage.getItem('sentEmailLog');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function saveSentLog(log) {
+            localStorage.setItem('sentEmailLog', JSON.stringify(log));
+        }
+
+        function getGuests() {
+            var saved = localStorage.getItem('guestData');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        function showToast(msg) {
+            var t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(function () { t.classList.remove('show'); }, 3200);
+        }
+
+        function formatDate(iso) {
+            var d = new Date(iso);
+            return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        /* ---- Populate template select ---- */
+        function populateTemplates() {
+            var sel = document.getElementById('composeTemplate');
+            var templates = getTemplates();
+            /* remove existing options past first */
+            while (sel.options.length > 1) sel.remove(1);
+            templates.forEach(function (t) {
+                var opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = t.name;
+                sel.appendChild(opt);
+            });
+        }
+
+        /* ---- Populate guest select ---- */
+        function populateGuests() {
+            var sel = document.getElementById('composeTo');
+            var guests = getGuests();
+            /* remove existing options past first two */
+            while (sel.options.length > 2) sel.remove(2);
+            guests.forEach(function (g) {
+                var opt = document.createElement('option');
+                opt.value = g.email || '';
+                opt.textContent = (g.name || g.firstName + ' ' + g.lastName || 'Guest') + (g.email ? ' <' + g.email + '>' : '');
+                opt.dataset.name = g.name || ((g.firstName || '') + ' ' + (g.lastName || '')).trim() || 'Guest';
+                sel.appendChild(opt);
+            });
+        }
+
+        /* ---- Template select handler ---- */
+        document.getElementById('composeTemplate').addEventListener('change', function () {
+            var id = this.value;
+            if (!id) return;
+            var templates = getTemplates();
+            var t = templates.find(function (x) { return x.id === id; });
+            if (!t) return;
+            document.getElementById('composeSubject').value = t.subject;
+            document.getElementById('composeBody').value = t.body;
+        });
+
+        /* ---- Guest select handler ---- */
+        document.getElementById('composeTo').addEventListener('change', function () {
+            var sel = this;
+            var opt = sel.options[sel.selectedIndex];
+            var emailField = document.getElementById('composeEmail');
+            if (sel.value === 'all') {
+                emailField.value = '(all guests)';
+                emailField.disabled = true;
+            } else if (sel.value) {
+                emailField.value = sel.value;
+                emailField.disabled = false;
+            } else {
+                emailField.value = '';
+                emailField.disabled = false;
+            }
+        });
+
+        /* ---- Clear ---- */
+        document.getElementById('composeClear').addEventListener('click', function () {
+            document.getElementById('composeTemplate').value = '';
+            document.getElementById('composeTo').value = '';
+            document.getElementById('composeEmail').value = '';
+            document.getElementById('composeEmail').disabled = false;
+            document.getElementById('composeSubject').value = '';
+            document.getElementById('composeBody').value = '';
+        });
+
+        /* ---- Send ---- */
+        document.getElementById('composeSend').addEventListener('click', function () {
+            var toSel = document.getElementById('composeTo');
+            var emailVal = document.getElementById('composeEmail').value.trim();
+            var subject = document.getElementById('composeSubject').value.trim();
+            var body = document.getElementById('composeBody').value.trim();
+
+            if (!emailVal) { showToast('Please enter a recipient email address.'); return; }
+            if (!subject)  { showToast('Please enter a subject line.'); return; }
+            if (!body)     { showToast('Please write a message.'); return; }
+
+            var toOpt = toSel.options[toSel.selectedIndex];
+            var toLabel = toSel.value === 'all' ? 'All Guests'
+                : (toOpt && toOpt.dataset.name ? toOpt.dataset.name + ' <' + emailVal + '>' : emailVal);
+
+            var log = getSentLog();
+            log.unshift({
+                to: toLabel,
+                email: emailVal,
+                subject: subject,
+                body: body,
+                sentAt: new Date().toISOString()
+            });
+            saveSentLog(log);
+            renderLog();
+
+            /* Reset compose */
+            document.getElementById('composeClear').click();
+            showToast('Email logged successfully.');
+        });
+
+        /* ---- Render log ---- */
+        function renderLog() {
+            var log = getSentLog();
+            var el = document.getElementById('sentLog');
+            if (!log.length) {
+                el.innerHTML = '<p class="sent-log-empty">No emails sent yet.</p>';
+                return;
+            }
+            el.innerHTML = log.map(function (entry) {
+                return '<div class="sent-log-item">' +
+                    '<div class="sent-log-row">' +
+                        '<span class="sent-log-to">' + escapeHtml(entry.to) + '</span>' +
+                        '<span class="sent-log-date">' + escapeHtml(formatDate(entry.sentAt)) + '</span>' +
+                    '</div>' +
+                    '<span class="sent-log-subject">' + escapeHtml(entry.subject) + '</span>' +
+                    '<span class="sent-log-badge">' +
+                        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+                        'Sent' +
+                    '</span>' +
+                '</div>';
+            }).join('');
+        }
+
+        /* ---- Clear log ---- */
+        document.getElementById('clearLogBtn').addEventListener('click', function () {
+            if (!confirm('Clear the entire sent email log?')) return;
+            saveSentLog([]);
+            renderLog();
+        });
+
+        /* ---- Sidebar toggle ---- */
+        var toggle = document.getElementById('sidebarToggle');
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                document.getElementById('adminSidebar').classList.toggle('open');
+            });
+        }
+
+        /* ---- Handle ?template= query param (from email-templates.html "Use in Compose") ---- */
+        (function () {
+            var params = new URLSearchParams(window.location.search);
+            var tplId = params.get('template');
+            if (tplId) {
+                populateTemplates();
+                var sel = document.getElementById('composeTemplate');
+                sel.value = tplId;
+                if (sel.value === tplId) {
+                    sel.dispatchEvent(new Event('change'));
+                }
+            }
+        })();
+
+        /* ---- Init ---- */
+        populateTemplates();
+        populateGuests();
+        renderLog();
+
+    })();
+    </script>
+
+</body>
+</html>
