@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Your Stay - TrendAccom</title>
-  <meta name="description" content="Complete your accommodation booking with TrendAccom. Secure, simple and fast.">
+  <title>Book Your Stay - Cascade Apartment 4</title>
+  <meta name="description" content="Complete your accommodation booking with Cascade Apartment 4. Secure, simple and fast.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -271,21 +271,17 @@
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
       <a href="index.html" class="logo">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
-        </svg>
-        TrendAccom
+        <img src="images/logo25.png" alt="Cascade Apartment 4">
+      Cascade Apartment 4
       </a>
       <nav class="nav-main">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="search.html" class="nav-link">Browse</a>
-        <a href="search.html?type=hotel" class="nav-link">Hotels</a>
-        <a href="search.html?type=apartment" class="nav-link">Apartments</a>
-        <a href="search.html?type=holiday-park" class="nav-link">Holiday Parks</a>
+        <a href="property.html" class="nav-link">The Apartment</a>
+        <a href="property.html#tab-amenities" class="nav-link">Gallery</a>
+        <a href="booking.html" class="nav-link">Book Now</a>
       </nav>
       <div class="nav-actions">
-        <a href="admin/index.html" class="btn btn--sm btn--outline">List Your Property</a>
-        <a href="admin/index.html" class="btn btn--sm btn--ghost">Sign In</a>
+        <a href="booking.html" class="btn btn--sm btn--outline">Book Now</a>
       </div>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -296,12 +292,9 @@
   <!-- Mobile Navigation -->
   <nav class="mobile-nav" id="mobileNav">
     <a href="index.html" class="nav-link">Home</a>
-    <a href="search.html" class="nav-link">Browse All</a>
-    <a href="search.html?type=hotel" class="nav-link">Hotels</a>
-    <a href="search.html?type=apartment" class="nav-link">Apartments</a>
-    <a href="search.html?type=holiday-park" class="nav-link">Holiday Parks</a>
-    <a href="admin/index.html" class="btn btn--primary btn--block">List Your Property</a>
-    <a href="admin/index.html" class="btn btn--outline btn--block">Sign In</a>
+    <a href="property.html" class="nav-link">The Apartment</a>
+    <a href="property.html#tab-amenities" class="nav-link">Gallery</a>
+    <a href="booking.html" class="btn btn--primary btn--block">Book Now</a>
   </nav>
 
   <!-- Main Content -->
@@ -426,27 +419,6 @@
                 <span class="addon-option__price">+ $30</span>
               </label>
 
-              <label class="addon-option">
-                <div class="addon-option__left">
-                  <input type="checkbox" id="airportTransfer" name="airportTransfer" value="85">
-                  <div>
-                    <div class="addon-option__label">Airport Transfer</div>
-                    <div class="addon-option__desc">Private return transfer from the airport to the property</div>
-                  </div>
-                </div>
-                <span class="addon-option__price">+ $85</span>
-              </label>
-
-              <label class="addon-option">
-                <div class="addon-option__left">
-                  <input type="checkbox" id="breakfastPackage" name="breakfastPackage" value="25">
-                  <div>
-                    <div class="addon-option__label">Breakfast Package</div>
-                    <div class="addon-option__desc">Full buffet breakfast for all guests, per night</div>
-                  </div>
-                </div>
-                <span class="addon-option__price">+ $25 /night</span>
-              </label>
             </div>
 
           </form>
@@ -454,53 +426,49 @@
 
         <!-- Right Column: Summary Sidebar -->
         <aside class="booking-summary">
-          <div class="booking-summary__property">The Grand Harbour Hotel</div>
+          <div class="booking-summary__property">Cascade Apartment 4</div>
           <div class="booking-summary__rating">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <strong>4.8</strong> (246 reviews) &middot; Darling Harbour, Sydney
+            <strong>4.8</strong> (94 reviews) &middot; Baw Baw Village, Mt Baw Baw
           </div>
 
           <div class="summary-divider"></div>
 
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-in:</strong> Sat, 14 Mar 2026</span>
+            <span><strong>Check-in:</strong> <span id="sumCheckin">—</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span><strong>Check-out:</strong> Wed, 18 Mar 2026</span>
+            <span><strong>Check-out:</strong> <span id="sumCheckout">—</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <span><strong>Guests:</strong> 2 Adults, 0 Children</span>
+            <span><strong>Guests:</strong> <span id="sumGuests">—</span></span>
           </div>
           <div class="summary-detail">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span>4 nights &middot; Deluxe Harbour View Room</span>
+            <span id="sumNights">— nights · Entire Apartment</span>
           </div>
 
           <div class="summary-divider"></div>
 
           <div class="price-breakdown">
             <div class="price-row">
-              <span>$289 x 4 nights</span>
-              <span>$1,156.00</span>
+              <span id="sumRateLine">Nightly rate</span>
+              <span id="sumBaseTotal">—</span>
             </div>
             <div class="price-row">
               <span>Cleaning fee</span>
-              <span>$75.00</span>
+              <span>$150</span>
             </div>
             <div class="price-row">
-              <span>Service fee</span>
-              <span>$98.00</span>
-            </div>
-            <div class="price-row">
-              <span>Taxes &amp; levies</span>
-              <span>$132.90</span>
+              <span title="Stripe payment processing (1.75% + $0.30)">Stripe fee</span>
+              <span id="sumStripeFee">—</span>
             </div>
             <div class="price-row price-row--total">
               <span>Total</span>
-              <span>$1,461.90</span>
+              <span id="sumTotal">—</span>
             </div>
           </div>
 
@@ -520,47 +488,38 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="index.html" class="logo">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
-            </svg>
-            TrendAccom
+            <img src="images/logo25.png" alt="Cascade Apartment 4">
+      Cascade Apartment 4
           </a>
-          <p>Your trusted platform for finding and booking the perfect accommodation. From luxury hotels to cosy retreats, we connect travellers with unforgettable stays.</p>
+          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Your perfect ski season and summer alpine retreat.</p>
         </div>
         <div>
           <h4 class="footer-heading">Explore</h4>
           <div class="footer-links">
-            <a href="search.html?type=hotel">Hotels</a>
-            <a href="search.html?type=apartment">Apartments</a>
-            <a href="search.html?type=motel">Motels</a>
-            <a href="search.html?type=pub">Pubs & Inns</a>
-            <a href="search.html?type=caravan-park">Caravan Parks</a>
-            <a href="search.html?type=holiday-park">Holiday Parks</a>
+            <a href="property.html">The Apartment</a>
+            <a href="property.html#tab-amenities">Gallery</a>
+            <a href="booking.html">Book Now</a>
+            <a href="property.html#tab-location">Location</a>
           </div>
         </div>
         <div>
-          <h4 class="footer-heading">Company</h4>
+          <h4 class="footer-heading">Contact</h4>
           <div class="footer-links">
-            <a href="#">About Us</a>
-            <a href="#">Contact</a>
-            <a href="#">Careers</a>
-            <a href="#">Press</a>
-            <a href="#">Blog</a>
+            <a href="mailto:hello@cascadeskiapartments.com">Email Us</a>
+            <a href="tel:+61351651200">+61 3 5165 1200</a>
           </div>
         </div>
         <div>
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
-            <a href="#">Help Centre</a>
             <a href="#">Terms of Service</a>
             <a href="#">Privacy Policy</a>
             <a href="#">Cancellation Policy</a>
-            <a href="admin/index.html">Property Owners</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 TrendAccom. All rights reserved.</p>
+        <p>&copy; 2026 Cascade Apartment 4. All rights reserved.</p>
         <div class="footer-social">
           <a href="#" aria-label="Facebook">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -578,5 +537,143 @@
 
   <script src="js/app.js"></script>
   <script src="js/booking-engine.js"></script>
+  <script>
+  (function() {
+    var CLEANING_FEE = 150;
+    var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function fmtDate(d) {
+      return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function fmtAUD(n) {
+      return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    // 2026 VIC school holiday date ranges [startYear, startMonth0, startDay, endYear, endMonth0, endDay]
+    var VIC_HOLIDAYS = [
+      [2025, 11, 20, 2026,  0, 27],  // Summer:  Dec 20 2025 – Jan 27 2026
+      [2026,  2, 28, 2026,  3, 13],  // Autumn:  Mar 28 – Apr 13
+      [2026,  5, 27, 2026,  6, 13],  // Winter:  Jun 27 – Jul 13
+      [2026,  8, 19, 2026,  9,  5],  // Spring:  Sep 19 – Oct 5
+      [2026, 11, 19, 2027,  0, 27]   // Summer:  Dec 19 2026 – Jan 27 2027
+    ];
+    function isVicSchoolHoliday(date) {
+      var t = date.getTime();
+      for (var i = 0; i < VIC_HOLIDAYS.length; i++) {
+        var h = VIC_HOLIDAYS[i];
+        var s = new Date(h[0], h[1], h[2]).getTime();
+        var e = new Date(h[3], h[4], h[5] + 1).getTime();
+        if (t >= s && t < e) return true;
+      }
+      return false;
+    }
+
+    function getNightlyRate(date) {
+      var m = date.getMonth();
+      var d = date.getDay();
+      var hol = isVicSchoolHoliday(date);
+      if (m >= 5 && m <= 7) {
+        var base = (d === 5 || d === 6) ? 450 : 385;
+        return hol ? Math.round(base * 1.30) : base;
+      }
+      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
+        return hol ? Math.round(285 * 1.20) : 285;
+      }
+      return 220;
+    }
+
+    function updateSummary() {
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      var adults = parseInt(document.getElementById('numAdults').value) || 2;
+      var children = parseInt(document.getElementById('numChildren').value) || 0;
+
+      if (ci) document.getElementById('sumCheckin').textContent = fmtDate(new Date(ci));
+      if (co) document.getElementById('sumCheckout').textContent = fmtDate(new Date(co));
+      document.getElementById('sumGuests').textContent = adults + ' Adult' + (adults > 1 ? 's' : '') +
+        (children > 0 ? ', ' + children + ' Child' + (children > 1 ? 'ren' : '') : '');
+
+      if (!ci || !co) return;
+      var checkinDate = new Date(ci);
+      var checkoutDate = new Date(co);
+      var msPerDay = 86400000;
+      var nights = Math.round((checkoutDate - checkinDate) / msPerDay);
+      if (nights <= 0) return;
+
+      var baseTotal = 0;
+      var cur = new Date(checkinDate);
+      for (var i = 0; i < nights; i++) {
+        baseTotal += getNightlyRate(cur);
+        cur = new Date(cur.getTime() + msPerDay);
+      }
+      var avgRate = Math.round(baseTotal / nights);
+      var subtotal = baseTotal + CLEANING_FEE;
+      var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
+      var total = Math.round((subtotal + stripeFee) * 100) / 100;
+
+      document.getElementById('sumNights').textContent = nights + ' night' + (nights > 1 ? 's' : '') + ' · Entire Apartment';
+      document.getElementById('sumRateLine').textContent = fmtAUD(avgRate) + ' avg × ' + nights + ' night' + (nights > 1 ? 's' : '');
+      document.getElementById('sumBaseTotal').textContent = fmtAUD(baseTotal);
+      document.getElementById('sumStripeFee').textContent = '$' + stripeFee.toFixed(2);
+      document.getElementById('sumTotal').textContent = fmtAUD(total);
+    }
+
+    // Pre-fill from URL params
+    var params = new URLSearchParams(window.location.search);
+    var ci = params.get('checkin');
+    var co = params.get('checkout');
+    var g = params.get('guests');
+    if (ci) document.getElementById('checkinDate').value = ci;
+    if (co) document.getElementById('checkoutDate').value = co;
+    if (g) {
+      var adults = parseInt(g);
+      var adultSel = document.getElementById('numAdults');
+      for (var i = 0; i < adultSel.options.length; i++) {
+        if (parseInt(adultSel.options[i].value) === adults) { adultSel.selectedIndex = i; break; }
+      }
+    }
+    updateSummary();
+
+    // Live updates
+    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', updateSummary);
+    });
+
+    // Form validation
+    document.getElementById('continueToPayment').addEventListener('click', function(e) {
+      e.preventDefault();
+      var required = ['firstName','lastName','email','phone','checkinDate','checkoutDate'];
+      var firstError = null;
+      required.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        if (!el.value.trim()) {
+          el.style.borderColor = '#ef4444';
+          el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+          if (!firstError) firstError = el;
+          el.addEventListener('input', function() {
+            el.style.borderColor = '';
+            el.style.boxShadow = '';
+          }, { once: true });
+        }
+      });
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstError.focus();
+        return;
+      }
+      // Carry booking data to checkout
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      var adults = document.getElementById('numAdults').value;
+      var url = 'checkout.html?checkin=' + encodeURIComponent(ci)
+        + '&checkout=' + encodeURIComponent(co)
+        + '&guests=' + encodeURIComponent(adults);
+      window.location.href = url;
+    });
+  })();
+  </script>
 </body>
 </html>

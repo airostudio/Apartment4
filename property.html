@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Grand Harbour Hotel - TrendAccom</title>
-  <meta name="description" content="Book The Grand Harbour Hotel - a stunning waterfront property with panoramic harbour views, luxury amenities, and exceptional service.">
+  <title>Cascade Apartment 4 - Mt Baw Baw Alpine Accommodation</title>
+  <meta name="description" content="Book Cascade Apartment 4 - a fully self-contained alpine apartment in Baw Baw Village, Mt Baw Baw. Sleeps 7, 2 bedrooms, 2 bathrooms, gas log fireplace.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -765,21 +765,18 @@
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
       <a href="index.html" class="logo">
-        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
-        </svg>
-        TrendAccom
+        <img src="images/logo25.png" alt="Cascade Apartment 4">
+      Cascade Apartment 4
       </a>
       <nav class="nav-main">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="search.html" class="nav-link">Browse</a>
-        <a href="search.html?type=hotel" class="nav-link">Hotels</a>
-        <a href="search.html?type=apartment" class="nav-link">Apartments</a>
-        <a href="search.html?type=holiday-park" class="nav-link">Holiday Parks</a>
+        <a href="#tab-overview" class="nav-link">The Apartment</a>
+        <a href="#gallery" class="nav-link">Gallery</a>
+        <a href="#booking" class="nav-link">Book Now</a>
+        <a href="#contact" class="nav-link">Contact</a>
       </nav>
       <div class="nav-actions">
-        <a href="admin/index.html" class="btn btn--sm btn--outline">List Your Property</a>
-        <a href="admin/index.html" class="btn btn--sm btn--ghost">Sign In</a>
+        <a href="#booking" class="btn btn--sm btn--primary">Book Now</a>
       </div>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
         <span></span><span></span><span></span>
@@ -790,32 +787,31 @@
   <!-- Mobile Navigation -->
   <nav class="mobile-nav" id="mobileNav">
     <a href="index.html" class="nav-link">Home</a>
-    <a href="search.html" class="nav-link">Browse All</a>
-    <a href="search.html?type=hotel" class="nav-link">Hotels</a>
-    <a href="search.html?type=apartment" class="nav-link">Apartments</a>
-    <a href="search.html?type=holiday-park" class="nav-link">Holiday Parks</a>
-    <a href="admin/index.html" class="btn btn--primary btn--block">List Your Property</a>
-    <a href="admin/index.html" class="btn btn--outline btn--block">Sign In</a>
+    <a href="#tab-overview" class="nav-link">The Apartment</a>
+    <a href="#gallery" class="nav-link">Gallery</a>
+    <a href="#booking" class="nav-link">Book Now</a>
+    <a href="#contact" class="nav-link">Contact</a>
+    <a href="#booking" class="btn btn--primary btn--block">Book Now</a>
   </nav>
 
   <!-- Photo Gallery -->
   <div class="container">
     <div class="gallery">
-      <div class="gallery-item">
-        <img src="images/cascade6-1.jpg" alt="Cascade Apartment 6" style="width:100%;height:100%;object-fit:cover;">
+      <div class="gallery-item" data-lightbox>
+        <img src="images/cascade-hero.jpg" alt="Cascade Apartment 4 exterior" style="width:100%;height:100%;object-fit:cover;">
       </div>
-      <div class="gallery-item">
-        <img src="images/cascade6-2.jpg" alt="Cascade Apartment 6 interior" style="width:100%;height:100%;object-fit:cover;">
+      <div class="gallery-item" data-lightbox>
+        <img src="images/IMG_4232.jpg" alt="Cascade Apartment 4 main bedroom" style="width:100%;height:100%;object-fit:cover;">
       </div>
-      <div class="gallery-item">
-        <img src="images/cascade6-3.jpg" alt="Cascade Apartment 6 living area" style="width:100%;height:100%;object-fit:cover;">
+      <div class="gallery-item" data-lightbox>
+        <img src="images/IMG_4233.jpg" alt="Cascade Apartment 4 bunk room" style="width:100%;height:100%;object-fit:cover;">
       </div>
-      <div class="gallery-item">
-        <img src="images/cascade6-4.jpg" alt="Cascade Apartment 6 bedroom" style="width:100%;height:100%;object-fit:cover;">
+      <div class="gallery-item" data-lightbox>
+        <img src="images/IMG_4235.jpg" alt="Cascade Apartment 4 living area" style="width:100%;height:100%;object-fit:cover;">
       </div>
-      <div class="gallery-item">
-        <img src="images/cascade6-5.jpg" alt="Cascade Apartment 6 views" style="width:100%;height:100%;object-fit:cover;">
-        <button class="gallery-btn">
+      <div class="gallery-item" data-lightbox>
+        <img src="images/IMG_4252.jpg" alt="Cascade Apartment 4 kitchen" style="width:100%;height:100%;object-fit:cover;">
+        <button class="gallery-btn" onclick="window.CascadeApt4.openLightbox(0)">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
           Show all photos
         </button>
@@ -826,7 +822,7 @@
     <div class="property-header">
       <div class="property-header-top">
         <div>
-          <h1 class="property-title">Cascade Apartment 6</h1>
+          <h1 class="property-title">Cascade Apartment 4</h1>
           <div class="property-meta">
             <span class="property-location">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -870,9 +866,9 @@
         <!-- Overview Tab -->
         <div class="tab-content active" id="tab-overview">
           <div class="property-description">
-            <p>Welcome to Cascade Apartment 6, a fully self-contained, solid-brick apartment set over two levels in the heart of Baw Baw Village at Mt Baw Baw. Nestled among snowgum trees with direct ski-in/ski-out access, this alpine retreat offers the perfect base for all seasons — from winter skiing to summer hiking and mountain biking.</p>
-            <p>The apartment features a spacious open-plan living and dining area with a wood fireplace, a fully equipped kitchen, two generous bedrooms, and two bathrooms. The upper level loft provides additional sleeping space, ideal for families or groups. Enjoy stunning mountain views from the private deck, and unwind in the hot tub after a day on the slopes or trails.</p>
-            <p>Whether you're planning a winter ski escape, a summer alpine getaway, or a peaceful retreat in nature, Cascade Apartment 6 delivers premium comfort and convenience in one of Victoria's most spectacular alpine settings.</p>
+            <p>Cascade Apartment 4 is a self-contained, family-friendly unit located on the lower level at the back of the Cascade complex in Baw Baw Village, Mt Baw Baw. Its private position gives it a quiet, cosy atmosphere away from the main building, with its own private entrance and a dedicated snow play area — three toboggans are included for guests to enjoy.</p>
+            <p>Sleeping up to 7, the apartment has two bedrooms: a main bedroom with a queen bed and single bunk, and a second bedroom with a tri-bunk. The living area features a cosy lounge with a gas log fireplace, couch, and DVD player. The fully equipped kitchen includes a stove/oven, dishwasher, fridge/freezer, and microwave. There is a private ensuite as well as a second bathroom, plus a washing machine and drying room for ski and snow gear.</p>
+            <p>Pillows and doonas are provided; guests must bring their own linen and towels, or arrange hire. Please note: there is no resort WiFi. During winter there is no vehicle access to the village — luggage drop is at Carpark 1 with oversnow transport available. Whether you're here for winter snow play or a summer mountain escape, Apartment 4 is your ideal base at Mt Baw Baw.</p>
           </div>
 
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:16px;">Key Features</h3>
@@ -889,7 +885,7 @@
             </div>
             <div class="feature-card">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              <span class="feature-value">8</span>
+              <span class="feature-value">7</span>
               <span class="feature-label">Max Guests</span>
             </div>
             <div class="feature-card">
@@ -905,52 +901,52 @@
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">What this place offers</h3>
           <div class="amenities-grid">
             <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-              Free Wi-Fi
-            </div>
-            <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-              Free Parking
-            </div>
-            <div class="amenity-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
               Fully Equipped Kitchen
             </div>
             <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
-              Smart TV
-            </div>
-            <div class="amenity-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-              Wood Fireplace
-            </div>
-            <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Hot Tub / Spa
-            </div>
-            <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
-              Mountain Views
+              Gas Log Fireplace
             </div>
             <div class="amenity-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              Private Deck
-            </div>
-            <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Ski-in / Ski-out Access
+              Dishwasher
             </div>
             <div class="amenity-item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-              Washer &amp; Dryer
+              Washing Machine
             </div>
             <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              BBQ Facilities
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Drying Room
             </div>
             <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>
-              Self Check-in
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Private Entrance
+            </div>
+            <div class="amenity-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l4-8 4 4 4-6 4 10"/><path d="M3 20h18"/></svg>
+              Snow Play Area
+            </div>
+            <div class="amenity-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 18H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3.19M15 6h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3.19"/><line x1="11" y1="6" x2="13" y2="6"/><line x1="11" y1="18" x2="13" y2="18"/><line x1="12" y1="6" x2="12" y2="18"/></svg>
+              3 Toboggans Included
+            </div>
+            <div class="amenity-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              DVD Player &amp; Radio
+            </div>
+            <div class="amenity-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+              TV
+            </div>
+            <div class="amenity-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Pillows &amp; Doonas Provided
+            </div>
+            <div class="amenity-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+              No Resort WiFi
             </div>
           </div>
         </div>
@@ -978,7 +974,7 @@
               <div class="rate-note">Minimum 1 night</div>
             </div>
           </div>
-          <p class="rates-footnote">* Rates shown are for the entire apartment (up to 8 guests). Cleaning fee of $150 applies per stay. Weekend and public holiday surcharges may apply. All rates in AUD.</p>
+          <p class="rates-footnote">* Rates shown are for the entire apartment (up to 7 guests). Cleaning fee of $150 applies per stay. Weekend and public holiday surcharges may apply. All rates in AUD.</p>
         </div>
 
         <!-- Reviews Tab -->
@@ -1024,7 +1020,7 @@
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
             </div>
-            <p class="review-text">Absolutely wonderful stay! The harbour views from our room were breathtaking, especially at sunrise. The staff went above and beyond to make our anniversary celebration special, even arranging a private dinner on the terrace. The breakfast spread was exceptional with locally sourced produce. We will definitely be returning.</p>
+            <p class="review-text">Beautiful alpine apartment, perfectly set up for our ski trip. The gas fireplace was a highlight after cold days on the slopes. Kitchen had everything we needed. Great location in the village.</p>
           </div>
 
           <!-- Review 2 -->
@@ -1043,7 +1039,7 @@
                 <svg viewBox="0 0 24 24" fill="currentColor" opacity="0.3"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
             </div>
-            <p class="review-text">Great location right on the harbour with easy walking distance to all of Kinsale's best restaurants and shops. The room was spotless and the bed incredibly comfortable. The spa facilities were a lovely bonus after a day of exploring. My only minor note would be that the restaurant menu could offer a few more vegetarian options, but what they do serve is excellent quality.</p>
+            <p class="review-text">Fantastic spot at Mt Baw Baw. The apartment was clean, warm and well-equipped. Loved the privacy of being around the back. Only note - no WiFi, so bring your own entertainment!</p>
           </div>
 
           <!-- Review 3 -->
@@ -1062,18 +1058,24 @@
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
             </div>
-            <p class="review-text">Stayed here for a family weekend and it was pure magic. The kids loved the indoor pool and the staff were so accommodating with extra pillows and a cot for the baby. The hotel has such a warm, welcoming atmosphere, it felt like a home away from home. The evening sunset from the terrace bar is something I'll never forget. Highly recommend for families and couples alike!</p>
+            <p class="review-text">We brought the whole family for a winter getaway and it was magical. Kids loved the snow right outside. Apartment fits 7 easily with the bunk setup. The drying room for wet ski gear was a lifesaver!</p>
           </div>
         </div>
 
         <!-- Location Tab -->
         <div class="tab-content" id="tab-location">
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">Where you'll be</h3>
-          <div class="location-map-placeholder">
-            <div class="map-pin">
-              <svg viewBox="0 0 24 24" fill="#1a73a7" stroke="#fff" stroke-width="1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3" fill="#fff"/></svg>
-              <span style="font-weight:600;">Kinsale, Co. Cork, Ireland</span>
-            </div>
+          <div style="width:100%;height:380px;border-radius:12px;overflow:hidden;margin-bottom:24px;border:1px solid #e5e7eb;">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3154.8!2d146.267!3d-37.837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b277e8e2e0b2e1f%3A0xa1c1e2c1e2c1e2c1!2sMt%20Baw%20Baw%20Alpine%20Resort%2C%20VIC%203833!5e0!3m2!1sen!2sau!4v1700000000000!5m2!1sen!2sau"
+              width="100%"
+              height="380"
+              style="border:0;display:block;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Cascade Apartment 4 location map">
+            </iframe>
           </div>
           <div class="location-details">
             <div class="location-detail-card">
@@ -1081,7 +1083,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                 Address
               </h4>
-              <p>42 Harbour Road<br>Kinsale, Co. Cork<br>P17 AX29<br>Ireland</p>
+              <p>Cascade Apartment 4<br>Baw Baw Village<br>Mt Baw Baw VIC 3833<br>Australia</p>
             </div>
             <div class="location-detail-card">
               <h4>
@@ -1089,10 +1091,10 @@
                 Getting There
               </h4>
               <ul>
-                <li><span>Cork Airport</span><span>28 km</span></li>
-                <li><span>Cork Kent Station</span><span>25 km</span></li>
-                <li><span>Kinsale Town Centre</span><span>0.3 km</span></li>
-                <li><span>Charles Fort</span><span>2.1 km</span></li>
+                <li><span>Melbourne CBD</span><span>200 km</span></li>
+                <li><span>Warragul</span><span>70 km</span></li>
+                <li><span>Mt Baw Baw Village</span><span>On-site</span></li>
+                <li><span>Ski Lifts</span><span>Walk</span></li>
               </ul>
             </div>
           </div>
@@ -1100,9 +1102,9 @@
       </div>
 
       <!-- Booking Sidebar -->
-      <aside class="booking-sidebar">
+      <aside class="booking-sidebar" id="booking">
         <div class="booking-price-header">
-          <span class="price">&euro;179</span>
+          <span class="price" id="sidebarPrice">$285</span>
           <span class="per-night">/ night</span>
         </div>
 
@@ -1110,119 +1112,56 @@
           <div class="booking-form-row">
             <div class="booking-form-field">
               <label for="checkin">Check-in</label>
-              <input type="date" id="checkin" value="2026-03-15">
+              <input type="date" id="checkin">
             </div>
             <div class="booking-form-field">
               <label for="checkout">Check-out</label>
-              <input type="date" id="checkout" value="2026-03-20">
+              <input type="date" id="checkout">
             </div>
           </div>
           <div class="booking-form-field" style="border-top:1px solid #ddd;">
             <label for="guests">Guests</label>
             <select id="guests">
-              <option>1 Guest</option>
-              <option selected>2 Guests</option>
-              <option>3 Guests</option>
-              <option>4 Guests</option>
+              <option value="1">1 Guest</option>
+              <option value="2" selected>2 Guests</option>
+              <option value="3">3 Guests</option>
+              <option value="4">4 Guests</option>
+              <option value="5">5 Guests</option>
+              <option value="6">6 Guests</option>
+              <option value="7">7 Guests</option>
             </select>
           </div>
         </div>
 
-        <button class="btn-book">Book Now</button>
+        <button class="btn-book" id="btnBook">Book Now</button>
         <p class="booking-note">You won't be charged yet</p>
 
-        <div class="price-breakdown">
+        <div class="price-breakdown" id="priceBreakdown">
           <div class="price-row">
-            <span class="label" title="Nightly rate multiplied by number of nights">&euro;179 x 5 nights</span>
-            <span>&euro;895</span>
+            <span class="label" id="priceNightsLabel" title="Nightly rate × number of nights">Select dates to see pricing</span>
+            <span id="priceNightsTotal"></span>
           </div>
           <div class="price-row">
             <span class="label" title="One-time cleaning fee">Cleaning fee</span>
-            <span>&euro;45</span>
+            <span>$150</span>
           </div>
           <div class="price-row">
-            <span class="label" title="Service charge for booking platform">Service fee</span>
-            <span>&euro;65</span>
-          </div>
-          <div class="price-row">
-            <span class="label" title="Local accommodation tax">Taxes &amp; levies</span>
-            <span>&euro;52</span>
+            <span class="label" title="Stripe payment processing fee (1.75% + $0.30) — paid by guest">Stripe fee</span>
+            <span id="priceStripeFee">—</span>
           </div>
           <div class="price-row total">
             <span>Total</span>
-            <span>&euro;1,057</span>
+            <span id="priceTotal">—</span>
           </div>
         </div>
 
         <div class="cancellation-note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9 12l2 2 4-4"/></svg>
-          <span><strong>Free cancellation</strong> up to 48 hours before check-in. After that, the first night is non-refundable.</span>
+          <span><strong>Moderate cancellation policy.</strong> Cancel up to 7 days before check-in for a full refund.</span>
         </div>
       </aside>
     </div>
 
-    <!-- Similar Properties -->
-    <section class="similar-properties">
-      <h2>Similar Properties You May Like</h2>
-      <div class="similar-grid">
-        <!-- Similar Property 1 -->
-        <a href="#" class="similar-card" style="text-decoration:none;color:inherit;">
-          <div class="similar-card-img" style="background:linear-gradient(135deg,#1a5276,#48c9b0);"></div>
-          <div class="similar-card-body">
-            <h3>The Cliff House Hotel</h3>
-            <div class="location">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Ardmore, Co. Waterford
-            </div>
-            <div class="similar-card-footer">
-              <div class="price">&euro;215 <span>/ night</span></div>
-              <div class="rating">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                4.7
-              </div>
-            </div>
-          </div>
-        </a>
-
-        <!-- Similar Property 2 -->
-        <a href="#" class="similar-card" style="text-decoration:none;color:inherit;">
-          <div class="similar-card-img" style="background:linear-gradient(135deg,#2c3e50,#e67e22);"></div>
-          <div class="similar-card-body">
-            <h3>Bayview Boutique Suites</h3>
-            <div class="location">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Cobh, Co. Cork
-            </div>
-            <div class="similar-card-footer">
-              <div class="price">&euro;159 <span>/ night</span></div>
-              <div class="rating">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                4.5
-              </div>
-            </div>
-          </div>
-        </a>
-
-        <!-- Similar Property 3 -->
-        <a href="#" class="similar-card" style="text-decoration:none;color:inherit;">
-          <div class="similar-card-img" style="background:linear-gradient(135deg,#1e3c72,#7f5a83);"></div>
-          <div class="similar-card-body">
-            <h3>Seaview Manor Retreat</h3>
-            <div class="location">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Kenmare, Co. Kerry
-            </div>
-            <div class="similar-card-footer">
-              <div class="price">&euro;199 <span>/ night</span></div>
-              <div class="rating">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                4.9
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-    </section>
   </div>
 
   <!-- Footer -->
@@ -1231,45 +1170,40 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="index.html" class="logo">
-            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 2L2 14h4v14h8v-8h4v8h8V14h4L16 2z" fill="currentColor"/>
-            </svg>
-            TrendAccom
+            <img src="images/logo25.png" alt="Cascade Apartment 4">
+      Cascade Apartment 4
           </a>
-          <p>Discover your perfect accommodation. From boutique hotels to cosy apartments and scenic holiday parks.</p>
+          <p>A fully self-contained alpine apartment in the heart of Baw Baw Village, Mt Baw Baw. Sleeps 7, 2 bedrooms, 2 bathrooms.</p>
         </div>
         <div>
           <h4 class="footer-heading">Explore</h4>
           <div class="footer-links">
-            <a href="search.html?type=hotel">Hotels</a>
-            <a href="search.html?type=apartment">Apartments</a>
-            <a href="search.html?type=holiday-park">Holiday Parks</a>
-            <a href="search.html">Browse All</a>
+            <a href="#tab-overview">The Apartment</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#booking">Book Now</a>
+            <a href="#contact">Contact</a>
           </div>
         </div>
         <div>
-          <h4 class="footer-heading">Company</h4>
+          <h4 class="footer-heading">Contact</h4>
           <div class="footer-links">
-            <a href="#">About Us</a>
-            <a href="#">Contact</a>
-            <a href="#">Careers</a>
-            <a href="#">Press</a>
-            <a href="#">Blog</a>
+            <a href="mailto:hello@cascadeskiapartments.com">hello@cascadeskiapartments.com</a>
+            <a href="tel:+61351651200">+61 3 5165 1200</a>
+            <a href="#">Baw Baw Village, Mt Baw Baw</a>
+            <a href="#">VIC 3833, Australia</a>
           </div>
         </div>
         <div>
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
-            <a href="#">Help Centre</a>
             <a href="#">Terms of Service</a>
             <a href="#">Privacy Policy</a>
             <a href="#">Cancellation Policy</a>
-            <a href="admin/index.html">Property Owners</a>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 TrendAccom. All rights reserved.</p>
+        <p>&copy; 2026 Cascade Apartment 4. All rights reserved.</p>
         <div class="footer-social">
           <a href="#" aria-label="Facebook">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
@@ -1287,19 +1221,149 @@
 
   <script src="js/app.js"></script>
   <script>
-    // Property page tab switching
+    // ── Tab switching ──
     document.querySelectorAll('.property-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        // Remove active from all tabs and content
         document.querySelectorAll('.property-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-        // Activate clicked tab and its content
         tab.classList.add('active');
         const targetId = 'tab-' + tab.getAttribute('data-tab');
         document.getElementById(targetId).classList.add('active');
       });
     });
+
+    // ── Dynamic Price Calculation ──
+    (function() {
+      var CLEANING_FEE = 150;
+
+      // 2026 VIC school holiday date ranges [startYear, startMonth0, startDay, endYear, endMonth0, endDay]
+      var VIC_HOLIDAYS = [
+        [2025, 11, 20, 2026,  0, 27],  // Summer:  Dec 20 2025 – Jan 27 2026
+        [2026,  2, 28, 2026,  3, 13],  // Autumn:  Mar 28 – Apr 13
+        [2026,  5, 27, 2026,  6, 13],  // Winter:  Jun 27 – Jul 13
+        [2026,  8, 19, 2026,  9,  5],  // Spring:  Sep 19 – Oct 5
+        [2026, 11, 19, 2027,  0, 27]   // Summer:  Dec 19 2026 – Jan 27 2027
+      ];
+      function isVicSchoolHoliday(date) {
+        var t = date.getTime();
+        for (var i = 0; i < VIC_HOLIDAYS.length; i++) {
+          var h = VIC_HOLIDAYS[i];
+          var s = new Date(h[0], h[1], h[2]).getTime();
+          var e = new Date(h[3], h[4], h[5] + 1).getTime();
+          if (t >= s && t < e) return true;
+        }
+        return false;
+      }
+
+      // Return nightly rate for a given Date object (the night starting on that date)
+      function getNightlyRate(date) {
+        var m = date.getMonth(); // 0=Jan
+        var d = date.getDay();   // 0=Sun, 5=Fri, 6=Sat
+        var hol = isVicSchoolHoliday(date);
+        if (m >= 5 && m <= 7) {
+          // Ski season: Jun-Aug (+ 30% VIC school holiday premium)
+          var base = (d === 5 || d === 6) ? 450 : 385;
+          return hol ? Math.round(base * 1.30) : base;
+        } else if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
+          // Standard: Mar-May, Sep-Nov (+ 20% VIC school holiday premium)
+          return hol ? Math.round(285 * 1.20) : 285;
+        } else {
+          // Off-peak: Dec-Feb
+          return 220;
+        }
+      }
+
+      function calcPricing(checkin, checkout) {
+        var msPerDay = 86400000;
+        var nights = Math.round((checkout - checkin) / msPerDay);
+        if (nights <= 0) return null;
+
+        var baseTotal = 0;
+        var cur = new Date(checkin);
+        for (var i = 0; i < nights; i++) {
+          baseTotal += getNightlyRate(cur);
+          cur = new Date(cur.getTime() + msPerDay);
+        }
+
+        var subtotal = baseTotal + CLEANING_FEE;
+        var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
+        var total = Math.round((subtotal + stripeFee) * 100) / 100;
+
+        return { nights: nights, baseTotal: baseTotal, subtotal: subtotal, stripeFee: stripeFee, total: total };
+      }
+
+      function fmt(n) { return '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+
+      function updatePricing() {
+        var ci = document.getElementById('checkin').value;
+        var co = document.getElementById('checkout').value;
+        if (!ci || !co) return;
+
+        var checkinDate = new Date(ci);
+        var checkoutDate = new Date(co);
+        if (checkoutDate <= checkinDate) return;
+
+        var p = calcPricing(checkinDate, checkoutDate);
+        if (!p) return;
+
+        var avgRate = Math.round(p.baseTotal / p.nights);
+        document.getElementById('sidebarPrice').textContent = '$' + avgRate;
+        document.getElementById('priceNightsLabel').textContent =
+          fmt(avgRate) + ' avg × ' + p.nights + ' night' + (p.nights > 1 ? 's' : '');
+        document.getElementById('priceNightsTotal').textContent = fmt(p.baseTotal);
+        document.getElementById('priceStripeFee').textContent = '$' + p.stripeFee.toFixed(2);
+        document.getElementById('priceTotal').textContent = fmt(p.total);
+      }
+
+      document.getElementById('checkin').addEventListener('change', updatePricing);
+      document.getElementById('checkout').addEventListener('change', updatePricing);
+      document.getElementById('guests').addEventListener('change', updatePricing);
+
+      // Pre-fill from URL params (carry-over from search/index page)
+      var params = new URLSearchParams(window.location.search);
+      var ci = params.get('checkin');
+      var co = params.get('checkout');
+      var g = params.get('guests');
+      if (ci) document.getElementById('checkin').value = ci;
+      if (co) document.getElementById('checkout').value = co;
+      if (g) {
+        var sel = document.getElementById('guests');
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === g) { sel.selectedIndex = i; break; }
+        }
+      }
+      if (ci && co) updatePricing();
+
+      // Book Now button
+      document.getElementById('btnBook').addEventListener('click', function() {
+        var ci = document.getElementById('checkin').value;
+        var co = document.getElementById('checkout').value;
+        var g = document.getElementById('guests').value;
+        if (!ci || !co) {
+          alert('Please select your check-in and check-out dates.');
+          document.getElementById('checkin').focus();
+          return;
+        }
+        var url = 'booking.html?checkin=' + encodeURIComponent(ci)
+          + '&checkout=' + encodeURIComponent(co)
+          + '&guests=' + encodeURIComponent(g);
+        window.location.href = url;
+      });
+    })();
   </script>
+
+  <!-- Lightbox -->
+  <div class="lightbox-backdrop" id="lightbox">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#10005;</button>
+    <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <img id="lightboxImg" class="lightbox-img" src="" alt="">
+    <button class="lightbox-next" id="lightboxNext" aria-label="Next">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+  </div>
 </body>
 </html>

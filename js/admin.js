@@ -1,5 +1,5 @@
 /**
- * TrendAccom - Admin Panel JavaScript
+ * Cascade Apartment 4 - Admin Panel JavaScript
  * Handles: Dashboard interactions, property management,
  * booking management, and admin-specific UI
  */
@@ -109,7 +109,7 @@
           btn.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
           btn.className = `badge badge--${newStatus === 'active' ? 'success' : 'warning'}`;
 
-          window.TrendAccom?.showToast(
+          window.CascadeApt4?.showToast(
             `Property ${newStatus === 'active' ? 'activated' : 'deactivated'}`,
             newStatus === 'active' ? 'success' : 'warning'
           );
@@ -126,7 +126,7 @@
               row.style.transition = 'opacity 0.3s ease';
               setTimeout(() => row.remove(), 300);
             }
-            window.TrendAccom?.showToast('Property deleted', 'info');
+            window.CascadeApt4?.showToast('Property deleted', 'info');
           }
         });
       });
@@ -245,7 +245,7 @@
         row.dataset.status = newStatus;
       }
 
-      window.TrendAccom?.showToast(`Booking ${newStatus}`, 'success');
+      window.CascadeApt4?.showToast(`Booking ${newStatus}`, 'success');
     },
 
     /**
@@ -261,7 +261,7 @@
           const action = btn.dataset.action;
           if (action === 'prev' || action === 'next') {
             // In a full implementation, this would re-render the calendar
-            window.TrendAccom?.showToast(`Navigating ${action}`, 'info');
+            window.CascadeApt4?.showToast(`Navigating ${action}`, 'info');
           }
         });
       });
@@ -285,7 +285,7 @@
       const saveBtns = document.querySelectorAll('[data-save-settings]');
       saveBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          window.TrendAccom?.showToast('Settings saved successfully', 'success');
+          window.CascadeApt4?.showToast('Settings saved successfully', 'success');
         });
       });
 
@@ -377,7 +377,7 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      window.TrendAccom?.showToast('Data exported successfully', 'success');
+      window.CascadeApt4?.showToast('Data exported successfully', 'success');
     }
   };
 
@@ -388,6 +388,6 @@
     Admin.init();
   }
 
-  window.TrendAccom = window.TrendAccom || {};
-  window.TrendAccom.Admin = Admin;
+  window.CascadeApt4 = window.CascadeApt4 || {};
+  window.CascadeApt4.Admin = Admin;
 })();

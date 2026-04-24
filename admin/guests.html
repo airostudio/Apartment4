@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guests - TrendAccom Admin</title>
+    <title>Guests - Cascade Apartment 4 Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <script src="../js/admin-auth.js"></script>
 </head>
 <body class="admin-body">
 
@@ -16,7 +17,7 @@
     <aside class="admin-sidebar">
         <div class="sidebar-header">
             <a href="dashboard.html" class="sidebar-logo">
-                <span class="logo-text">TrendAccom</span>
+                <span class="logo-text">Cascade Apartment 4</span>
                 <span class="logo-badge">Admin</span>
             </a>
         </div>
@@ -89,9 +90,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="stripe-connect.html" class="nav-link">
+                        <a href="payments.html" class="nav-link">
                             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            <span>Stripe Connect</span>
+                            <span>Stripe Settings</span>
                         </a>
                     </li>
                 </ul>
@@ -128,14 +129,15 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
                 <nav class="breadcrumb">
-                    <a href="dashboard.html" class="breadcrumb-link">Dashboard</a>
+                    <a href="index.html" class="breadcrumb-link">Dashboard</a>
                     <span class="breadcrumb-separator">/</span>
                     <span class="breadcrumb-current">Guests</span>
                 </nav>
             </div>
             <div class="topbar-right">
-                <div class="topbar-avatar">
-                    <span class="avatar-initials">AD</span>
+                <div class="topbar-user">
+                    <span class="topbar-user-avatar" id="topbarAvatar">AD</span>
+                    <span class="topbar-user-name" id="topbarName">Admin</span>
                 </div>
             </div>
         </header>
@@ -147,7 +149,7 @@
             <div class="page-header">
                 <div class="page-header-info">
                     <h1 class="page-title">Guest Management</h1>
-                    <p class="page-subtitle">View and manage guest information</p>
+                    <p class="page-subtitle">Cascade Apartment 4 — previous and upcoming guests</p>
                 </div>
                 <div class="page-header-actions">
                     <div class="search-input-wrapper">
@@ -187,14 +189,14 @@
                                             </div>
                                             <div class="guest-info">
                                                 <span class="guest-name">James Davidson</span>
-                                                <span class="guest-email">james.davidson@email.com</span>
+                                                <span class="guest-email">james.davidson@gmail.com</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>+1 (555) 012-3456</td>
+                                    <td>+61 412 345 678</td>
                                     <td><span class="booking-count">12</span></td>
                                     <td><span class="amount-spent">$8,420</span></td>
-                                    <td>Feb 10, 2026</td>
+                                    <td>Jul 10, 2025</td>
                                     <td><span class="badge badge-vip">VIP</span></td>
                                     <td>
                                         <div class="table-actions">
@@ -220,14 +222,14 @@
                                             </div>
                                             <div class="guest-info">
                                                 <span class="guest-name">Sarah Mitchell</span>
-                                                <span class="guest-email">sarah.mitchell@email.com</span>
+                                                <span class="guest-email">sarah.mitchell@outlook.com</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>+1 (555) 234-5678</td>
+                                    <td>+61 423 456 789</td>
                                     <td><span class="booking-count">8</span></td>
                                     <td><span class="amount-spent">$5,230</span></td>
-                                    <td>Jan 28, 2026</td>
+                                    <td>Aug 14, 2025</td>
                                     <td><span class="badge badge-vip">VIP</span></td>
                                     <td>
                                         <div class="table-actions">
@@ -253,14 +255,14 @@
                                             </div>
                                             <div class="guest-info">
                                                 <span class="guest-name">Robert Kim</span>
-                                                <span class="guest-email">robert.kim@email.com</span>
+                                                <span class="guest-email">r.kim@gmail.com</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>+1 (555) 345-6789</td>
+                                    <td>+61 434 567 890</td>
                                     <td><span class="booking-count">5</span></td>
                                     <td><span class="amount-spent">$3,150</span></td>
-                                    <td>Jan 15, 2026</td>
+                                    <td>Aug 2, 2025</td>
                                     <td><span class="badge badge-active">Active</span></td>
                                     <td>
                                         <div class="table-actions">
@@ -286,14 +288,14 @@
                                             </div>
                                             <div class="guest-info">
                                                 <span class="guest-name">Emily Watson</span>
-                                                <span class="guest-email">emily.watson@email.com</span>
+                                                <span class="guest-email">emily.watson@hotmail.com</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>+1 (555) 456-7890</td>
+                                    <td>+61 445 678 901</td>
                                     <td><span class="booking-count">3</span></td>
                                     <td><span class="amount-spent">$1,890</span></td>
-                                    <td>Dec 22, 2025</td>
+                                    <td>Jul 28, 2025</td>
                                     <td><span class="badge badge-active">Active</span></td>
                                     <td>
                                         <div class="table-actions">
@@ -319,14 +321,14 @@
                                             </div>
                                             <div class="guest-info">
                                                 <span class="guest-name">Michael Chen</span>
-                                                <span class="guest-email">michael.chen@email.com</span>
+                                                <span class="guest-email">mchen@gmail.com</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>+1 (555) 567-8901</td>
+                                    <td>+61 456 789 012</td>
                                     <td><span class="booking-count">7</span></td>
                                     <td><span class="amount-spent">$4,670</span></td>
-                                    <td>Feb 05, 2026</td>
+                                    <td>Aug 19, 2025</td>
                                     <td><span class="badge badge-vip">VIP</span></td>
                                     <td>
                                         <div class="table-actions">
@@ -352,14 +354,14 @@
                                             </div>
                                             <div class="guest-info">
                                                 <span class="guest-name">Lisa Patel</span>
-                                                <span class="guest-email">lisa.patel@email.com</span>
+                                                <span class="guest-email">lisa.patel@outlook.com</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td>+1 (555) 678-9012</td>
+                                    <td>+61 467 890 123</td>
                                     <td><span class="booking-count">2</span></td>
                                     <td><span class="amount-spent">$980</span></td>
-                                    <td>Nov 18, 2025</td>
+                                    <td>Jun 15, 2025</td>
                                     <td><span class="badge badge-active">Active</span></td>
                                     <td>
                                         <div class="table-actions">
@@ -382,17 +384,17 @@
                     <!-- Pagination -->
                     <div class="table-pagination">
                         <div class="pagination-info">
-                            Showing <strong>1</strong> to <strong>6</strong> of <strong>48</strong> guests
+                            Showing <strong>1</strong> to <strong>6</strong> of <strong>6</strong> guests
                         </div>
                         <div class="pagination-controls">
                             <button class="pagination-btn" disabled>
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                             </button>
                             <button class="pagination-btn pagination-btn--active">1</button>
-                            <button class="pagination-btn">2</button>
-                            <button class="pagination-btn">3</button>
-                            <span class="pagination-ellipsis">...</span>
-                            <button class="pagination-btn">8</button>
+                            
+                            
+                            
+                            
                             <button class="pagination-btn">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                             </button>

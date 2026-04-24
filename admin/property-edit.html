@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add New Property - TrendAccom Admin</title>
+  <title>Add New Property - Cascade Apartment 4 Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/admin.css">
+    <script src="../js/admin-auth.js"></script>
   <style>
     /* --- Tabs --- */
     .form-tabs {
@@ -87,23 +88,79 @@
     }
 
     /* --- Photos Grid --- */
-    .photos-grid-placeholder {
+    .photos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: var(--space-md);
       margin-top: var(--space-xl);
     }
-    .photo-placeholder {
+    .photo-item {
+      position: relative;
       aspect-ratio: 4/3;
-      background: var(--color-off-white);
       border-radius: var(--radius-md);
-      border: 1px solid var(--color-light);
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: border-color 0.15s;
+    }
+    .photo-item:hover { border-color: var(--color-primary); }
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background 0.15s;
       display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 6px;
+    }
+    .photo-item:hover .photo-item-overlay { background: rgba(0,0,0,0.3); }
+    .photo-item-delete {
+      width: 26px; height: 26px;
+      background: rgba(255,255,255,0.92);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #e53e3e;
+      opacity: 0;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+    .photo-item:hover .photo-item-delete { opacity: 1; }
+    .photo-item-badge {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+    .photo-add-btn {
+      aspect-ratio: 4/3;
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--color-light);
+      background: var(--color-off-white);
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 6px;
+      cursor: pointer;
       color: var(--color-muted);
       font-size: var(--font-size-xs);
+      transition: all var(--transition-fast);
     }
+    .photo-add-btn:hover { border-color: var(--color-primary-light); color: var(--color-primary); }
 
     /* --- Cards for Room Types & Rate Rules --- */
     .room-type-card,
@@ -174,7 +231,7 @@
       <!-- Logo -->
       <div class="sidebar-logo">
         <a href="index.html" class="sidebar-logo-link">
-          <span class="sidebar-logo-text">TrendAccom</span>
+          <span class="sidebar-logo-text">Cascade Apartment 4</span>
           <span class="sidebar-logo-badge">Admin</span>
         </a>
       </div>
@@ -283,12 +340,12 @@
               </a>
             </li>
             <li class="sidebar-nav-item">
-              <a href="stripe-connect.html" class="sidebar-nav-link">
+              <a href="payments.html" class="sidebar-nav-link">
                 <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
                   <line x1="1" y1="10" x2="23" y2="10"></line>
                 </svg>
-                <span>Stripe Connect</span>
+                <span>Stripe Settings</span>
               </a>
             </li>
           </ul>
@@ -410,7 +467,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg);">
                   <div class="form-group">
                     <label class="form-label">Property Name <span class="required">*</span></label>
-                    <input type="text" class="form-input" placeholder="e.g. The Grand Harbour Hotel">
+                    <input type="text" class="form-input" placeholder="e.g. Cascade Apartment 4">
                   </div>
                   <div class="form-group">
                     <label class="form-label">Property Type <span class="required">*</span></label>
@@ -705,7 +762,7 @@
             <!-- ================================ -->
             <div class="tab-panel" id="tab-photos">
 
-              <div class="upload-zone">
+              <div class="upload-zone" onclick="document.getElementById('photoUploadInput').click()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48">
                   <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -713,27 +770,90 @@
                 </svg>
                 <h4>Drag &amp; drop photos here</h4>
                 <p>or click to browse files. Supports JPG, PNG, WebP up to 10MB each.</p>
-                <button class="btn btn--outline btn--sm" style="margin-top: var(--space-md);">Browse Files</button>
+                <button class="btn btn--outline btn--sm" style="margin-top: var(--space-md);" onclick="event.stopPropagation();document.getElementById('photoUploadInput').click()">Browse Files</button>
               </div>
 
-              <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); margin-top: var(--space-2xl); margin-bottom: var(--space-md);">Existing Photos</h4>
-              <div class="photos-grid-placeholder">
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #1a5276, #2980b9);">
-                  <span style="color: rgba(255,255,255,0.7);">Main</span>
+              <h4 style="font-family: var(--font-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); margin-top: var(--space-2xl); margin-bottom: var(--space-md);">Existing Photos <span style="font-weight:400;color:var(--color-muted);">(9 photos)</span></h4>
+              <div class="photos-grid" id="photosGrid">
+                <div class="photo-item">
+                  <img src="../images/cascade-hero.jpg" alt="Exterior">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                  <span class="photo-item-badge">Cover</span>
                 </div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #16a085, #1abc9c);">
-                  <span style="color: rgba(255,255,255,0.7);">Lobby</span>
+                <div class="photo-item">
+                  <img src="../images/IMG_4216.jpg" alt="Living area">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
                 </div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #8e44ad, #9b59b6);">
-                  <span style="color: rgba(255,255,255,0.7);">Room</span>
+                <div class="photo-item">
+                  <img src="../images/IMG_4220.jpg" alt="Kitchen">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
                 </div>
-                <div class="photo-placeholder" style="background: linear-gradient(135deg, #d35400, #e67e22);">
-                  <span style="color: rgba(255,255,255,0.7);">Pool</span>
+                <div class="photo-item">
+                  <img src="../images/IMG_4223.jpg" alt="Dining area">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
                 </div>
-                <div class="photo-placeholder">
+                <div class="photo-item">
+                  <img src="../images/IMG_4225.jpg" alt="Lounge">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="photo-item">
+                  <img src="../images/IMG_4232.jpg" alt="Main bedroom">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="photo-item">
+                  <img src="../images/IMG_4233.jpg" alt="Bunk room">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="photo-item">
+                  <img src="../images/IMG_4235.jpg" alt="Bathroom">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="photo-item">
+                  <img src="../images/IMG_4252.jpg" alt="Kitchen (2)">
+                  <div class="photo-item-overlay">
+                    <button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <button class="photo-add-btn" onclick="document.getElementById('photoUploadInput').click()">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                </div>
+                  Add photo
+                </button>
               </div>
+              <input type="file" id="photoUploadInput" accept="image/*" multiple style="display:none;" onchange="handlePhotoUpload(this)">
             </div>
 
             <!-- ================================ -->
@@ -854,7 +974,7 @@
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
                 </svg>
-                <code>https://trendaccom.com.au/ical/export/prop-abc123-def456.ics</code>
+                <code>https://cascadeskiapartments.com.au/ical/export/prop-abc123-def456.ics</code>
                 <button class="btn btn--sm btn--outline" title="Copy URL">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                   Copy
@@ -920,19 +1040,67 @@
         tab.addEventListener('click', function() {
           var targetId = 'tab-' + this.getAttribute('data-tab');
 
-          // Deactivate all tabs and panels
           tabs.forEach(function(t) { t.classList.remove('active'); });
           panels.forEach(function(p) { p.classList.remove('active'); });
 
-          // Activate clicked tab and matching panel
           this.classList.add('active');
           var targetPanel = document.getElementById(targetId);
-          if (targetPanel) {
-            targetPanel.classList.add('active');
-          }
+          if (targetPanel) targetPanel.classList.add('active');
         });
       });
     });
+
+    // Photo management
+    function removePhoto(btn) {
+      var item = btn.closest('.photo-item');
+      if (!item) return;
+      item.style.transition = 'opacity 0.2s';
+      item.style.opacity = '0';
+      setTimeout(function() {
+        item.remove();
+        updatePhotoCount();
+      }, 200);
+    }
+
+    function updatePhotoCount() {
+      var grid = document.getElementById('photosGrid');
+      var count = grid ? grid.querySelectorAll('.photo-item').length : 0;
+      var heading = grid && grid.previousElementSibling;
+      if (heading) {
+        var span = heading.querySelector('span');
+        if (span) span.textContent = '(' + count + ' photo' + (count !== 1 ? 's' : '') + ')';
+      }
+    }
+
+    function handlePhotoUpload(input) {
+      var grid = document.getElementById('photosGrid');
+      var addBtn = grid ? grid.querySelector('.photo-add-btn') : null;
+      if (!grid || !input.files.length) return;
+
+      Array.from(input.files).forEach(function(file) {
+        if (!file.type.startsWith('image/')) return;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var item = document.createElement('div');
+          item.className = 'photo-item';
+          item.innerHTML =
+            '<img src="' + e.target.result + '" alt="' + file.name + '">' +
+            '<div class="photo-item-overlay">' +
+              '<button class="photo-item-delete" title="Remove photo" onclick="removePhoto(this)">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+              '</button>' +
+            '</div>';
+          if (addBtn) {
+            grid.insertBefore(item, addBtn);
+          } else {
+            grid.appendChild(item);
+          }
+          updatePhotoCount();
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
   </script>
 </body>
 </html>

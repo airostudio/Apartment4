@@ -1,5 +1,5 @@
 /**
- * TrendAccom - Calendar Widget
+ * Cascade Apartment 4 - Calendar Widget
  * Handles: Availability calendar rendering, date range selection,
  * booking visualization, and admin calendar management
  */
@@ -309,8 +309,8 @@
   }
 
   // Expose globally
-  window.TrendAccom = window.TrendAccom || {};
-  window.TrendAccom.AvailabilityCalendar = AvailabilityCalendar;
+  window.CascadeApt4 = window.CascadeApt4 || {};
+  window.CascadeApt4.AvailabilityCalendar = AvailabilityCalendar;
 
   // Auto-init calendars with data attributes
   function initCalendars() {

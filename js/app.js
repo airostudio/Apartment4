@@ -1,5 +1,5 @@
 /**
- * TrendAccom - Main Application JavaScript
+ * Cascade Apartment 4 - Main Application JavaScript
  * Handles: Navigation, hero slideshow, parallax, scroll animations,
  * mobile menu, tabs, modals, toasts, and general UI interactions
  */
@@ -156,9 +156,9 @@
   // ============================================
   // Toast Notifications
   // ============================================
-  window.TrendAccom = window.TrendAccom || {};
+  window.CascadeApt4 = window.CascadeApt4 || {};
 
-  window.TrendAccom.showToast = function(message, type = 'info', duration = 4000) {
+  window.CascadeApt4.showToast = function(message, type = 'info', duration = 4000) {
     let container = document.querySelector('.toast-container');
     if (!container) {
       container = document.createElement('div');
@@ -186,7 +186,7 @@
   // ============================================
   // Modal
   // ============================================
-  window.TrendAccom.openModal = function(modalId) {
+  window.CascadeApt4.openModal = function(modalId) {
     const backdrop = document.getElementById(modalId);
     if (backdrop) {
       backdrop.classList.add('active');
@@ -194,7 +194,7 @@
     }
   };
 
-  window.TrendAccom.closeModal = function(modalId) {
+  window.CascadeApt4.closeModal = function(modalId) {
     const backdrop = document.getElementById(modalId);
     if (backdrop) {
       backdrop.classList.remove('active');
@@ -231,7 +231,7 @@
         btn.classList.toggle('active');
 
         const isActive = btn.classList.contains('active');
-        window.TrendAccom.showToast(
+        window.CascadeApt4.showToast(
           isActive ? 'Added to favorites' : 'Removed from favorites',
           isActive ? 'success' : 'info'
         );
@@ -328,14 +328,14 @@
   // ============================================
   // URL Parameter Helpers
   // ============================================
-  window.TrendAccom.getUrlParams = function() {
+  window.CascadeApt4.getUrlParams = function() {
     return Object.fromEntries(new URLSearchParams(window.location.search));
   };
 
   // ============================================
   // Format Currency
   // ============================================
-  window.TrendAccom.formatCurrency = function(amount, currency = 'AUD') {
+  window.CascadeApt4.formatCurrency = function(amount, currency = 'AUD') {
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
       currency: currency,
@@ -347,7 +347,7 @@
   // ============================================
   // Format Date
   // ============================================
-  window.TrendAccom.formatDate = function(dateStr) {
+  window.CascadeApt4.formatDate = function(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-AU', {
       weekday: 'short',
@@ -356,6 +356,89 @@
       year: 'numeric'
     });
   };
+
+  // ============================================
+  // Lightbox
+  // ============================================
+  function initLightbox() {
+    const backdrop = document.getElementById('lightbox');
+    if (!backdrop) return;
+
+    const imgEl    = document.getElementById('lightboxImg');
+    const counter  = document.getElementById('lightboxCounter');
+    const caption  = document.getElementById('lightboxCaption');
+    const closeBtn = document.getElementById('lightboxClose');
+    const prevBtn  = document.getElementById('lightboxPrev');
+    const nextBtn  = document.getElementById('lightboxNext');
+
+    const images = [];
+    let current = 0;
+
+    // Expose open so the "Show all photos" button can call it
+    window.CascadeApt4.openLightbox = function(idx) { open(idx); };
+
+    // Collect all items marked with data-lightbox
+    document.querySelectorAll('[data-lightbox]').forEach((el) => {
+      const img = el.tagName === 'IMG' ? el : el.querySelector('img');
+      if (!img) return;
+      const idx = images.length;
+      images.push({ src: img.src, alt: img.alt || '' });
+      el.style.cursor = 'pointer';
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', 'View ' + (img.alt || 'photo') + ' full size');
+      el.addEventListener('click', () => open(idx));
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(idx); }
+      });
+    });
+
+    if (!images.length) return;
+
+    function open(idx) {
+      current = ((idx % images.length) + images.length) % images.length;
+      imgEl.src = images[current].src;
+      if (caption) caption.textContent = images[current].alt;
+      if (counter) counter.textContent = (current + 1) + ' / ' + images.length;
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+      imgEl.src = '';
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (prevBtn)  prevBtn.addEventListener('click',  () => open(current - 1));
+    if (nextBtn)  nextBtn.addEventListener('click',  () => open(current + 1));
+
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(); });
+
+    document.addEventListener('keydown', (e) => {
+      if (!backdrop.classList.contains('active')) return;
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowLeft')  open(current - 1);
+      if (e.key === 'ArrowRight') open(current + 1);
+    });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    backdrop.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+    backdrop.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        if (dx < 0) open(current + 1);
+        else        open(current - 1);
+      }
+    }, { passive: true });
+  }
 
   // ============================================
   // Initialize Everything
@@ -370,6 +453,7 @@
     initAdminSidebar();
     autoAddAnimations();
     initScrollAnimations();
+    initLightbox();
 
     // Scroll event listeners
     let ticking = false;
