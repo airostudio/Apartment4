@@ -384,7 +384,13 @@
       const idx = images.length;
       images.push({ src: img.src, alt: img.alt || '' });
       el.style.cursor = 'pointer';
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', 'View ' + (img.alt || 'photo') + ' full size');
       el.addEventListener('click', () => open(idx));
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(idx); }
+      });
     });
 
     if (!images.length) return;
@@ -416,6 +422,22 @@
       if (e.key === 'ArrowLeft')  open(current - 1);
       if (e.key === 'ArrowRight') open(current + 1);
     });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    backdrop.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+    backdrop.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+        if (dx < 0) open(current + 1);
+        else        open(current - 1);
+      }
+    }, { passive: true });
   }
 
   // ============================================
