@@ -236,58 +236,11 @@
                     <a href="bookings.html" style="font-size:0.8rem;color:var(--color-primary);">All bookings →</a>
                 </div>
                 <div class="admin-card-body">
-                    <div class="checkin-list">
-                        <div class="checkin-item">
-                            <div class="checkin-date">
-                                <span class="checkin-date-day">27</span>
-                                <span class="checkin-date-month">Jun</span>
-                            </div>
-                            <div class="checkin-info">
-                                <span class="checkin-guest">Sarah Reynolds</span>
-                                <span class="checkin-meta">5 guests · Check-out Jun 30</span>
-                            </div>
-                            <span class="checkin-nights">3 nights · $1,354</span>
-                            <div class="checkin-status"><span class="badge badge--confirmed">Confirmed</span></div>
-                            <button class="btn btn-outline" style="font-size:0.78rem;padding:5px 10px;" onclick="window.location.href='bookings.html'">Details</button>
-                        </div>
-                        <div class="checkin-item">
-                            <div class="checkin-date">
-                                <span class="checkin-date-day">04</span>
-                                <span class="checkin-date-month">Jul</span>
-                            </div>
-                            <div class="checkin-info">
-                                <span class="checkin-guest">Matt &amp; Lisa Chen</span>
-                                <span class="checkin-meta">4 guests · Check-out Jul 9</span>
-                            </div>
-                            <span class="checkin-nights">5 nights · $2,028</span>
-                            <div class="checkin-status"><span class="badge badge--confirmed">Confirmed</span></div>
-                            <button class="btn btn-outline" style="font-size:0.78rem;padding:5px 10px;" onclick="window.location.href='bookings.html'">Details</button>
-                        </div>
-                        <div class="checkin-item">
-                            <div class="checkin-date">
-                                <span class="checkin-date-day">10</span>
-                                <span class="checkin-date-month">Jul</span>
-                            </div>
-                            <div class="checkin-info">
-                                <span class="checkin-guest">Paul Walsh</span>
-                                <span class="checkin-meta">7 guests · Check-out Jul 12</span>
-                            </div>
-                            <span class="checkin-nights">2 nights · $900</span>
-                            <div class="checkin-status"><span class="badge badge--pending">Pending</span></div>
-                            <button class="btn btn-outline" style="font-size:0.78rem;padding:5px 10px;" onclick="window.location.href='bookings.html'">Details</button>
-                        </div>
-                        <div class="checkin-item">
-                            <div class="checkin-date">
-                                <span class="checkin-date-day">17</span>
-                                <span class="checkin-date-month">Jul</span>
-                            </div>
-                            <div class="checkin-info">
-                                <span class="checkin-guest">James O'Brien</span>
-                                <span class="checkin-meta">6 guests · Check-out Jul 21</span>
-                            </div>
-                            <span class="checkin-nights">4 nights · $1,540</span>
-                            <div class="checkin-status"><span class="badge badge--confirmed">Confirmed</span></div>
-                            <button class="btn btn-outline" style="font-size:0.78rem;padding:5px 10px;" onclick="window.location.href='bookings.html'">Details</button>
+                    <div class="checkin-list" id="checkinList">
+                        <div class="admin-empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <p>No upcoming check-ins</p>
+                            <a href="bookings.html" class="btn btn-primary" style="font-size:0.85rem;">Add a Booking</a>
                         </div>
                     </div>
                 </div>
@@ -300,20 +253,11 @@
     <script src="../js/admin.js"></script>
     <script>
     (function() {
-        // Sample bookings data for Cascade Apartment 4
+        // Bookings data — populated as bookings are added
         // Format: [year, month(0-based), startDay, endDay, name, type]
-        var bookings = [
-            [2026, 5, 27, 29, 'S. Reynolds', 'confirmed'],   // Jun 27-29
-            [2026, 6, 4, 8, 'M. Chen', 'confirmed'],          // Jul 4-8
-            [2026, 6, 10, 11, 'P. Walsh', 'pending'],         // Jul 10-11
-            [2026, 6, 17, 20, "J. O'Brien", 'confirmed'],     // Jul 17-20
-            [2026, 6, 24, 25, 'Airbnb Import', 'ical'],       // Jul 24-25
-            [2026, 7, 1, 3, 'A. Burke', 'confirmed'],         // Aug 1-3
-            [2026, 7, 7, 7, 'Blocked', 'blocked'],            // Aug 7
-            [2026, 7, 14, 17, 'K. Thompson', 'confirmed'],    // Aug 14-17
-        ];
+        var bookings = [];
 
-        var currentDate = new Date(2026, 6, 1); // July 2026
+        var currentDate = new Date();
 
         function getEventForDay(year, month, day) {
             for (var i = 0; i < bookings.length; i++) {
