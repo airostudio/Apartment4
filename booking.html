@@ -664,6 +664,30 @@
         firstError.focus();
         return;
       }
+      // Persist guest to localStorage so admin Emails page can address them
+      var guestEmail = document.getElementById('email').value.trim();
+      var guestFirst = document.getElementById('firstName').value.trim();
+      var guestLast  = document.getElementById('lastName').value.trim();
+      var guestPhone = document.getElementById('phone').value.trim();
+      try {
+        var guests = JSON.parse(localStorage.getItem('guestData') || '[]');
+        var existing = guests.findIndex(function(g) { return g.email === guestEmail; });
+        var record = {
+          name: guestFirst + ' ' + guestLast,
+          firstName: guestFirst,
+          lastName: guestLast,
+          email: guestEmail,
+          phone: guestPhone,
+          addedAt: new Date().toISOString()
+        };
+        if (existing === -1) {
+          guests.push(record);
+        } else {
+          guests[existing] = record;
+        }
+        localStorage.setItem('guestData', JSON.stringify(guests));
+      } catch(e) {}
+
       // Carry booking data to checkout
       var ci = document.getElementById('checkinDate').value;
       var co = document.getElementById('checkoutDate').value;
