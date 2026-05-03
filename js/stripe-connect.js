@@ -2,57 +2,56 @@
  * Cascade Apartment 4 — Stripe Payment Integration
  *
  * Requires: <script src="https://js.stripe.com/v3/"></script> in the page head.
- * The publishable key is stored in localStorage via Admin → Stripe Settings.
- * Secret key operations must be handled server-side.
+ * Publishable key is fetched from /api/config (Vercel env var STRIPE_PUBLISHABLE_KEY).
+ * PaymentIntents are created server-side via /api/create-payment-intent.
  */
 
 (function () {
   'use strict';
 
-  var LS_KEY = 'cascade_stripe_settings';
-
-  function getSettings() {
-    try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (e) { return {}; }
-  }
-
   /* ─────────────────────────────────────────────
      Stripe Payment Object
   ───────────────────────────────────────────── */
   var StripePayment = {
-    stripe:      null,
-    elements:    null,
-    cardElement: null,
-    cardComplete: false,  // tracked via Stripe's change event
-    cardError:   null,    // last error message from Stripe
+    stripe:       null,
+    elements:     null,
+    cardElement:  null,
+    cardComplete: false,
+    cardError:    null,
 
     config: {
-      locale: 'en-AU',
       appearance: {
         theme: 'stripe',
         variables: {
-          colorPrimary:     '#0f2744',
-          colorBackground:  '#ffffff',
-          colorText:        '#2d2926',
-          colorDanger:      '#dc2626',
-          fontFamily:       'Inter, sans-serif',
-          spacingUnit:      '4px',
-          borderRadius:     '8px'
+          colorPrimary:    '#0f2744',
+          colorBackground: '#ffffff',
+          colorText:       '#2d2926',
+          colorDanger:     '#dc2626',
+          fontFamily:      'Inter, sans-serif',
+          spacingUnit:     '4px',
+          borderRadius:    '8px'
         }
       }
     },
 
-    init: function () {
+    init: async function () {
       if (typeof Stripe === 'undefined') {
         console.warn('Stripe.js not loaded — payment processing unavailable.');
         this.showPlaceholder('Stripe.js could not be loaded. Please check your internet connection and refresh.');
         return;
       }
 
-      var settings = getSettings();
-      var publishableKey = settings.publishableKey || '';
+      var publishableKey = '';
+      try {
+        var resp = await fetch('/api/config');
+        var data = await resp.json();
+        publishableKey = data.publishableKey || '';
+      } catch (e) {
+        console.warn('Could not fetch Stripe config:', e.message);
+      }
 
       if (!publishableKey) {
-        console.warn('Stripe publishable key not configured. Visit Admin → Stripe Settings.');
+        console.warn('Stripe publishable key not configured.');
         this.showPlaceholder('Payment processing is not yet configured. Please contact the host to complete your booking.');
         return;
       }
@@ -75,9 +74,9 @@
       this.cardElement = this.elements.create('card', {
         style: {
           base: {
-            fontSize:    '16px',
-            color:       '#2d2926',
-            fontFamily:  'Inter, sans-serif',
+            fontSize:        '16px',
+            color:           '#2d2926',
+            fontFamily:      'Inter, sans-serif',
             '::placeholder': { color: '#9ca3af' }
           },
           invalid: { color: '#dc2626' }
@@ -92,16 +91,15 @@
         self.cardError    = event.error ? event.error.message : null;
 
         var errorEl = document.getElementById('card-errors');
-        if (errorEl) {
-          errorEl.textContent = self.cardError || '';
-        }
+        if (errorEl) errorEl.textContent = self.cardError || '';
 
-        // Clear the invalid state on the card wrapper once the user starts typing
         var cardWrapper = document.getElementById('stripe-card-element');
-        if (cardWrapper && event.error) {
-          cardWrapper.classList.add('is-invalid');
-        } else if (cardWrapper) {
-          cardWrapper.classList.remove('is-invalid');
+        if (cardWrapper) {
+          if (event.error) {
+            cardWrapper.classList.add('is-invalid');
+          } else {
+            cardWrapper.classList.remove('is-invalid');
+          }
         }
       });
     },
@@ -118,11 +116,6 @@
         '</div>';
     },
 
-    /**
-     * Process a payment.
-     * Production: create PaymentIntent server-side, then call
-     * stripe.confirmCardPayment(clientSecret, { payment_method: { card, billing_details } })
-     */
     processPayment: async function (bookingData) {
       if (!this.stripe || !this.cardElement) {
         throw new Error('Payment processing is not available. Please contact the host to complete your booking.');
@@ -139,23 +132,37 @@
         }
       };
 
-      // Production flow:
-      // 1. POST booking data to your server
-      // 2. Server calls stripe.paymentIntents.create({ amount, currency })
-      // 3. Server returns { clientSecret }
-      // 4. await stripe.confirmCardPayment(clientSecret, { payment_method: { card: cardElement, billing_details } })
-
-      console.log('Payment ready to process:', {
-        amount:         bookingData.amount,
-        currency:       getSettings().currency || 'aud',
-        billingDetails: billingDetails
+      // Create PaymentIntent server-side
+      var piResp = await fetch('/api/create-payment-intent', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ amountCents: bookingData.amountCents, currency: 'aud' })
       });
 
-      // Simulated success response (replace with real server call)
+      if (!piResp.ok) {
+        var piErr = {};
+        try { piErr = await piResp.json(); } catch (_) {}
+        throw new Error(piErr.error || 'Could not initiate payment. Please try again.');
+      }
+
+      var piData = await piResp.json();
+
+      // Confirm card payment client-side
+      var result = await this.stripe.confirmCardPayment(piData.clientSecret, {
+        payment_method: {
+          card:            this.cardElement,
+          billing_details: billingDetails
+        }
+      });
+
+      if (result.error) {
+        throw new Error(result.error.message || 'Payment failed. Please check your card details and try again.');
+      }
+
       return {
-        success:         true,
-        paymentIntentId: 'pi_demo_' + Date.now(),
-        status:          'succeeded'
+        success:         result.paymentIntent.status === 'succeeded',
+        paymentIntentId: result.paymentIntent.id,
+        status:          result.paymentIntent.status
       };
     }
   };
@@ -183,7 +190,6 @@
     var msg    = document.getElementById('formErrorMessage');
     if (msg)    msg.textContent = message;
     if (banner) banner.classList.add('visible');
-    // Scroll banner into view
     if (banner) banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
@@ -192,7 +198,6 @@
     if (banner) banner.classList.remove('visible');
   }
 
-  /* Attach live clear-on-type listeners to all required fields */
   function attachClearListeners() {
     var fields = [
       { id: 'cardHolderName', errId: 'err-cardHolderName' },
@@ -211,9 +216,7 @@
     });
     var country = document.getElementById('billingCountry');
     if (country) {
-      country.addEventListener('change', function () {
-        clearFormError();
-      });
+      country.addEventListener('change', function () { clearFormError(); });
     }
   }
 
@@ -255,9 +258,8 @@
       /* ── 2. Validate card element ── */
       var cardWrapper  = document.getElementById('stripe-card-element');
       var cardErrorsEl = document.getElementById('card-errors');
-
-      var stripeReady = StripePayment.stripe && StripePayment.cardElement;
-      var cardOk      = false;
+      var stripeReady  = StripePayment.stripe && StripePayment.cardElement;
+      var cardOk       = false;
 
       if (stripeReady) {
         if (!StripePayment.cardComplete) {
@@ -275,7 +277,7 @@
           cardOk = true;
         }
       } else {
-        // Stripe not configured — flag it but don't block on card
+        // Stripe not configured — skip card check
         cardOk = true;
       }
 
@@ -293,8 +295,8 @@
       var payNowBtn    = document.getElementById('payNowBtn');
       var originalHTML = payNowBtn ? payNowBtn.innerHTML : '';
       if (payNowBtn) {
-        payNowBtn.disabled   = true;
-        payNowBtn.innerHTML  =
+        payNowBtn.disabled  = true;
+        payNowBtn.innerHTML =
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
           'stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite">' +
           '<path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4' +
@@ -302,6 +304,8 @@
       }
 
       try {
+        var amountCents = parseInt(form.dataset.amountCents, 10) || 0;
+
         var data = {
           cardholderName: document.getElementById('cardHolderName').value.trim(),
           address:        document.getElementById('billingStreet').value.trim(),
@@ -309,7 +313,7 @@
           state:          document.getElementById('billingState').value.trim(),
           postcode:       document.getElementById('billingPostcode').value.trim(),
           country:        (document.getElementById('billingCountry') || {}).value || 'AU',
-          amount:         0
+          amountCents:    amountCents
         };
 
         var result = await StripePayment.processPayment(data);
@@ -317,7 +321,8 @@
         if (result.success) {
           window.location.href = 'confirmation.html?ref=TRA-' +
             new Date().getFullYear() + '-' +
-            String(Math.floor(Math.random() * 90000) + 10000);
+            String(Math.floor(Math.random() * 90000) + 10000) +
+            '&pi=' + result.paymentIntentId;
         }
       } catch (error) {
         showFormError(error.message || 'Payment failed. Please check your card details and try again.');
@@ -344,8 +349,8 @@
      Init
   ───────────────────────────────────────────── */
   function init() {
-    StripePayment.init();
-    initCheckoutForm();
+    StripePayment.init(); // async — mounts card element once key is fetched
+    initCheckoutForm();   // sync — attaches submit listener immediately
   }
 
   if (document.readyState === 'loading') {
@@ -354,6 +359,6 @@
     init();
   }
 
-  window.CascadeApt4           = window.CascadeApt4 || {};
+  window.CascadeApt4               = window.CascadeApt4 || {};
   window.CascadeApt4.StripePayment = StripePayment;
 })();

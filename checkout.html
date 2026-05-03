@@ -780,6 +780,9 @@
         set('coStripeFee',  fmtAUD(stripeFee));
         set('coTotal',    fmtAUD(total));
         set('coPayLabel', fmtAUD(total));
+
+        var form = document.getElementById('checkoutForm');
+        if (form) form.dataset.amountCents = Math.round(total * 100);
       }
     }
   })();
