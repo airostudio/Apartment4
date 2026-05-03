@@ -319,10 +319,26 @@
         var result = await StripePayment.processPayment(data);
 
         if (result.success) {
-          window.location.href = 'confirmation.html?ref=TRA-' +
-            new Date().getFullYear() + '-' +
-            String(Math.floor(Math.random() * 90000) + 10000) +
-            '&pi=' + result.paymentIntentId;
+          var ref = 'TRA-' + new Date().getFullYear() + '-' +
+            String(Math.floor(Math.random() * 90000) + 10000);
+
+          // Carry URL params (dates/guests) forward to confirmation
+          var pageParams = new URLSearchParams(window.location.search);
+          try {
+            localStorage.setItem('lastBookingSummary', JSON.stringify({
+              ref:             ref,
+              paymentIntentId: result.paymentIntentId,
+              checkin:         pageParams.get('checkin') || '',
+              checkout:        pageParams.get('checkout') || '',
+              guests:          pageParams.get('guests')  || '',
+              amountCents:     amountCents,
+              cardholderName:  data.cardholderName,
+              paidAt:          new Date().toISOString()
+            }));
+          } catch (_) {}
+
+          window.location.href = 'confirmation.html?ref=' + encodeURIComponent(ref) +
+            '&pi=' + encodeURIComponent(result.paymentIntentId);
         }
       } catch (error) {
         showFormError(error.message || 'Payment failed. Please check your card details and try again.');
