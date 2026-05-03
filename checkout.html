@@ -644,18 +644,20 @@
       }
       return false;
     }
-    function getNightlyRate(date) {
+    function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
       var hol = isVicSchoolHoliday(date);
+      // Ski season: June–August
       if (m >= 5 && m <= 7) {
-        var base = (d === 5 || d === 6) ? 450 : 385;
+        // Weekend nights (Fri=5, Sat=6): $855 flat
+        // Midweek (Sun–Thu): $985 for single night, $855 for 2+ nights
+        var isMidweek = (d !== 5 && d !== 6);
+        var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;
       }
-      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
-        return hol ? Math.round(285 * 1.20) : 285;
-      }
-      return 220;
+      // Green Season (Sep–May): property closed, return 0
+      return 0;
     }
 
     function set(id, val) {
@@ -678,7 +680,7 @@
         var baseTotal = 0;
         var cur = new Date(checkin);
         for (var i = 0; i < nights; i++) {
-          baseTotal += getNightlyRate(cur);
+          baseTotal += getNightlyRate(cur, nights);
           cur = new Date(cur.getTime() + msPerDay);
         }
         var avgRate  = Math.round(baseTotal / nights);
