@@ -358,6 +358,7 @@
         }
 
         .compose-toast.show { opacity: 1; pointer-events: auto; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 
     <script>
@@ -539,25 +540,79 @@
             document.getElementById('composeBody').value = '';
         });
 
+        /* ---- Convert plain text body to simple HTML ---- */
+        function textToHtml(text) {
+            var escaped = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            return '<div style="font-family:Inter,Arial,sans-serif;font-size:15px;line-height:1.7;color:#1e293b;max-width:600px;margin:0 auto;padding:32px 24px;">' +
+                escaped.replace(/\n/g, '<br>') +
+                '</div>';
+        }
+
         /* ---- Send ---- */
-        document.getElementById('composeSend').addEventListener('click', function () {
+        document.getElementById('composeSend').addEventListener('click', async function () {
+            var btn   = this;
             var toSel = document.getElementById('composeTo');
             var emailVal = document.getElementById('composeEmail').value.trim();
-            var subject = document.getElementById('composeSubject').value.trim();
-            var body = document.getElementById('composeBody').value.trim();
+            var subject  = document.getElementById('composeSubject').value.trim();
+            var body     = document.getElementById('composeBody').value.trim();
 
             if (!emailVal) { showToast('Please enter a recipient email address.'); return; }
             if (!subject)  { showToast('Please enter a subject line.'); return; }
             if (!body)     { showToast('Please write a message.'); return; }
 
-            var toOpt = toSel.options[toSel.selectedIndex];
+            var toOpt  = toSel.options[toSel.selectedIndex];
             var toLabel = toSel.value === 'all' ? 'All Guests'
                 : (toOpt && toOpt.dataset.name ? toOpt.dataset.name + ' <' + emailVal + '>' : emailVal);
 
+            /* Collect recipients */
+            var recipients = [];
+            if (toSel.value === 'all') {
+                var guests = getGuests();
+                guests.forEach(function(g) { if (g.email) recipients.push(g.email); });
+                if (!recipients.length) { showToast('No guest emails found in the guest list.'); return; }
+            } else {
+                recipients = [emailVal];
+            }
+
+            /* Disable button while sending */
+            var origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Sending…';
+
+            var sendErr = null;
+            try {
+                var resp = await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        to:      recipients,
+                        subject: subject,
+                        text:    body,
+                        html:    textToHtml(body)
+                    })
+                });
+                var data = await resp.json();
+                if (!resp.ok) sendErr = data.error || 'Send failed.';
+            } catch (e) {
+                sendErr = e.message || 'Network error.';
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = origHtml;
+
+            if (sendErr) {
+                showToast('Error: ' + sendErr);
+                return;
+            }
+
+            /* Log to localStorage */
             var log = getSentLog();
             log.unshift({
                 to: toLabel,
-                email: emailVal,
+                email: recipients.join(', '),
                 subject: subject,
                 body: body,
                 sentAt: new Date().toISOString()
@@ -565,9 +620,8 @@
             saveSentLog(log);
             renderLog();
 
-            /* Reset compose */
             document.getElementById('composeClear').click();
-            showToast('Email logged successfully.');
+            showToast('✓ Email sent successfully!');
         });
 
         /* ---- Render log ---- */

@@ -168,6 +168,17 @@
   };
 
   /* ─────────────────────────────────────────────
+     Shared helpers
+  ───────────────────────────────────────────── */
+  function escHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ─────────────────────────────────────────────
      Inline validation helpers
   ───────────────────────────────────────────── */
 
@@ -324,17 +335,83 @@
 
           // Carry URL params (dates/guests) forward to confirmation
           var pageParams = new URLSearchParams(window.location.search);
+          var checkin  = pageParams.get('checkin')  || '';
+          var checkout = pageParams.get('checkout') || '';
+          var guests   = pageParams.get('guests')   || '';
+
           try {
             localStorage.setItem('lastBookingSummary', JSON.stringify({
               ref:             ref,
               paymentIntentId: result.paymentIntentId,
-              checkin:         pageParams.get('checkin') || '',
-              checkout:        pageParams.get('checkout') || '',
-              guests:          pageParams.get('guests')  || '',
+              checkin:         checkin,
+              checkout:        checkout,
+              guests:          guests,
               amountCents:     amountCents,
               cardholderName:  data.cardholderName,
               paidAt:          new Date().toISOString()
             }));
+          } catch (_) {}
+
+          // Fire booking confirmation email (non-blocking)
+          try {
+            var guestEmail = '';
+            var savedGuests = JSON.parse(localStorage.getItem('guestData') || '[]');
+            if (savedGuests.length) {
+              guestEmail = savedGuests[savedGuests.length - 1].email || '';
+            }
+            if (guestEmail) {
+              var totalAUD = (amountCents / 100).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
+              var fmtDate = function(str) {
+                if (!str) return '—';
+                var d = new Date(str + 'T12:00:00');
+                return d.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+              };
+              var confHtml = [
+                '<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b;">',
+                '<div style="background:#0f2744;padding:32px 28px;border-radius:12px 12px 0 0;">',
+                '<h1 style="color:#fff;font-size:22px;margin:0 0 4px;">Booking Confirmed</h1>',
+                '<p style="color:rgba(255,255,255,0.7);margin:0;font-size:14px;">Cascade Apartment 4 — Mt Baw Baw Alpine Resort</p>',
+                '</div>',
+                '<div style="background:#fff;border:1px solid #e2e8f0;border-top:none;padding:28px;border-radius:0 0 12px 12px;">',
+                '<p style="font-size:15px;margin:0 0 20px;">Hi ' + escHtml(data.cardholderName) + ',</p>',
+                '<p style="font-size:15px;margin:0 0 24px;">Great news — your booking at Cascade Apartment 4 is confirmed!</p>',
+                '<table style="width:100%;border-collapse:collapse;margin-bottom:24px;">',
+                '<tr style="background:#f8fafc;"><td style="padding:10px 14px;font-size:13px;color:#64748b;width:38%;">Booking Reference</td><td style="padding:10px 14px;font-size:13px;font-weight:600;">' + escHtml(ref) + '</td></tr>',
+                '<tr><td style="padding:10px 14px;font-size:13px;color:#64748b;">Check-in</td><td style="padding:10px 14px;font-size:13px;">' + escHtml(fmtDate(checkin)) + ' from 3:00 PM</td></tr>',
+                '<tr style="background:#f8fafc;"><td style="padding:10px 14px;font-size:13px;color:#64748b;">Check-out</td><td style="padding:10px 14px;font-size:13px;">' + escHtml(fmtDate(checkout)) + ' by 10:00 AM</td></tr>',
+                '<tr><td style="padding:10px 14px;font-size:13px;color:#64748b;">Guests</td><td style="padding:10px 14px;font-size:13px;">' + escHtml(guests) + ' adult' + (parseInt(guests) !== 1 ? 's' : '') + '</td></tr>',
+                '<tr style="background:#f8fafc;"><td style="padding:10px 14px;font-size:13px;color:#64748b;">Total Paid</td><td style="padding:10px 14px;font-size:13px;font-weight:700;color:#0f2744;">' + escHtml(totalAUD) + '</td></tr>',
+                '</table>',
+                '<div style="background:#fff7ed;border:1.5px solid #f97316;border-radius:8px;padding:14px 16px;margin-bottom:20px;">',
+                '<p style="font-size:13px;font-weight:700;color:#9a3412;margin:0 0 6px;">Linen &amp; Towels</p>',
+                '<p style="font-size:13px;color:#7c2d12;margin:0;">Bed linen and bath towels are not included. Bring your own or hire: <strong>Queen/Double $40 · Single $20</strong>. Contact us to arrange hire before your stay.</p>',
+                '</div>',
+                '<p style="font-size:13px;color:#475569;margin:0 0 6px;">Questions? Reply to this email or contact us at <a href="mailto:hello@cascadeskiapartments.com" style="color:#0f2744;">hello@cascadeskiapartments.com</a></p>',
+                '<p style="font-size:13px;color:#475569;margin:0;">We look forward to welcoming you!</p>',
+                '<p style="font-size:13px;color:#475569;margin:20px 0 0;">Warm regards,<br><strong>Cascade Apartment 4</strong></p>',
+                '</div></div>'
+              ].join('');
+
+              var confText = 'Hi ' + data.cardholderName + ',\n\nYour booking at Cascade Apartment 4 is confirmed!\n\n'
+                + 'Reference:  ' + ref + '\n'
+                + 'Check-in:   ' + fmtDate(checkin) + ' from 3:00 PM\n'
+                + 'Check-out:  ' + fmtDate(checkout) + ' by 10:00 AM\n'
+                + 'Guests:     ' + guests + '\n'
+                + 'Total Paid: ' + totalAUD + '\n\n'
+                + 'Linen & Towels: not included. Bring your own or hire (Queen/Double $40, Single $20).\n\n'
+                + 'Questions? Email hello@cascadeskiapartments.com\n\nWarm regards,\nCascade Apartment 4';
+
+              fetch('/api/send-email', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  to:      guestEmail,
+                  subject: 'Booking Confirmed — Cascade Apartment 4 (' + ref + ')',
+                  text:    confText,
+                  html:    confHtml
+                })
+              }).catch(function() {});
+            }
           } catch (_) {}
 
           window.location.href = 'confirmation.html?ref=' + encodeURIComponent(ref) +
