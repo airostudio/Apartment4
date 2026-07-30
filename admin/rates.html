@@ -930,47 +930,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Midweek row -->
-                        <tr id="row-ski-midweek">
+                        <!-- Midweek row — by arrangement only -->
+                        <tr id="row-ski-midweek" style="background:#fafafa;">
                             <td>
-                                <span class="rate-type-label">Mid-week</span>
-                                <span class="rate-type-sublabel">Sunday night – Thursday night</span>
-                                <span class="rate-type-sublabel" style="margin-top:3px;color:#b45309;font-style:italic;">1-night stay: $985 &nbsp;·&nbsp; 2+ nights: $855</span>
+                                <span class="rate-type-label" style="color:#6b7280;">Mid-week</span>
+                                <span class="rate-type-sublabel">Mon night – Thu night</span>
+                                <span class="rate-type-sublabel" style="margin-top:3px;color:#b45309;font-style:italic;">By arrangement only — contact host to enquire</span>
                             </td>
-                            <td>
-                                <span class="rate-base-price" id="ski-midweek-base-display">$855.00</span>
-                                <span class="rate-type-sublabel">per night (2+ nights)</span>
-                            </td>
-                            <td>
-                                <span class="rate-base-price" id="ski-midweek-holiday-display" style="font-size:1.1rem;">$1,111.50</span>
-                                <span class="rate-holiday-price" id="ski-midweek-holiday-label">+30% premium</span>
-                            </td>
-                            <td style="text-align:right;padding-right:20px;vertical-align:middle;">
-                                <button class="rate-edit-btn" onclick="openModal('ski-midweek')">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                    </svg>
-                                    Edit Rate
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- Midweek breakdown -->
-                        <tr id="breakdown-ski-midweek">
-                            <td colspan="4" style="padding:0;background:#f9fafb;border-top:1px dashed #e5e7eb;">
-                                <table class="breakdown-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Scenario</th>
-                                            <th>Base Rate</th>
-                                            <th>Guest Pays (inc. Stripe fee)</th>
-                                            <th>Admin Earns (98.3%)</th>
-                                            <th>Owner Earns (1.7%)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="breakdown-ski-midweek-body">
-                                        <!-- JS-rendered -->
-                                    </tbody>
-                                </table>
+                            <td colspan="3" style="color:#9ca3af;font-size:0.875rem;vertical-align:middle;">
+                                No standard rate. Mid-week stays are available by arrangement — not bookable online.
                             </td>
                         </tr>
 
@@ -1064,21 +1032,18 @@
                 <div class="booking-rules-grid">
                     <!-- Weekend min nights -->
                     <div class="booking-rules-item booking-rules-item--editable">
-                        <span class="booking-rules-item__label">Weekend min. stay (Fri–Sun)</span>
+                        <span class="booking-rules-item__label">Weekend min. stay (Fri–Sun, + Mon on VIC long weekends)</span>
                         <div class="booking-rules-item__edit-row">
                             <input type="number" class="booking-rules-item__input" id="rule-ski-weekend" value="2" min="2" max="30" aria-label="Weekend minimum nights">
                             <span class="booking-rules-item__input-label">nights minimum</span>
                         </div>
-                        <span class="booking-rules-item__sub">Check-in Friday, check-out Sunday</span>
+                        <span class="booking-rules-item__sub">Check-in Friday, check-out Sunday (or Monday on long weekends)</span>
                     </div>
-                    <!-- Midweek 2+ nights -->
-                    <div class="booking-rules-item booking-rules-item--editable">
-                        <span class="booking-rules-item__label">Mid-week min. stay (Sun–Thu)</span>
-                        <div class="booking-rules-item__edit-row">
-                            <input type="number" class="booking-rules-item__input" id="rule-ski-midweek" value="1" min="1" max="30" aria-label="Midweek minimum nights">
-                            <span class="booking-rules-item__input-label">nights minimum</span>
-                        </div>
-                        <span class="booking-rules-item__sub">2+ nights: $855/night &nbsp;·&nbsp; 1 night: $985</span>
+                    <!-- Midweek — by arrangement -->
+                    <div class="booking-rules-item" style="background:#fafafa;border-color:#e5e7eb;">
+                        <span class="booking-rules-item__label" style="color:#6b7280;">Mid-week (by arrangement)</span>
+                        <span class="booking-rules-item__value" style="color:#9ca3af;font-size:0.88rem;">Not standard</span>
+                        <span class="booking-rules-item__sub">Mon–Thu stays available by arrangement — contact host to enquire. Not bookable online.</span>
                     </div>
                     <!-- No Saturday check-in -->
                     <div class="booking-rules-item" style="background:#fff7ed;border-color:#fed7aa;">
@@ -1191,9 +1156,8 @@
 
     // ---- Rate state ----
     const rates = {
-        'ski-midweek':        855,   // 2+ nights Sun–Thu
-        'ski-midweek-single': 985,   // 1-night Sun–Thu surcharge
-        'ski-weekend':        855    // Fri–Sat nights (min 2, check-out Sun)
+        'ski-weekend': 855    // Fri–Sun nights (min 2, check-out Sun; + Mon on VIC long weekends)
+        // Midweek is by arrangement only — no standard rate
     };
 
     // Holiday premium multipliers
