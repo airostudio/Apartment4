@@ -1335,6 +1335,14 @@
       if (ci && co) updatePricing();
 
       // Book Now button
+      // Grey out past dates
+      (function() {
+        var n = new Date();
+        var t = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+        document.getElementById('checkin').setAttribute('min', t);
+        document.getElementById('checkout').setAttribute('min', t);
+      })();
+
       function isAllowedCheckinDay(dateStr) {
         if (!dateStr) return true;
         var d = new Date(dateStr + 'T12:00:00');

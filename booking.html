@@ -462,6 +462,14 @@
               <span>Cleaning fee</span>
               <span>$150</span>
             </div>
+            <div class="price-row" id="sumEarlyCheckinRow" style="display:none">
+              <span>Early Check-in (10:00 AM)</span>
+              <span>$30</span>
+            </div>
+            <div class="price-row" id="sumLateCheckoutRow" style="display:none">
+              <span>Late Checkout (4:00 PM)</span>
+              <span>$30</span>
+            </div>
             <div class="price-row">
               <span title="Stripe payment processing (1.75% + $0.30)">Stripe fee</span>
               <span id="sumStripeFee">—</span>
@@ -609,7 +617,13 @@
         cur = new Date(cur.getTime() + msPerDay);
       }
       var avgRate = Math.round(baseTotal / nights);
-      var subtotal = baseTotal + CLEANING_FEE;
+
+      var earlyCheckinFee = document.getElementById('earlyCheckin').checked ? 30 : 0;
+      var lateCheckoutFee = document.getElementById('lateCheckout').checked ? 30 : 0;
+      document.getElementById('sumEarlyCheckinRow').style.display = earlyCheckinFee ? '' : 'none';
+      document.getElementById('sumLateCheckoutRow').style.display = lateCheckoutFee ? '' : 'none';
+
+      var subtotal = baseTotal + CLEANING_FEE + earlyCheckinFee + lateCheckoutFee;
       var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
       var total = Math.round((subtotal + stripeFee) * 100) / 100;
 
@@ -634,10 +648,18 @@
         if (parseInt(adultSel.options[i].value) === adults) { adultSel.selectedIndex = i; break; }
       }
     }
+    // Grey out past dates
+    var todayStr = (function() {
+      var n = new Date();
+      return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+    })();
+    document.getElementById('checkinDate').setAttribute('min', todayStr);
+    document.getElementById('checkoutDate').setAttribute('min', todayStr);
+
     updateSummary();
 
     // Live updates
-    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
+    ['checkinDate','checkoutDate','numAdults','numChildren','earlyCheckin','lateCheckout'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('change', updateSummary);
     });
@@ -745,9 +767,13 @@
       var ci = document.getElementById('checkinDate').value;
       var co = document.getElementById('checkoutDate').value;
       var adults = document.getElementById('numAdults').value;
+      var earlyCI = document.getElementById('earlyCheckin').checked ? '1' : '0';
+      var lateCO  = document.getElementById('lateCheckout').checked ? '1' : '0';
       var url = 'checkout.html?checkin=' + encodeURIComponent(ci)
         + '&checkout=' + encodeURIComponent(co)
-        + '&guests=' + encodeURIComponent(adults);
+        + '&guests=' + encodeURIComponent(adults)
+        + '&earlyCheckin=' + earlyCI
+        + '&lateCheckout=' + lateCO;
       window.location.href = url;
     });
   })();

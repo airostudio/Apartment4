@@ -599,6 +599,14 @@
               <span>Cleaning fee</span>
               <span id="coCleaningFee">$150</span>
             </div>
+            <div class="price-row" id="coEarlyCheckinRow" style="display:none">
+              <span>Early Check-in (10:00 AM)</span>
+              <span>$30</span>
+            </div>
+            <div class="price-row" id="coLateCheckoutRow" style="display:none">
+              <span>Late Checkout (4:00 PM)</span>
+              <span>$30</span>
+            </div>
             <div class="price-row">
               <span>Stripe processing fee</span>
               <span id="coStripeFee">–</span>
@@ -764,6 +772,10 @@
     var ciStr  = params.get('checkin');
     var coStr  = params.get('checkout');
     var guests = parseInt(params.get('guests')) || 2;
+    var earlyCheckinFee  = params.get('earlyCheckin')  === '1' ? 30 : 0;
+    var lateCheckoutFee  = params.get('lateCheckout')  === '1' ? 30 : 0;
+    if (earlyCheckinFee)  { var r = document.getElementById('coEarlyCheckinRow');  if (r) r.style.display = ''; }
+    if (lateCheckoutFee)  { var r = document.getElementById('coLateCheckoutRow');  if (r) r.style.display = ''; }
 
     if (ciStr && coStr) {
       var checkin  = new Date(ciStr);
@@ -779,7 +791,7 @@
           cur = new Date(cur.getTime() + msPerDay);
         }
         var avgRate  = Math.round(baseTotal / nights);
-        var subtotal = baseTotal + CLEANING_FEE;
+        var subtotal = baseTotal + CLEANING_FEE + earlyCheckinFee + lateCheckoutFee;
         var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
         var total    = Math.round((subtotal + stripeFee) * 100) / 100;
 
