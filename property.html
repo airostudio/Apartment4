@@ -1335,6 +1335,32 @@
       if (ci && co) updatePricing();
 
       // Book Now button
+      function isAllowedCheckinDay(dateStr) {
+        if (!dateStr) return true;
+        var d = new Date(dateStr + 'T12:00:00');
+        var day = d.getDay();
+        return day === 5 || day === 6;
+      }
+      function showWidgetContactCallout(show) {
+        var existing = document.getElementById('widgetContactCallout');
+        if (show) {
+          if (!existing) {
+            var callout = document.createElement('div');
+            callout.id = 'widgetContactCallout';
+            callout.style.cssText = 'margin:12px 0 0;padding:12px 14px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;';
+            callout.innerHTML = '<p style="margin:0 0 6px;font-size:0.85rem;font-weight:600;color:#92400e;">Online bookings are available for Friday &amp; Saturday check-ins only.</p>'
+              + '<a href="index.html#contact" style="display:inline-block;padding:7px 16px;background:#d97706;color:#fff;border-radius:6px;font-size:0.83rem;font-weight:600;text-decoration:none;">Contact Us to Book &rarr;</a>';
+            var btnEl = document.getElementById('btnBook');
+            btnEl.parentNode.insertBefore(callout, btnEl);
+          }
+        } else {
+          if (existing) existing.remove();
+        }
+      }
+      document.getElementById('checkin').addEventListener('change', function() {
+        var val = this.value;
+        showWidgetContactCallout(val && !isAllowedCheckinDay(val));
+      });
       document.getElementById('btnBook').addEventListener('click', function() {
         var ci = document.getElementById('checkin').value;
         var co = document.getElementById('checkout').value;
@@ -1342,6 +1368,10 @@
         if (!ci || !co) {
           alert('Please select your check-in and check-out dates.');
           document.getElementById('checkin').focus();
+          return;
+        }
+        if (!isAllowedCheckinDay(ci)) {
+          showWidgetContactCallout(true);
           return;
         }
         var url = 'booking.html?checkin=' + encodeURIComponent(ci)

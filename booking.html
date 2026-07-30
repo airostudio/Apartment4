@@ -642,37 +642,49 @@
       if (el) el.addEventListener('change', updateSummary);
     });
 
-    // Open days: Fri (5), Sat (6), Sun (0) — Mon (1) on long weekends by arrangement
-    // VIC public holiday Mondays (Queen's Birthday) relevant to ski season
-    var LONG_WEEKEND_MONDAYS = [
-      '2025-06-09', '2026-06-08', '2027-06-14', '2028-06-12',
-      '2025-04-21', '2026-04-06', '2027-03-29', '2028-04-17'  // Easter Monday
-    ];
+    // Open days: Friday (5) and Saturday (6) only
     function isAllowedCheckinDay(dateStr) {
       if (!dateStr) return true;
       var d = new Date(dateStr + 'T12:00:00');
       var day = d.getDay();
-      if (day === 5 || day === 6 || day === 0) return true;
-      if (day === 1 && LONG_WEEKEND_MONDAYS.indexOf(dateStr) !== -1) return true;
-      return false;
+      return day === 5 || day === 6;
     }
-    function showDayError(show) {
-      var existing = document.getElementById('checkinDayError');
+    function showContactCallout(show) {
+      var existing = document.getElementById('checkinContactCallout');
+      var btn = document.getElementById('continueToPayment');
+      var contactBtn = document.getElementById('contactUsBtn');
       if (show) {
         if (!existing) {
-          var msg = document.createElement('p');
-          msg.id = 'checkinDayError';
-          msg.style.cssText = 'margin:6px 0 0;font-size:0.82rem;color:#dc2626;font-weight:500;';
-          msg.textContent = 'Bookings are available for Friday, Saturday and Sunday check-ins. For other days (including Monday long weekends), please contact us to arrange.';
+          var callout = document.createElement('div');
+          callout.id = 'checkinContactCallout';
+          callout.style.cssText = 'margin:10px 0 0;padding:14px 16px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;';
+          callout.innerHTML = '<p style="margin:0 0 8px;font-size:0.88rem;font-weight:600;color:#92400e;">We only take online bookings for Friday &amp; Saturday check-ins.</p>'
+            + '<p style="margin:0 0 10px;font-size:0.85rem;color:#78350f;">For other days, please reach out and we\'ll arrange a stay that works for you.</p>'
+            + '<a href="index.html#contact" style="display:inline-block;padding:8px 18px;background:#d97706;color:#fff;border-radius:6px;font-size:0.85rem;font-weight:600;text-decoration:none;">Contact Us to Book &rarr;</a>';
           var ciEl = document.getElementById('checkinDate');
-          ciEl.parentNode.appendChild(msg);
+          ciEl.parentNode.appendChild(callout);
+        }
+        if (btn) btn.style.display = 'none';
+        if (!contactBtn) {
+          var cb = document.createElement('a');
+          cb.id = 'contactUsBtn';
+          cb.href = 'index.html#contact';
+          cb.className = 'btn btn--primary btn--lg';
+          cb.style.cssText = 'background:#d97706;border-color:#d97706;display:block;text-align:center;';
+          cb.textContent = 'Contact Us to Book';
+          var summaryDiv = document.querySelector('.summary-cta');
+          if (summaryDiv) summaryDiv.appendChild(cb);
+        } else {
+          contactBtn.style.display = '';
         }
       } else {
         if (existing) existing.remove();
+        if (btn) btn.style.display = '';
+        if (contactBtn) contactBtn.style.display = 'none';
       }
     }
     document.getElementById('checkinDate').addEventListener('change', function() {
-      showDayError(!isAllowedCheckinDay(this.value));
+      showContactCallout(this.value && !isAllowedCheckinDay(this.value));
     });
 
     // Form validation
@@ -696,11 +708,9 @@
       // Validate check-in day
       var ciVal = document.getElementById('checkinDate').value;
       if (ciVal && !isAllowedCheckinDay(ciVal)) {
-        var ciEl = document.getElementById('checkinDate');
-        ciEl.style.borderColor = '#ef4444';
-        ciEl.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
-        showDayError(true);
-        if (!firstError) firstError = ciEl;
+        showContactCallout(true);
+        if (!firstError) firstError = document.getElementById('checkinDate');
+        return;
       }
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
