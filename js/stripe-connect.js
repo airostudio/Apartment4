@@ -124,11 +124,10 @@
       var billingDetails = {
         name: bookingData.cardholderName,
         address: {
-          line1:       bookingData.address,
-          city:        bookingData.city,
-          state:       bookingData.state,
-          postal_code: bookingData.postcode,
-          country:     bookingData.country || 'AU'
+          line1:   bookingData.address,
+          city:    bookingData.city,
+          state:   bookingData.state,
+          country: bookingData.country || 'AU'
         }
       };
 
@@ -227,9 +226,8 @@
     var fields = [
       { id: 'cardHolderName', errId: 'err-cardHolderName' },
       { id: 'billingStreet',  errId: 'err-billingStreet'  },
-      { id: 'billingCity',    errId: 'err-billingCity'    },
-      { id: 'billingState',   errId: 'err-billingState'   },
-      { id: 'billingPostcode',errId: 'err-billingPostcode' }
+      { id: 'billingCity',  errId: 'err-billingCity'  },
+      { id: 'billingState', errId: 'err-billingState' }
     ];
     fields.forEach(function (f) {
       var el = document.getElementById(f.id);
@@ -263,9 +261,8 @@
       var requiredFields = [
         { id: 'cardHolderName', errId: 'err-cardHolderName' },
         { id: 'billingStreet',  errId: 'err-billingStreet'  },
-        { id: 'billingCity',    errId: 'err-billingCity'    },
-        { id: 'billingState',   errId: 'err-billingState'   },
-        { id: 'billingPostcode',errId: 'err-billingPostcode' }
+        { id: 'billingCity',  errId: 'err-billingCity'  },
+        { id: 'billingState', errId: 'err-billingState' }
       ];
 
       var firstInvalid = null;
@@ -358,10 +355,9 @@
         var data = {
           cardholderName: document.getElementById('cardHolderName').value.trim(),
           address:        document.getElementById('billingStreet').value.trim(),
-          city:           document.getElementById('billingCity').value.trim(),
-          state:          document.getElementById('billingState').value.trim(),
-          postcode:       document.getElementById('billingPostcode').value.trim(),
-          country:        (document.getElementById('billingCountry') || {}).value || 'AU',
+          city:    document.getElementById('billingCity').value.trim(),
+          state:   document.getElementById('billingState').value.trim(),
+          country: (document.getElementById('billingCountry') || {}).value || 'AU',
           amountCents:    amountCents,
           ref:            ref,
           email:          guestEmail,
