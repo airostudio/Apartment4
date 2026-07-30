@@ -352,6 +352,26 @@
             }));
           } catch (_) {}
 
+          // Push to adminBookings so calendar and bookings list reflect this payment
+          try {
+            var adminBookings = JSON.parse(localStorage.getItem('adminBookings') || '[]');
+            adminBookings.push({
+              id:          ref,
+              name:        data.cardholderName,
+              email:       guestEmail,
+              phone:       '',
+              checkin:     checkin,
+              checkout:    checkout,
+              guests:      parseInt(guests) || 1,
+              rate:        855,
+              status:      'Confirmed',
+              source:      'stripe',
+              amountCents: amountCents,
+              notes:       'Paid online via Stripe. Payment ID: ' + result.paymentIntentId
+            });
+            localStorage.setItem('adminBookings', JSON.stringify(adminBookings));
+          } catch (_) {}
+
           // Fire booking confirmation email (non-blocking)
           try {
             var guestEmail = '';

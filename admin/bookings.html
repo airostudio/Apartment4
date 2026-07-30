@@ -960,8 +960,26 @@
        BOOKING DATA
     ────────────────────────────────────────────── */
     var bookings = [];
+    var idCounter = 1;
 
-    var idCounter = 1; // next booking number
+    var STORAGE_KEY = 'adminBookings';
+
+    function saveToStorage() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings)); } catch(_) {}
+    }
+
+    function loadFromStorage() {
+        try {
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return;
+            bookings = JSON.parse(saved);
+            // Restore idCounter from highest BK number seen
+            bookings.forEach(function(b) {
+                var n = parseInt((b.id || '').replace(/\D/g, ''), 10);
+                if (!isNaN(n) && n >= idCounter) idCounter = n + 1;
+            });
+        } catch(_) {}
+    }
 
     /* ──────────────────────────────────────────────
        HELPERS
@@ -1210,6 +1228,7 @@
         bk.rate     = parseFloat(document.getElementById('editRate').value) || bk.rate;
         bk.notes    = document.getElementById('editNotes').value.trim();
 
+        saveToStorage();
         renderTable();
         closeModal('editModal');
         showToast('Booking updated successfully.', 'success');
@@ -1227,13 +1246,13 @@
         if (!window.confirm(msg)) return;
 
         if (isAlreadyCancelled) {
-            // Remove from array
             bookings = bookings.filter(function (b) { return b.id !== bk.id; });
             showToast('Booking ' + bk.id + ' deleted.', 'warning');
         } else {
             bk.status = 'Cancelled';
             showToast('Booking ' + bk.id + ' has been cancelled.', 'warning');
         }
+        saveToStorage();
         renderTable();
     }
 
@@ -1288,9 +1307,11 @@
             guests: parseInt(guests, 10),
             rate: rate,
             status: 'Pending',
+            source: 'admin',
             notes: document.getElementById('createNotes').value.trim()
         });
 
+        saveToStorage();
         renderTable();
         closeModal('createModal');
         showToast('Booking ' + newId + ' created for ' + name + '.', 'success');
@@ -1325,6 +1346,7 @@
     /* ──────────────────────────────────────────────
        INIT
     ────────────────────────────────────────────── */
+    loadFromStorage();
     renderTable();
 
     // Populate topbar via AdminAuth if available
