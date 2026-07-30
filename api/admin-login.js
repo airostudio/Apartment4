@@ -32,7 +32,12 @@ module.exports = async (req, res) => {
   const passOk  = safeEqual(password, adminPassword);
 
   if (emailOk && passOk) {
-    return res.json({ success: true, role: 'owner' });
+    // Issue a stateless HMAC session token (24h validity)
+    const ts      = Date.now().toString();
+    const payload = adminEmail + ':' + ts;
+    const hmac    = crypto.createHmac('sha256', adminPassword).update(payload).digest('hex');
+    const token   = Buffer.from(payload + ':' + hmac).toString('base64');
+    return res.json({ success: true, role: 'owner', token });
   }
 
   await new Promise(function(r) { setTimeout(r, 400); });
