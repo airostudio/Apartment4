@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQs — Cascade Apartment 4, Mt Baw Baw</title>
+  <meta name="description" content="Frequently asked questions about staying at Cascade Apartment 4, Mt Baw Baw. Snow chains, getting there, check-in, WiFi, linen and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .faq-hero {
+      background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%);
+      padding: 80px 0 48px;
+    }
+    .faq-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .faq-hero p {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .faq-body {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    /* Section headings */
+    .faq-section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f2744;
+      margin: 48px 0 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .faq-section-title:first-of-type { margin-top: 0; }
+    .faq-section-title svg { flex-shrink: 0; color: #d97706; }
+
+    /* Accordion */
+    .faq-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .faq-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .faq-item.open { box-shadow: 0 2px 12px rgba(15,39,68,0.10); }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 18px 20px;
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #111827;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-family: inherit;
+      line-height: 1.4;
+    }
+    .faq-question:hover { background: #f9fafb; }
+    .faq-item.open .faq-question { background: #f8faff; color: #0f2744; }
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      transition: transform 0.25s;
+      color: #6b7280;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); color: #0f2744; }
+
+    .faq-answer {
+      display: none;
+      padding: 0 20px 20px;
+      font-size: 0.9rem;
+      color: #374151;
+      line-height: 1.7;
+      border-top: 1px solid #f3f4f6;
+    }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-answer p { margin: 12px 0 0; }
+    .faq-answer p:first-child { margin-top: 16px; }
+    .faq-answer ul, .faq-answer ol {
+      margin: 10px 0 0 0;
+      padding-left: 20px;
+    }
+    .faq-answer li { margin-bottom: 6px; }
+    .faq-answer a { color: #0f2744; font-weight: 600; }
+    .faq-answer strong { color: #111827; }
+
+    /* Chain hire guide card */
+    .chain-guide {
+      background: #fffbeb;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      padding: 24px 24px 20px;
+      margin: 16px 0 0;
+    }
+    .chain-guide__heading {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #92400e;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chain-place {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 12px 0;
+      border-bottom: 1px solid #fde68a;
+    }
+    .chain-place:last-child { border-bottom: none; padding-bottom: 0; }
+    .chain-place__name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #78350f;
+    }
+    .chain-place__suburb {
+      font-size: 0.82rem;
+      color: #92400e;
+      font-weight: 600;
+    }
+    .chain-place__desc {
+      font-size: 0.85rem;
+      color: #a16207;
+      line-height: 1.5;
+    }
+    .chain-tip {
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #fde68a;
+      font-size: 0.84rem;
+      color: #78350f;
+      line-height: 1.6;
+    }
+
+    /* Alert */
+    .faq-alert {
+      background: #fef2f2;
+      border: 1.5px solid #fca5a5;
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin: 12px 0 0;
+      font-size: 0.88rem;
+      color: #7f1d1d;
+      line-height: 1.6;
+    }
+    .faq-alert strong { color: #991b1b; }
+
+    @media (max-width: 640px) {
+      .faq-hero h1 { font-size: 1.8rem; }
+      .faq-question { font-size: 0.9rem; padding: 16px; }
+      .faq-answer { padding: 0 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo25.png" alt="Cascade Apartment 4">
+        Cascade Apartment 4
+      </a>
+      <nav class="nav-main">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="property.html" class="nav-link">The Apartment</a>
+        <a href="property.html#gallery" class="nav-link">Gallery</a>
+        <a href="property.html#booking" class="nav-link">Book Now</a>
+        <a href="index.html#contact" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="property.html#booking" class="btn btn--sm btn--outline">Book Now</a>
+      </div>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="property.html" class="nav-link">The Apartment</a>
+    <a href="property.html#gallery" class="nav-link">Gallery</a>
+    <a href="property.html#booking" class="nav-link">Book Now</a>
+    <a href="index.html#contact" class="nav-link">Contact</a>
+    <a href="property.html#booking" class="btn btn--primary btn--block">Book Now</a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="faq-hero">
+    <div class="container container--narrow">
+      <h1>Frequently Asked Questions</h1>
+      <p>Everything you need to know before your stay at Cascade Apartment 4</p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="faq-body">
+
+    <!-- ── Getting There ── -->
+    <h2 class="faq-section-title" id="getting-there">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Getting There
+    </h2>
+
+    <div class="faq-item open" id="chain-hire">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Are snow chains mandatory, and where can I hire them?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <div class="faq-alert">
+          <strong>Snow chains are MANDATORY during ski season.</strong> You must carry a set of approved chains whenever driving to Mt Baw Baw during snow season — even if you have a 4WD. VicRoads and the resort can turn vehicles away without them.
+        </div>
+        <p>If you don't own chains, you can hire a set from a number of locations on the way to the mountain. We recommend picking them up before you reach the mountain road.</p>
+
+        <div class="chain-guide">
+          <p class="chain-guide__heading">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Snow Chain Hire Locations Near Mt Baw Baw
+          </p>
+
+          <div class="chain-place">
+            <span class="chain-place__name">Yarragon &amp; Trafalgar</span>
+            <span class="chain-place__suburb">~50 km from the summit · Princes Highway</span>
+            <span class="chain-place__desc">Service stations along the Princes Highway in Yarragon and Trafalgar hire chains seasonally. These are the last major stops before you turn off toward Mt Baw Baw — fill up fuel and collect your chains here.</span>
+          </div>
+
+          <div class="chain-place">
+            <span class="chain-place__name">Warragul</span>
+            <span class="chain-place__suburb">~70 km from the summit · West Gippsland</span>
+            <span class="chain-place__desc">Warragul has auto parts stores (Repco, Supercheap Auto) and service stations that stock and hire chains. Larger selection and typically cheaper than last-minute options closer to the mountain.</span>
+          </div>
+
+          <div class="chain-place">
+            <span class="chain-place__name">Neerim South</span>
+            <span class="chain-place__suburb">~35 km from the summit · on the Icy Creek Rd route</span>
+            <span class="chain-place__desc">Local service stations in Neerim South area offer chain hire. A good option if you're approaching via the back road route.</span>
+          </div>
+
+          <div class="chain-place">
+            <span class="chain-place__name">Mt Baw Baw Alpine Resort — Summit</span>
+            <span class="chain-place__suburb">At the summit · last resort option</span>
+            <span class="chain-place__desc">The resort sells chains at the summit, but stock is limited and prices are higher. Don't rely on this as your plan A — you may be turned back on the mountain road before you reach the summit if you don't already have chains fitted.</span>
+          </div>
+
+          <div class="chain-tip">
+            <strong>Tips:</strong> Call ahead to confirm availability before you travel — hire stock goes fast on busy weekends. Make sure you know your tyre size (printed on the tyre sidewall, e.g. 235/65R17) so you hire the correct chain size. Practice fitting your chains at home before you leave — it's much harder in the cold and snow on the side of a mountain road.
+          </div>
+        </div>
+
+        <p>For real-time road conditions and chain requirements, check <a href="https://www.vicroads.vic.gov.au" target="_blank" rel="noopener">VicRoads</a> and the <a href="https://www.mtbawbaw.com.au" target="_blank" rel="noopener">Mt Baw Baw Alpine Resort</a> website before you depart.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can I drive to the apartment?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>No. During ski season, private vehicles cannot access Baw Baw Village — you must park at <strong>Carpark 1</strong> at the base of the village. From there, carry or drag your luggage up to the apartment. There is no vehicle access to the village itself.</p>
+        <p>This is why we strongly recommend using soft bags and backpacks rather than wheeled hard suitcases. Pack smart — separate your groceries from your gear so bags are manageable to carry.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How long is the drive from Melbourne?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Mt Baw Baw is approximately <strong>130 km east of Melbourne CBD</strong>, but allow around <strong>2.5 – 3 hours</strong> of drive time during ski season due to the winding mountain road and potential chain checks, traffic on busy weekends, and the lower speed limit once you leave the Princes Highway.</p>
+        <p>We recommend departing early on check-in day to arrive comfortably before the 4:00 PM check-in time. Avoid peak departure times on Friday afternoons and Saturday mornings during school holidays.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Do I need a 4WD to get to Mt Baw Baw?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>A 4WD or AWD vehicle is strongly recommended, but not strictly required — provided you have <strong>approved snow chains fitted</strong> when the road requires them. 2WD vehicles with chains fitted correctly can typically make it up the mountain road.</p>
+        <p>That said, 4WD gives you significantly more confidence and safety on icy or snow-covered sections of the road, especially on the return trip. If you're driving a standard 2WD sedan, allow extra time and check conditions carefully before setting off.</p>
+      </div>
+    </div>
+
+    <!-- ── The Apartment ── -->
+    <h2 class="faq-section-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      The Apartment
+    </h2>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What's included in the apartment?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Cascade Apartment 4 is fully self-contained. We provide:</p>
+        <ul>
+          <li>Doonas, blankets and pillows for all beds</li>
+          <li>Full kitchen: stove/oven, dishwasher, fridge/freezer, microwave, pots, pans, plates, cutlery</li>
+          <li>Cooking oil spray, salt &amp; pepper</li>
+          <li>Dish soap and sponge</li>
+          <li>Laundry detergent (washing machine included)</li>
+          <li>Tea and coffee</li>
+          <li>Toilet paper and hand soap</li>
+          <li>Hairdryers</li>
+          <li>2 × toboggans</li>
+          <li>Gas log fireplace and DVD player</li>
+          <li>Ski boot drying room</li>
+        </ul>
+        <p>You'll need to bring your own <strong>linen, towels, and toiletries</strong> — or arrange linen hire (Queen/Double $40, Single $20). See our <a href="what-to-bring.html">What to Bring</a> page for the full list.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is there WiFi at the apartment?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p><strong>There is no resort WiFi at Mt Baw Baw.</strong> The resort does not provide guest internet access in the village or in the apartments.</p>
+        <p>Mobile data coverage exists in some areas but can be limited or unreliable in alpine environments — it depends on your carrier and the conditions. We recommend downloading movies, shows, music and apps before you leave home. The apartment has a DVD player, so bring your favourite DVDs if you want offline entertainment.</p>
+        <p>For a hot tip: Telstra tends to have the best coverage in the area.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How many guests does the apartment sleep?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Cascade Apartment 4 sleeps up to <strong>7 guests</strong>:</p>
+        <ul>
+          <li><strong>Bedroom 1:</strong> Queen bed + single bunk</li>
+          <li><strong>Bedroom 2:</strong> Tri-bunk (3 singles)</li>
+        </ul>
+        <p>If your group is larger, we can arrange group bookings for up to 21 guests across multiple apartments. <a href="index.html#contact">Contact us</a> to discuss group availability.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can I hire linen and towels?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Yes. Linen hire is available for an additional fee — please arrange this with us when booking:</p>
+        <ul>
+          <li><strong>Queen / Double set</strong> (fitted sheet, pillowcases) — <strong>$40</strong></li>
+          <li><strong>Single set</strong> (fitted sheet, pillowcase) — <strong>$20</strong></li>
+        </ul>
+        <p>Doonas, blankets and pillows are always provided. Bath towels and toiletries are <strong>not</strong> included — please bring your own or let us know when booking and we'll try to assist.</p>
+      </div>
+    </div>
+
+    <!-- ── Booking ── -->
+    <h2 class="faq-section-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Bookings &amp; Check-in
+    </h2>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What days can I check in?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Online bookings are available for <strong>Friday and Saturday check-ins</strong> only. Standard check-in is from <strong>3:00 PM</strong>.</p>
+        <p>For other days or mid-week stays, please <a href="index.html#contact">contact us</a> and we'll do our best to accommodate you.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What is the check-out time?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Standard check-out is <strong>10:00 AM</strong>. Early check-in (from 10:00 AM) and late check-out (until 4:00 PM) are available as optional add-ons for $30 each — select these when booking online.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What is the cancellation policy?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>We operate a <strong>moderate cancellation policy</strong>:</p>
+        <ul>
+          <li>Cancel <strong>7 or more days</strong> before check-in — full refund</li>
+          <li>Cancel within 7 days of check-in — no refund</li>
+        </ul>
+        <p>Please refer to our <a href="cancellation.html">Cancellation Policy</a> for full details, including our approach to exceptional circumstances.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        When is the ski season?
+        <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>Cascade Apartment 4 is open <strong>during ski season only — June through August</strong>. The apartment is not available outside of this period.</p>
+        <p>Mt Baw Baw is Victoria's closest alpine resort to Melbourne and typically opens in early June, subject to snowfall. Check the <a href="https://www.mtbawbaw.com.au" target="_blank" rel="noopener">Mt Baw Baw Alpine Resort</a> website for opening dates and snow reports.</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;padding:48px 24px;background:#0f2744;border-radius:12px;margin-top:48px;">
+      <p style="font-family:'Playfair Display',serif;color:#fff;font-size:1.4rem;font-weight:600;margin:0 0 8px;">Still have questions?</p>
+      <p style="color:rgba(255,255,255,0.7);font-size:0.9rem;margin:0 0 20px;">We're happy to help. Get in touch before your stay.</p>
+      <a href="index.html#contact" class="btn btn--primary btn--lg">Contact Us</a>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <img src="images/logo25.png" alt="Cascade Apartment 4">
+            Cascade Apartment 4
+          </a>
+          <p>Cosy alpine ski accommodation at Mt Baw Baw, Victoria. 2 bedrooms, 2 bathrooms, sleeps up to 7. Your perfect mountain retreat at Baw Baw Village, VIC 3833.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Explore</h4>
+          <div class="footer-links">
+            <a href="property.html">The Apartment</a>
+            <a href="property.html#gallery">Gallery</a>
+            <a href="property.html#booking">Book Now</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Contact</h4>
+          <div class="footer-links">
+            <a href="mailto:hello@cascadeskiapartments.com">hello@cascadeskiapartments.com</a>
+            <a href="tel:+61351651200">+61 3 5165 1200</a>
+            <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Baw Baw Village, Mt Baw Baw, VIC 3833</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Support</h4>
+          <div class="footer-links">
+            <a href="what-to-bring.html">What to Bring</a>
+            <a href="faq.html">FAQs</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="cancellation.html">Cancellation Policy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Cascade Apartment 4. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    function toggleFaq(btn) {
+      var item = btn.closest('.faq-item');
+      var wasOpen = item.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-item.open').forEach(function(el) {
+        el.classList.remove('open');
+      });
+      // Open clicked if it was closed
+      if (!wasOpen) item.classList.add('open');
+    }
+
+    // Open item if URL hash targets it
+    (function() {
+      var hash = window.location.hash.replace('#', '');
+      if (hash) {
+        var target = document.getElementById(hash);
+        if (target && target.classList.contains('faq-item')) {
+          target.classList.add('open');
+          setTimeout(function() { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
