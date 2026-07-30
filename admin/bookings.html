@@ -577,6 +577,14 @@
                     <li><a href="reviews.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span>Reviews</span></a></li>
                 </ul>
             </div>
+
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">Communications</span>
+                <ul class="admin-sidebar__menu">
+                    <li><a href="emails.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span>Emails</span></a></li>
+                    <li><a href="email-templates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span>Email Templates</span></a></li>
+                </ul>
+            </div>
             <div class="admin-sidebar__section">
                 <span class="admin-sidebar__section-title">Integrations</span>
                 <ul class="admin-sidebar__menu">
@@ -951,106 +959,27 @@
     /* ──────────────────────────────────────────────
        BOOKING DATA
     ────────────────────────────────────────────── */
-    var bookings = [
-        {
-            id: 'BK-2026-001',
-            name: 'James Whitfield',
-            email: 'j.whitfield@gmail.com',
-            phone: '+61 412 883 201',
-            checkin: '2026-07-04',
-            checkout: '2026-07-11',
-            guests: 5,
-            rate: 430,
-            status: 'Confirmed',
-            notes: 'Bringing ski gear, need ground-floor storage access if possible.'
-        },
-        {
-            id: 'BK-2026-002',
-            name: 'Sophie Nguyen',
-            email: 'sophie.nguyen@outlook.com',
-            phone: '+61 438 556 774',
-            checkin: '2026-07-18',
-            checkout: '2026-07-25',
-            guests: 4,
-            rate: 445,
-            status: 'Confirmed',
-            notes: 'Celebrating a birthday. Any welcome gift ideas would be appreciated!'
-        },
-        {
-            id: 'BK-2026-003',
-            name: 'Lachlan & Brooke Carmichael',
-            email: 'carmichael.family@bigpond.com',
-            phone: '+61 404 227 918',
-            checkin: '2026-08-01',
-            checkout: '2026-08-08',
-            guests: 7,
-            rate: 450,
-            status: 'Confirmed',
-            notes: 'Family with 3 young children. Will need high chair and porta-cot if available.'
-        },
-        {
-            id: 'BK-2026-004',
-            name: 'Mia Papadopoulos',
-            email: 'mia.papa@icloud.com',
-            phone: '+61 421 109 663',
-            checkin: '2026-08-22',
-            checkout: '2026-08-27',
-            guests: 3,
-            rate: 420,
-            status: 'Pending',
-            notes: 'Awaiting final payment confirmation.'
-        },
-        {
-            id: 'BK-2026-005',
-            name: 'Tom & Rachel Svensson',
-            email: 'tr.svensson@hotmail.com',
-            phone: '+61 447 331 085',
-            checkin: '2026-09-12',
-            checkout: '2026-09-15',
-            guests: 2,
-            rate: 385,
-            status: 'Pending',
-            notes: 'First visit to Baw Baw — requested local restaurant recommendations.'
-        },
-        {
-            id: 'BK-2026-006',
-            name: 'Daniel Okonkwo',
-            email: 'dan.okonkwo@gmail.com',
-            phone: '+61 418 774 302',
-            checkin: '2026-04-10',
-            checkout: '2026-04-14',
-            guests: 4,
-            rate: 295,
-            status: 'Confirmed',
-            notes: 'Easter long weekend. Late check-out requested.'
-        },
-        {
-            id: 'BK-2026-007',
-            name: 'Courtney Blake',
-            email: 'c.blake@me.com',
-            phone: '+61 400 218 559',
-            checkin: '2026-06-06',
-            checkout: '2026-06-09',
-            guests: 2,
-            rate: 310,
-            status: 'Cancelled',
-            notes: 'Cancelled — change of personal plans. Full refund processed.'
-        },
-        {
-            id: 'BK-2026-008',
-            name: 'Priya & Arjun Mehta',
-            email: 'pmehta.au@gmail.com',
-            phone: '+61 433 660 147',
-            checkin: '2026-10-03',
-            checkout: '2026-10-07',
-            guests: 2,
-            rate: 285,
-            status: 'Confirmed',
-            notes: 'Off-season getaway. Early check-in requested (12 pm if possible).'
-        }
-    ];
+    var bookings = [];
+    var idCounter = 1;
 
-    var idCounter = 9; // next booking number
+    var STORAGE_KEY = 'adminBookings';
+
+    function saveToStorage() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings)); } catch(_) {}
+    }
+
+    function loadFromStorage() {
+        try {
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return;
+            bookings = JSON.parse(saved);
+            // Restore idCounter from highest BK number seen
+            bookings.forEach(function(b) {
+                var n = parseInt((b.id || '').replace(/\D/g, ''), 10);
+                if (!isNaN(n) && n >= idCounter) idCounter = n + 1;
+            });
+        } catch(_) {}
+    }
 
     /* ──────────────────────────────────────────────
        HELPERS
@@ -1299,6 +1228,7 @@
         bk.rate     = parseFloat(document.getElementById('editRate').value) || bk.rate;
         bk.notes    = document.getElementById('editNotes').value.trim();
 
+        saveToStorage();
         renderTable();
         closeModal('editModal');
         showToast('Booking updated successfully.', 'success');
@@ -1316,13 +1246,13 @@
         if (!window.confirm(msg)) return;
 
         if (isAlreadyCancelled) {
-            // Remove from array
             bookings = bookings.filter(function (b) { return b.id !== bk.id; });
             showToast('Booking ' + bk.id + ' deleted.', 'warning');
         } else {
             bk.status = 'Cancelled';
             showToast('Booking ' + bk.id + ' has been cancelled.', 'warning');
         }
+        saveToStorage();
         renderTable();
     }
 
@@ -1362,7 +1292,7 @@
         // Guess a rate based on month
         var month = parseInt(checkin.split('-')[1], 10);
         var skiSeason = month >= 6 && month <= 9;
-        var rate = skiSeason ? 415 : 295;
+        var rate = skiSeason ? 855 : 295;
 
         var newId = 'BK-2026-' + String(idCounter).padStart(3, '0');
         idCounter++;
@@ -1377,9 +1307,11 @@
             guests: parseInt(guests, 10),
             rate: rate,
             status: 'Pending',
+            source: 'admin',
             notes: document.getElementById('createNotes').value.trim()
         });
 
+        saveToStorage();
         renderTable();
         closeModal('createModal');
         showToast('Booking ' + newId + ' created for ' + name + '.', 'success');
@@ -1414,6 +1346,7 @@
     /* ──────────────────────────────────────────────
        INIT
     ────────────────────────────────────────────── */
+    loadFromStorage();
     renderTable();
 
     // Populate topbar via AdminAuth if available

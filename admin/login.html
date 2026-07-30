@@ -182,7 +182,7 @@
                         type="email"
                         id="adminEmail"
                         class="login-input"
-                        placeholder="admin@cascadeapartment4.com.au"
+                        placeholder="Enter your email"
                         required
                         autocomplete="email"
                     >
@@ -224,62 +224,67 @@
     </div>
 
     <script>
-        // Admin credentials — in production these would be verified server-side
-        var ADMIN_CREDENTIALS = [
-            { email: 'typhoon.tall69@gmail.com', password: 'CascadeAdmin2026!', role: 'owner' },
-            { email: 'admin@cascadeapartment4.com.au', password: 'Admin2026!', role: 'admin' }
-        ];
-
-        // If already logged in, redirect to dashboard
         if (sessionStorage.getItem('adminLoggedIn') === 'true') {
             window.location.href = 'index.html';
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            var emailInput = document.getElementById('adminEmail');
+            var emailInput    = document.getElementById('adminEmail');
             var passwordInput = document.getElementById('adminPassword');
-            var errorEl = document.getElementById('loginError');
-            var btn = document.getElementById('loginBtn');
+            var errorEl       = document.getElementById('loginError');
+            var btn           = document.getElementById('loginBtn');
 
-            var email = emailInput.value.trim().toLowerCase();
+            var email    = emailInput.value.trim().toLowerCase();
             var password = passwordInput.value;
 
-            // Reset state
             errorEl.classList.remove('visible');
             emailInput.classList.remove('error');
             passwordInput.classList.remove('error');
             btn.textContent = 'Signing in...';
             btn.disabled = true;
 
-            // Simulate a brief delay for UX
-            setTimeout(function() {
-                var matched = ADMIN_CREDENTIALS.find(function(c) {
-                    return c.email === email && c.password === password;
+            var success = false;
+            var role    = 'admin';
+            var serverErr = false;
+
+            try {
+                var resp = await fetch('../api/admin-login', {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body:    JSON.stringify({ email: email, password: password })
                 });
-
-                if (matched) {
-                    // Store auth state
-                    sessionStorage.setItem('adminLoggedIn', 'true');
-                    sessionStorage.setItem('adminEmail', matched.email);
-                    sessionStorage.setItem('adminRole', matched.role);
-
-                    // Redirect to dashboard (or where they came from)
-                    var redirect = sessionStorage.getItem('adminRedirect') || 'index.html';
-                    sessionStorage.removeItem('adminRedirect');
-                    window.location.href = redirect;
-                } else {
-                    // Show error
-                    emailInput.classList.add('error');
-                    passwordInput.classList.add('error');
-                    errorEl.classList.add('visible');
-                    btn.textContent = 'Sign In';
-                    btn.disabled = false;
-                    passwordInput.value = '';
-                    passwordInput.focus();
+                var data = await resp.json();
+                if (resp.ok && data.success) {
+                    success = true;
+                    role    = data.role || 'admin';
+                } else if (resp.status === 500) {
+                    serverErr = true;
                 }
-            }, 600);
+            } catch (_) {
+                serverErr = true;
+            }
+
+            if (success) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                sessionStorage.setItem('adminEmail', email);
+                sessionStorage.setItem('adminRole', role);
+                var redirect = sessionStorage.getItem('adminRedirect') || 'index.html';
+                sessionStorage.removeItem('adminRedirect');
+                window.location.href = redirect;
+            } else {
+                emailInput.classList.add('error');
+                passwordInput.classList.add('error');
+                errorEl.textContent = serverErr
+                    ? 'Server error — admin credentials may not be configured yet.'
+                    : 'Invalid email or password. Please try again.';
+                errorEl.classList.add('visible');
+                btn.textContent = 'Sign In';
+                btn.disabled = false;
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
         });
     </script>
 </body>

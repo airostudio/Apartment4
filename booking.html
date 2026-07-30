@@ -491,7 +491,7 @@
             <img src="images/logo25.png" alt="Cascade Apartment 4">
       Cascade Apartment 4
           </a>
-          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Your perfect ski season and summer alpine retreat.</p>
+          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Ski season only — open June through August.</p>
         </div>
         <div>
           <h4 class="footer-heading">Explore</h4>
@@ -512,9 +512,10 @@
         <div>
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cancellation Policy</a>
+            <a href="what-to-bring.html">What to Bring</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="cancellation.html">Cancellation Policy</a>
           </div>
         </div>
       </div>
@@ -569,18 +570,18 @@
       return false;
     }
 
-    function getNightlyRate(date) {
+    function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
       var hol = isVicSchoolHoliday(date);
+      // Ski season: June–August
       if (m >= 5 && m <= 7) {
-        var base = (d === 5 || d === 6) ? 450 : 385;
+        var isMidweek = (d !== 5 && d !== 6);
+        var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;
       }
-      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
-        return hol ? Math.round(285 * 1.20) : 285;
-      }
-      return 220;
+      // Green Season: closed
+      return 0;
     }
 
     function updateSummary() {
@@ -604,7 +605,7 @@
       var baseTotal = 0;
       var cur = new Date(checkinDate);
       for (var i = 0; i < nights; i++) {
-        baseTotal += getNightlyRate(cur);
+        baseTotal += getNightlyRate(cur, nights);
         cur = new Date(cur.getTime() + msPerDay);
       }
       var avgRate = Math.round(baseTotal / nights);
@@ -641,6 +642,51 @@
       if (el) el.addEventListener('change', updateSummary);
     });
 
+    // Open days: Friday (5) and Saturday (6) only
+    function isAllowedCheckinDay(dateStr) {
+      if (!dateStr) return true;
+      var d = new Date(dateStr + 'T12:00:00');
+      var day = d.getDay();
+      return day === 5 || day === 6;
+    }
+    function showContactCallout(show) {
+      var existing = document.getElementById('checkinContactCallout');
+      var btn = document.getElementById('continueToPayment');
+      var contactBtn = document.getElementById('contactUsBtn');
+      if (show) {
+        if (!existing) {
+          var callout = document.createElement('div');
+          callout.id = 'checkinContactCallout';
+          callout.style.cssText = 'margin:10px 0 0;padding:14px 16px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;';
+          callout.innerHTML = '<p style="margin:0 0 8px;font-size:0.88rem;font-weight:600;color:#92400e;">We only take online bookings for Friday &amp; Saturday check-ins.</p>'
+            + '<p style="margin:0 0 10px;font-size:0.85rem;color:#78350f;">For other days, please reach out and we\'ll arrange a stay that works for you.</p>'
+            + '<a href="index.html#contact" style="display:inline-block;padding:8px 18px;background:#d97706;color:#fff;border-radius:6px;font-size:0.85rem;font-weight:600;text-decoration:none;">Contact Us to Book &rarr;</a>';
+          var ciEl = document.getElementById('checkinDate');
+          ciEl.parentNode.appendChild(callout);
+        }
+        if (btn) btn.style.display = 'none';
+        if (!contactBtn) {
+          var cb = document.createElement('a');
+          cb.id = 'contactUsBtn';
+          cb.href = 'index.html#contact';
+          cb.className = 'btn btn--primary btn--lg';
+          cb.style.cssText = 'background:#d97706;border-color:#d97706;display:block;text-align:center;';
+          cb.textContent = 'Contact Us to Book';
+          var summaryDiv = document.querySelector('.summary-cta');
+          if (summaryDiv) summaryDiv.appendChild(cb);
+        } else {
+          contactBtn.style.display = '';
+        }
+      } else {
+        if (existing) existing.remove();
+        if (btn) btn.style.display = '';
+        if (contactBtn) contactBtn.style.display = 'none';
+      }
+    }
+    document.getElementById('checkinDate').addEventListener('change', function() {
+      showContactCallout(this.value && !isAllowedCheckinDay(this.value));
+    });
+
     // Form validation
     document.getElementById('continueToPayment').addEventListener('click', function(e) {
       e.preventDefault();
@@ -659,11 +705,42 @@
           }, { once: true });
         }
       });
+      // Validate check-in day
+      var ciVal = document.getElementById('checkinDate').value;
+      if (ciVal && !isAllowedCheckinDay(ciVal)) {
+        showContactCallout(true);
+        if (!firstError) firstError = document.getElementById('checkinDate');
+        return;
+      }
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         firstError.focus();
         return;
       }
+      // Persist guest to localStorage so admin Emails page can address them
+      var guestEmail = document.getElementById('email').value.trim();
+      var guestFirst = document.getElementById('firstName').value.trim();
+      var guestLast  = document.getElementById('lastName').value.trim();
+      var guestPhone = document.getElementById('phone').value.trim();
+      try {
+        var guests = JSON.parse(localStorage.getItem('guestData') || '[]');
+        var existing = guests.findIndex(function(g) { return g.email === guestEmail; });
+        var record = {
+          name: guestFirst + ' ' + guestLast,
+          firstName: guestFirst,
+          lastName: guestLast,
+          email: guestEmail,
+          phone: guestPhone,
+          addedAt: new Date().toISOString()
+        };
+        if (existing === -1) {
+          guests.push(record);
+        } else {
+          guests[existing] = record;
+        }
+        localStorage.setItem('guestData', JSON.stringify(guests));
+      } catch(e) {}
+
       // Carry booking data to checkout
       var ci = document.getElementById('checkinDate').value;
       var co = document.getElementById('checkoutDate').value;

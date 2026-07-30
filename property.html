@@ -868,7 +868,7 @@
           <div class="property-description">
             <p>Cascade Apartment 4 is a self-contained, family-friendly unit located on the lower level at the back of the Cascade complex in Baw Baw Village, Mt Baw Baw. Its private position gives it a quiet, cosy atmosphere away from the main building, with its own private entrance and a dedicated snow play area — three toboggans are included for guests to enjoy.</p>
             <p>Sleeping up to 7, the apartment has two bedrooms: a main bedroom with a queen bed and single bunk, and a second bedroom with a tri-bunk. The living area features a cosy lounge with a gas log fireplace, couch, and DVD player. The fully equipped kitchen includes a stove/oven, dishwasher, fridge/freezer, and microwave. There is a private ensuite as well as a second bathroom, plus a washing machine and drying room for ski and snow gear.</p>
-            <p>Pillows and doonas are provided; guests must bring their own linen and towels, or arrange hire. Please note: there is no resort WiFi. During winter there is no vehicle access to the village — luggage drop is at Carpark 1 with oversnow transport available. Whether you're here for winter snow play or a summer mountain escape, Apartment 4 is your ideal base at Mt Baw Baw.</p>
+            <p>Pillows and doonas are provided; guests must bring their own linen and towels, or arrange hire. Please note: there is no resort WiFi. During winter there is no vehicle access to the village — luggage drop is at Carpark 1 with oversnow transport available. Cascade Apartment 4 is open during ski season (June – August) only. Apartment 4 is your ideal ski-season base at Mt Baw Baw.</p>
           </div>
 
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:16px;">Key Features</h3>
@@ -955,26 +955,26 @@
         <div class="tab-content" id="tab-rates">
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:20px;">Seasonal Pricing</h3>
           <div class="rates-grid">
-            <div class="rate-card">
-              <div class="rate-season">Peak Season</div>
-              <div class="rate-dates">Jun - Aug (Ski Season)</div>
-              <div class="rate-price">$385 <span>/ night</span></div>
-              <div class="rate-note">Minimum 2 nights</div>
+            <div class="rate-card featured">
+              <div class="rate-season">Weekend</div>
+              <div class="rate-dates">Fri – Sun &nbsp;·&nbsp; Ski Season (Jun – Aug)</div>
+              <div class="rate-price">$855 <span>/ night</span></div>
+              <div class="rate-note">Min 2 nights &nbsp;·&nbsp; Check-in Friday</div>
             </div>
             <div class="rate-card featured">
-              <div class="rate-season">Standard Season</div>
-              <div class="rate-dates">Mar - May &amp; Sep - Nov</div>
-              <div class="rate-price">$285 <span>/ night</span></div>
-              <div class="rate-note">Minimum 1 night</div>
+              <div class="rate-season">Mid-week</div>
+              <div class="rate-dates">Sun – Thu &nbsp;·&nbsp; Ski Season (Jun – Aug)</div>
+              <div class="rate-price">$855 <span>/ night</span></div>
+              <div class="rate-note">2+ nights: $855 &nbsp;·&nbsp; 1 night: $985</div>
             </div>
-            <div class="rate-card">
-              <div class="rate-season">Off-Peak</div>
-              <div class="rate-dates">Dec - Feb</div>
-              <div class="rate-price">$220 <span>/ night</span></div>
-              <div class="rate-note">Minimum 1 night</div>
+            <div class="rate-card" style="opacity:0.6;cursor:default;">
+              <div class="rate-season" style="color:#b91c1c;">Green Season</div>
+              <div class="rate-dates">September – May</div>
+              <div class="rate-price" style="font-size:1.1rem;color:#b91c1c;">Closed</div>
+              <div class="rate-note">Property not available outside ski season</div>
             </div>
           </div>
-          <p class="rates-footnote">* Rates shown are for the entire apartment (up to 7 guests). Cleaning fee of $150 applies per stay. Weekend and public holiday surcharges may apply. All rates in AUD.</p>
+          <p class="rates-footnote">* Rates shown are for the entire apartment (up to 6 guests). Cleaning fee of $150 applies per stay. No Saturday check-in. VIC school holiday premium (+30%) may apply. All rates in AUD.</p>
         </div>
 
         <!-- Reviews Tab -->
@@ -1104,7 +1104,7 @@
       <!-- Booking Sidebar -->
       <aside class="booking-sidebar" id="booking">
         <div class="booking-price-header">
-          <span class="price" id="sidebarPrice">$285</span>
+          <span class="price" id="sidebarPrice">$855</span>
           <span class="per-night">/ night</span>
         </div>
 
@@ -1196,9 +1196,10 @@
         <div>
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cancellation Policy</a>
+            <a href="what-to-bring.html">What to Bring</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="cancellation.html">Cancellation Policy</a>
           </div>
         </div>
       </div>
@@ -1256,21 +1257,20 @@
       }
 
       // Return nightly rate for a given Date object (the night starting on that date)
-      function getNightlyRate(date) {
+      function getNightlyRate(date, totalNights) {
         var m = date.getMonth(); // 0=Jan
         var d = date.getDay();   // 0=Sun, 5=Fri, 6=Sat
         var hol = isVicSchoolHoliday(date);
         if (m >= 5 && m <= 7) {
-          // Ski season: Jun-Aug (+ 30% VIC school holiday premium)
-          var base = (d === 5 || d === 6) ? 450 : 385;
+          // Ski season: Jun–Aug
+          // Midweek (Sun–Thu): $985 single night, $855 for 2+ nights
+          // Weekend (Fri–Sat): $855 flat
+          var isMidweek = (d !== 5 && d !== 6);
+          var base = (isMidweek && totalNights === 1) ? 985 : 855;
           return hol ? Math.round(base * 1.30) : base;
-        } else if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
-          // Standard: Mar-May, Sep-Nov (+ 20% VIC school holiday premium)
-          return hol ? Math.round(285 * 1.20) : 285;
-        } else {
-          // Off-peak: Dec-Feb
-          return 220;
         }
+        // Green Season (Sep–May): closed
+        return 0;
       }
 
       function calcPricing(checkin, checkout) {
@@ -1281,7 +1281,7 @@
         var baseTotal = 0;
         var cur = new Date(checkin);
         for (var i = 0; i < nights; i++) {
-          baseTotal += getNightlyRate(cur);
+          baseTotal += getNightlyRate(cur, nights);
           cur = new Date(cur.getTime() + msPerDay);
         }
 
@@ -1335,6 +1335,32 @@
       if (ci && co) updatePricing();
 
       // Book Now button
+      function isAllowedCheckinDay(dateStr) {
+        if (!dateStr) return true;
+        var d = new Date(dateStr + 'T12:00:00');
+        var day = d.getDay();
+        return day === 5 || day === 6;
+      }
+      function showWidgetContactCallout(show) {
+        var existing = document.getElementById('widgetContactCallout');
+        if (show) {
+          if (!existing) {
+            var callout = document.createElement('div');
+            callout.id = 'widgetContactCallout';
+            callout.style.cssText = 'margin:12px 0 0;padding:12px 14px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;';
+            callout.innerHTML = '<p style="margin:0 0 6px;font-size:0.85rem;font-weight:600;color:#92400e;">Online bookings are available for Friday &amp; Saturday check-ins only.</p>'
+              + '<a href="index.html#contact" style="display:inline-block;padding:7px 16px;background:#d97706;color:#fff;border-radius:6px;font-size:0.83rem;font-weight:600;text-decoration:none;">Contact Us to Book &rarr;</a>';
+            var btnEl = document.getElementById('btnBook');
+            btnEl.parentNode.insertBefore(callout, btnEl);
+          }
+        } else {
+          if (existing) existing.remove();
+        }
+      }
+      document.getElementById('checkin').addEventListener('change', function() {
+        var val = this.value;
+        showWidgetContactCallout(val && !isAllowedCheckinDay(val));
+      });
       document.getElementById('btnBook').addEventListener('click', function() {
         var ci = document.getElementById('checkin').value;
         var co = document.getElementById('checkout').value;
@@ -1342,6 +1368,10 @@
         if (!ci || !co) {
           alert('Please select your check-in and check-out dates.');
           document.getElementById('checkin').focus();
+          return;
+        }
+        if (!isAllowedCheckinDay(ci)) {
+          showWidgetContactCallout(true);
           return;
         }
         var url = 'booking.html?checkin=' + encodeURIComponent(ci)

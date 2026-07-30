@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
     /* ── Progress Steps ── */
     .progress-steps {
@@ -322,6 +323,76 @@
     .checkout-page-content {
       padding-top: 100px;
     }
+
+    /* ── Field validation errors ── */
+    .field-error {
+      display: none;
+      font-size: 0.8rem;
+      color: #dc2626;
+      margin-top: 5px;
+    }
+    .field-error.visible {
+      display: block;
+    }
+    .form-group input.is-invalid,
+    .form-group select.is-invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+    .stripe-card-element.is-invalid {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+    }
+    .form-group input.is-invalid:focus,
+    .form-group select.is-invalid:focus {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+    }
+
+    /* ── Card errors (from Stripe) ── */
+    #card-errors {
+      font-size: 0.8rem;
+      color: #dc2626;
+      margin-top: 6px;
+      min-height: 18px;
+    }
+
+    /* ── Form-level error banner ── */
+    .form-error-banner {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 0.875rem;
+      color: #b91c1c;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .form-error-banner.visible {
+      display: flex;
+    }
+    .form-error-banner svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Stripe not configured notice ── */
+    .stripe-not-configured {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      color: #92400e;
+      font-size: 0.875rem;
+    }
+    .stripe-not-configured svg { display: block; margin: 0 auto 8px; }
+
+    /* ── Pay button loading state ── */
+    #payNowBtn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -384,7 +455,13 @@
 
         <!-- Left Column: Payment Form -->
         <div class="checkout-form-column">
-          <form id="paymentForm" novalidate>
+          <form id="checkoutForm" novalidate>
+
+            <!-- Form-level error banner -->
+            <div class="form-error-banner" id="formErrorBanner" role="alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span id="formErrorMessage">Please fill in all required fields before continuing.</span>
+            </div>
 
             <!-- Card Details -->
             <div class="checkout-section">
@@ -392,15 +469,16 @@
 
               <div class="form-group">
                 <label for="cardHolderName">Cardholder Name *</label>
-                <input type="text" id="cardHolderName" name="cardHolderName" placeholder="Name as it appears on your card" required>
+                <input type="text" id="cardHolderName" name="cardHolderName" placeholder="Name as it appears on your card" required autocomplete="cc-name">
+                <span class="field-error" id="err-cardHolderName">Please enter the cardholder name.</span>
               </div>
 
               <div class="form-group">
                 <label>Card Details *</label>
-                <div class="stripe-card-element" id="stripeCardElement">
-                  <!-- Stripe.js will mount the Card Element here -->
-                  <span class="placeholder-text">Card number, expiry, CVC will appear here when Stripe.js loads</span>
+                <div class="stripe-card-element" id="stripe-card-element">
+                  <!-- Stripe.js mounts here -->
                 </div>
+                <div id="card-errors" role="alert"></div>
               </div>
 
               <label class="checkbox-option">
@@ -422,28 +500,32 @@
 
               <div class="form-group">
                 <label for="billingStreet">Street Address *</label>
-                <input type="text" id="billingStreet" name="billingStreet" placeholder="123 Main Street" required>
+                <input type="text" id="billingStreet" name="billingStreet" placeholder="123 Main Street" required autocomplete="street-address">
+                <span class="field-error" id="err-billingStreet">Please enter your street address.</span>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label for="billingCity">City *</label>
-                  <input type="text" id="billingCity" name="billingCity" placeholder="Sydney" required>
+                  <input type="text" id="billingCity" name="billingCity" placeholder="Sydney" required autocomplete="address-level2">
+                  <span class="field-error" id="err-billingCity">Please enter your city.</span>
                 </div>
                 <div class="form-group">
                   <label for="billingState">State / Region *</label>
-                  <input type="text" id="billingState" name="billingState" placeholder="NSW" required>
+                  <input type="text" id="billingState" name="billingState" placeholder="NSW" required autocomplete="address-level1">
+                  <span class="field-error" id="err-billingState">Please enter your state or region.</span>
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label for="billingPostcode">Postcode *</label>
-                  <input type="text" id="billingPostcode" name="billingPostcode" placeholder="2000" required>
+                  <input type="text" id="billingPostcode" name="billingPostcode" placeholder="2000" required autocomplete="postal-code">
+                  <span class="field-error" id="err-billingPostcode">Please enter your postcode.</span>
                 </div>
                 <div class="form-group">
                   <label for="billingCountry">Country *</label>
-                  <select id="billingCountry" name="billingCountry" required>
+                  <select id="billingCountry" name="billingCountry" required autocomplete="country">
                     <option value="" disabled>Select country</option>
                     <option value="AU" selected>Australia</option>
                     <option value="NZ">New Zealand</option>
@@ -528,7 +610,20 @@
           </div>
 
           <div class="pay-now-cta">
-            <button type="submit" form="paymentForm" class="btn btn--primary btn--lg" id="payNowBtn">
+            <!-- Linen & Towels reminder -->
+            <div style="background:#fff7ed;border:1.5px solid #f97316;border-radius:10px;padding:14px 16px;margin-bottom:16px;">
+              <p style="font-size:0.8rem;font-weight:700;color:#9a3412;margin:0 0 5px;display:flex;align-items:center;gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Linen &amp; Towels — Hire Available
+              </p>
+              <p style="font-size:0.78rem;color:#7c2d12;margin:0 0 4px;line-height:1.5;">Bed linen &amp; bath towels are <strong>not included</strong>. Bring your own, or hire sets at additional cost: <strong>Queen/Double $40 · Single $20</strong>. Contact us after booking to arrange hire.</p>
+              <p style="font-size:0.78rem;color:#15803d;margin:0;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg>
+                Doonas, blankets &amp; pillows are provided. Tea/coffee, toilet paper, hand soap &amp; hairdryers also supplied.
+                <a href="what-to-bring.html" target="_blank" style="color:#1d4ed8;font-weight:600;margin-left:4px;">Full packing list &rarr;</a>
+              </p>
+            </div>
+            <button type="submit" form="checkoutForm" class="btn btn--primary btn--lg" id="payNowBtn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               Pay Now &mdash; <span id="coPayLabel">–</span>
             </button>
@@ -585,9 +680,9 @@
         <div>
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cancellation Policy</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="cancellation.html">Cancellation Policy</a>
           </div>
         </div>
       </div>
@@ -644,18 +739,20 @@
       }
       return false;
     }
-    function getNightlyRate(date) {
+    function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
       var hol = isVicSchoolHoliday(date);
+      // Ski season: June–August
       if (m >= 5 && m <= 7) {
-        var base = (d === 5 || d === 6) ? 450 : 385;
+        // Weekend nights (Fri=5, Sat=6): $855 flat
+        // Midweek (Sun–Thu): $985 for single night, $855 for 2+ nights
+        var isMidweek = (d !== 5 && d !== 6);
+        var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;
       }
-      if ((m >= 2 && m <= 4) || (m >= 8 && m <= 10)) {
-        return hol ? Math.round(285 * 1.20) : 285;
-      }
-      return 220;
+      // Green Season (Sep–May): property closed, return 0
+      return 0;
     }
 
     function set(id, val) {
@@ -678,7 +775,7 @@
         var baseTotal = 0;
         var cur = new Date(checkin);
         for (var i = 0; i < nights; i++) {
-          baseTotal += getNightlyRate(cur);
+          baseTotal += getNightlyRate(cur, nights);
           cur = new Date(cur.getTime() + msPerDay);
         }
         var avgRate  = Math.round(baseTotal / nights);
@@ -696,6 +793,9 @@
         set('coStripeFee',  fmtAUD(stripeFee));
         set('coTotal',    fmtAUD(total));
         set('coPayLabel', fmtAUD(total));
+
+        var form = document.getElementById('checkoutForm');
+        if (form) form.dataset.amountCents = Math.round(total * 100);
       }
     }
   })();
