@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Templates — Cascade Apartment 4 Admin</title>
+    <script src="../js/admin-auth.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+    <!-- ======================================================
+         SIDEBAR
+    ======================================================= -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-logo">
+            <a href="index.html" class="sidebar-logo-link">
+                <span class="sidebar-logo-text">Cascade Apartment 4</span>
+                <span class="sidebar-logo-badge">Admin</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Main</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="index.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="properties.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Properties</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="bookings.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="15" y2="14"/><line x1="9" y1="18" x2="12" y2="18"/></svg>
+                            <span>Bookings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="calendar.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span>Calendar</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Management</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="rates.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            <span>Rates &amp; Pricing</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="guests.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Guests</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="reviews.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <span>Reviews</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Communications</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="emails.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            <span>Emails</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item active">
+                        <a href="email-templates.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                            <span>Email Templates</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">Integrations</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="ical-sync.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+                            <span>iCal Sync</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="payments.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            <span>Stripe Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-nav-section">
+                <span class="sidebar-nav-section-title">System</span>
+                <ul class="sidebar-nav-list">
+                    <li class="sidebar-nav-item">
+                        <a href="settings.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1.08 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1.08z"/></svg>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="reports.html" class="sidebar-nav-link">
+                            <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ======================================================
+         MAIN
+    ======================================================= -->
+    <div class="admin-main">
+
+        <header class="admin-topbar">
+            <div class="topbar-left">
+                <button class="topbar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <nav class="topbar-breadcrumb" aria-label="Breadcrumb">
+                    <a href="index.html" class="breadcrumb-item breadcrumb-item--link">Dashboard</a>
+                    <span class="breadcrumb-separator">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </span>
+                    <span class="breadcrumb-item">Email Templates</span>
+                </nav>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user">
+                    <span class="topbar-user-avatar" id="topbarAvatar">AD</span>
+                    <span class="topbar-user-name" id="topbarName">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-content">
+
+            <div class="admin-page-header">
+                <div class="admin-page-header-text">
+                    <h1 class="admin-page-title">Email Templates</h1>
+                    <p class="admin-page-subtitle">Manage and customise email templates sent to guests</p>
+                </div>
+                <a href="emails.html" class="btn btn-primary admin-page-action">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Compose Email
+                </a>
+            </div>
+
+            <!-- Template Grid -->
+            <div id="templateGrid" class="template-grid"></div>
+
+        </main>
+    </div>
+
+    <!-- ======================================================
+         EDIT TEMPLATE MODAL
+    ======================================================= -->
+    <div class="admin-modal-backdrop" id="editModalBackdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="admin-modal admin-modal--wide">
+            <div class="admin-modal-header">
+                <h2 class="admin-modal-title" id="editModalTitle">Edit Template</h2>
+                <button class="admin-modal-close" id="editModalClose" aria-label="Close">&times;</button>
+            </div>
+            <div class="admin-modal-body">
+                <input type="hidden" id="editTemplateId">
+                <div class="admin-form-group">
+                    <label class="admin-label" for="editTemplateName">Template Name</label>
+                    <input type="text" id="editTemplateName" class="admin-input" placeholder="e.g. Booking Confirmation">
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-label" for="editTemplateSubject">Email Subject</label>
+                    <input type="text" id="editTemplateSubject" class="admin-input" placeholder="e.g. Your booking is confirmed!">
+                    <p class="admin-form-hint">Variables: <code>{{guest_name}}</code> <code>{{check_in}}</code> <code>{{check_out}}</code> <code>{{booking_ref}}</code> <code>{{property_name}}</code></p>
+                </div>
+                <div class="admin-form-group">
+                    <label class="admin-label" for="editTemplateBody">Email Body</label>
+                    <textarea id="editTemplateBody" class="admin-textarea" rows="16" placeholder="Write your email body here..."></textarea>
+                    <p class="admin-form-hint">Plain text. Variables are replaced automatically when sending.</p>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button class="btn btn-secondary" id="editModalCancel">Cancel</button>
+                <button class="btn btn-primary" id="editModalSave">Save Template</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================
+         PREVIEW MODAL
+    ======================================================= -->
+    <div class="admin-modal-backdrop" id="previewModalBackdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle">
+        <div class="admin-modal admin-modal--wide">
+            <div class="admin-modal-header">
+                <h2 class="admin-modal-title" id="previewModalTitle">Template Preview</h2>
+                <button class="admin-modal-close" id="previewModalClose" aria-label="Close">&times;</button>
+            </div>
+            <div class="admin-modal-body">
+                <div class="email-preview">
+                    <div class="email-preview-header">
+                        <div class="email-preview-field"><span class="email-preview-label">Subject:</span> <span id="previewSubject"></span></div>
+                    </div>
+                    <div class="email-preview-body" id="previewBody"></div>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button class="btn btn-secondary" id="previewModalClose2">Close</button>
+                <button class="btn btn-primary" id="previewUseTemplate">Use in Compose</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Template Grid */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .template-card {
+            background: #fff;
+            border: 1px solid var(--gray-200, #e2e8f0);
+            border-radius: 10px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .template-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-color: var(--primary, #2563eb);
+        }
+
+        .template-card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .template-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .template-card-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .template-card-icon--confirm  { background: #dbeafe; color: #2563eb; }
+        .template-card-icon--prearr   { background: #dcfce7; color: #16a34a; }
+        .template-card-icon--checkin  { background: #fef3c7; color: #d97706; }
+        .template-card-icon--checkout { background: #fce7f3; color: #db2777; }
+        .template-card-icon--thankyou { background: #ede9fe; color: #7c3aed; }
+        .template-card-icon--review   { background: #ffedd5; color: #ea580c; }
+        .template-card-icon--cancel   { background: #fee2e2; color: #dc2626; }
+        .template-card-icon--payment  { background: #d1fae5; color: #059669; }
+
+        .template-card-info { flex: 1; min-width: 0; }
+
+        .template-card-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900, #0f172a);
+            margin: 0 0 4px;
+        }
+
+        .template-card-trigger {
+            font-size: 12px;
+            color: var(--gray-500, #64748b);
+            margin: 0;
+        }
+
+        .template-card-subject {
+            font-size: 13px;
+            color: var(--gray-600, #475569);
+            background: var(--gray-50, #f8fafc);
+            border: 1px solid var(--gray-200, #e2e8f0);
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        .template-card-subject strong { font-weight: 600; }
+
+        .template-card-excerpt {
+            font-size: 13px;
+            color: var(--gray-500, #64748b);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .template-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .template-card-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* Email Preview */
+        .email-preview {
+            border: 1px solid var(--gray-200, #e2e8f0);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .email-preview-header {
+            background: var(--gray-50, #f8fafc);
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--gray-200, #e2e8f0);
+        }
+
+        .email-preview-field {
+            font-size: 14px;
+            color: var(--gray-700, #334155);
+        }
+
+        .email-preview-label {
+            font-weight: 600;
+            color: var(--gray-500, #64748b);
+        }
+
+        .email-preview-body {
+            padding: 24px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--gray-700, #334155);
+            white-space: pre-wrap;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .admin-form-hint {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--gray-500, #64748b);
+        }
+
+        .admin-form-hint code {
+            background: var(--gray-100, #f1f5f9);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+        }
+
+        @media (max-width: 640px) {
+            .template-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var DEFAULT_TEMPLATES = [
+            {
+                id: 'booking-confirmation',
+                name: 'Booking Confirmation',
+                trigger: 'Sent immediately after a booking is made',
+                icon: 'confirm',
+                subject: 'Your booking is confirmed — {{property_name}}',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'Great news — your booking at {{property_name}} is confirmed!',
+                    '',
+                    'Booking Details',
+                    '───────────────────────────',
+                    'Reference:    {{booking_ref}}',
+                    'Check-in:     {{check_in}} from 3:00 PM',
+                    'Check-out:    {{check_out}} by 10:00 AM',
+                    'Guests:       {{guest_count}}',
+                    'Total:        {{total_amount}}',
+                    '',
+                    'Getting Here',
+                    '───────────────────────────',
+                    'Cascade Apartment 4 is located at Mt Baw Baw Alpine Resort, Victoria. Detailed directions and parking information will be sent 3 days before your arrival.',
+                    '',
+                    'Questions?',
+                    '───────────────────────────',
+                    'Reply to this email or contact us at hello@cascadeskiapartments.com.',
+                    '',
+                    'We look forward to welcoming you!',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'pre-arrival',
+                name: 'Pre-Arrival Information',
+                trigger: 'Sent 3 days before check-in',
+                icon: 'prearr',
+                subject: 'Your stay is coming up — important arrival info',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'Your stay at {{property_name}} is just around the corner! Here\'s everything you need to know before you arrive.',
+                    '',
+                    'Your Stay',
+                    '───────────────────────────',
+                    'Check-in:   {{check_in}} from 3:00 PM',
+                    'Check-out:  {{check_out}} by 10:00 AM',
+                    '',
+                    'Directions to Mt Baw Baw',
+                    '───────────────────────────',
+                    'From Melbourne, take the M1 Freeway towards Traralgon, then follow signs to Mt Baw Baw via Rawson. The resort is approximately 2.5 hours from Melbourne CBD.',
+                    '',
+                    'In winter, snow chains may be required on the mountain road. Check road conditions at vicroads.vic.gov.au before you travel.',
+                    '',
+                    'Parking',
+                    '───────────────────────────',
+                    'Undercover parking is available at the apartment. Your parking bay is clearly marked. Please do not park in other bays.',
+                    '',
+                    'What to Bring',
+                    '───────────────────────────',
+                    '• Warm clothing and layers — it gets cold on the mountain!',
+                    '• Snow gear (ski/snowboard equipment can be hired at the resort)',
+                    '• Groceries — the nearest supermarket is in Moe or Drouin',
+                    '• Any personal toiletries you need',
+                    '',
+                    'The apartment is fully equipped with linen, towels, a full kitchen, and a fireplace.',
+                    '',
+                    'We\'re excited to have you — see you soon!',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'check-in-instructions',
+                name: 'Check-in Instructions',
+                trigger: 'Sent on the morning of check-in',
+                icon: 'checkin',
+                subject: 'Check-in instructions for today — {{property_name}}',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'Welcome to your ski getaway! Here are your check-in instructions for today.',
+                    '',
+                    'Check-in: from 3:00 PM',
+                    'Reference: {{booking_ref}}',
+                    '',
+                    'Key Collection',
+                    '───────────────────────────',
+                    'Your key is held in the lockbox located at the main apartment entrance.',
+                    '',
+                    'Lockbox code: [CODE WILL BE PROVIDED BY HOST]',
+                    '',
+                    'Please collect your key on arrival. The lockbox is on the right-hand side of the front door.',
+                    '',
+                    'Apartment Location',
+                    '───────────────────────────',
+                    'Cascade Apartment 4 is in the main Cascade Lodge building.',
+                    'Follow signs to Cascade Lodge from the resort entry.',
+                    'Take the lift or stairs to Level 1, turn left, Apartment 4 is at the end of the corridor.',
+                    '',
+                    'Wi-Fi',
+                    '───────────────────────────',
+                    'Network: CascadeApt4',
+                    'Password: [PROVIDED SEPARATELY]',
+                    '',
+                    'Important Notes',
+                    '───────────────────────────',
+                    '• No smoking inside the apartment',
+                    '• No parties or excessive noise after 10:00 PM',
+                    '• Maximum {{guest_count}} guests as per your booking',
+                    '• Pets are not permitted',
+                    '',
+                    'Emergency contacts and resort info are displayed on the noticeboard inside the apartment.',
+                    '',
+                    'Enjoy your stay!',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'checkout-reminder',
+                name: 'Check-out Reminder',
+                trigger: 'Sent on the evening before check-out',
+                icon: 'checkout',
+                subject: 'Check-out reminder for tomorrow — {{property_name}}',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'Just a friendly reminder that your check-out is tomorrow, {{check_out}}, by 10:00 AM.',
+                    '',
+                    'Check-out Checklist',
+                    '───────────────────────────',
+                    '✓  Return key to the lockbox and scramble the code',
+                    '✓  Remove all food from the fridge and pantry',
+                    '✓  Place used dishes in the dishwasher and start it',
+                    '✓  Put used towels and linen in the laundry basket (no need to remake beds)',
+                    '✓  Take all rubbish to the bin room at the end of the corridor',
+                    '✓  Turn off all lights, heaters, and the fireplace',
+                    '✓  Lock all windows and the front door behind you',
+                    '',
+                    'Late Check-out',
+                    '───────────────────────────',
+                    'If you need a late check-out, please reply to this email as soon as possible. Late check-outs are subject to availability and may incur an additional fee.',
+                    '',
+                    'We hope you\'ve had a wonderful stay! It\'s been a pleasure hosting you.',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'post-stay-thankyou',
+                name: 'Post-Stay Thank You',
+                trigger: 'Sent 1 day after check-out',
+                icon: 'thankyou',
+                subject: 'Thank you for staying at {{property_name}}!',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'Thank you so much for choosing Cascade Apartment 4 for your mountain escape. We hope you had a fantastic time on the mountain!',
+                    '',
+                    'Your stay: {{check_in}} — {{check_out}}',
+                    '',
+                    'We\'d love to hear how your stay went. If you have a moment, a review on our listing would mean the world to us — it helps other guests discover us and helps us continue improving.',
+                    '',
+                    'Come Back Soon',
+                    '───────────────────────────',
+                    'As a returning guest, you\'ll receive priority access to our best rates. To book your next stay, visit our website or reply to this email.',
+                    '',
+                    'We hope to see you back on the mountain soon!',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'review-request',
+                name: 'Review Request',
+                trigger: 'Sent 3 days after check-out',
+                icon: 'review',
+                subject: 'How was your stay at {{property_name}}?',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'We hope you\'re settling back home after your stay at Cascade Apartment 4!',
+                    '',
+                    'Your feedback means a great deal to us. If you have 2 minutes, we\'d love it if you could leave a review of your recent stay ({{check_in}} — {{check_out}}).',
+                    '',
+                    'Your honest review helps other travellers discover the apartment, and gives us valuable insight into how we can make each stay better.',
+                    '',
+                    'If anything about your stay fell short of expectations, please do let us know by replying to this email — we\'d love the chance to make it right.',
+                    '',
+                    'Thank you again for staying with us, {{guest_name}}. It was a pleasure to host you.',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'cancellation-confirmation',
+                name: 'Cancellation Confirmation',
+                trigger: 'Sent when a booking is cancelled',
+                icon: 'cancel',
+                subject: 'Your booking cancellation — {{property_name}} ({{booking_ref}})',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'This email confirms that your booking at {{property_name}} has been cancelled.',
+                    '',
+                    'Cancelled Booking',
+                    '───────────────────────────',
+                    'Reference:   {{booking_ref}}',
+                    'Check-in:    {{check_in}}',
+                    'Check-out:   {{check_out}}',
+                    '',
+                    'Refund Information',
+                    '───────────────────────────',
+                    'Any applicable refund will be processed according to our cancellation policy and returned to your original payment method within 5–10 business days.',
+                    '',
+                    'If you did not request this cancellation or believe this is an error, please contact us immediately at hello@cascadeskiapartments.com.',
+                    '',
+                    'We\'re sorry we won\'t be seeing you this time. We hope to welcome you to Cascade Apartment 4 in the future.',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            },
+            {
+                id: 'payment-receipt',
+                name: 'Payment Receipt',
+                trigger: 'Sent when a payment is received',
+                icon: 'payment',
+                subject: 'Payment received — {{property_name}} ({{booking_ref}})',
+                body: [
+                    'Hi {{guest_name}},',
+                    '',
+                    'We\'ve received your payment. Here is your receipt.',
+                    '',
+                    'Payment Receipt',
+                    '───────────────────────────',
+                    'Booking Reference:  {{booking_ref}}',
+                    'Property:           {{property_name}}',
+                    'Check-in:           {{check_in}}',
+                    'Check-out:          {{check_out}}',
+                    'Amount Paid:        {{total_amount}}',
+                    'Payment Date:       {{payment_date}}',
+                    'Payment Method:     {{payment_method}}',
+                    '',
+                    'Please keep this email as your receipt.',
+                    '',
+                    'If you have any questions about your payment, please contact us at hello@cascadeskiapartments.com.',
+                    '',
+                    'Warm regards,',
+                    'The Cascade Apartment 4 Team'
+                ].join('\n')
+            }
+        ];
+
+        var ICONS = {
+            confirm:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+            prearr:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            checkin:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>',
+            checkout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
+            thankyou: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+            review:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+            cancel:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+            payment:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>'
+        };
+
+        function loadTemplates() {
+            var saved = localStorage.getItem('emailTemplates');
+            return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+        }
+
+        function saveTemplates(templates) {
+            localStorage.setItem('emailTemplates', JSON.stringify(templates));
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function renderGrid() {
+            var templates = loadTemplates();
+            var grid = document.getElementById('templateGrid');
+            grid.innerHTML = templates.map(function (t) {
+                return '<div class="template-card" data-id="' + t.id + '">' +
+                    '<div class="template-card-top">' +
+                        '<div class="template-card-icon template-card-icon--' + t.icon + '">' + ICONS[t.icon] + '</div>' +
+                        '<div class="template-card-info">' +
+                            '<p class="template-card-name">' + escapeHtml(t.name) + '</p>' +
+                            '<p class="template-card-trigger">' + escapeHtml(t.trigger) + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="template-card-subject"><strong>Subject:</strong> ' + escapeHtml(t.subject) + '</div>' +
+                    '<p class="template-card-excerpt">' + escapeHtml(t.body.split('\n').slice(0, 4).join(' ')) + '</p>' +
+                    '<div class="template-card-actions">' +
+                        '<button class="btn btn-secondary btn-sm" data-action="preview" data-id="' + t.id + '">Preview</button>' +
+                        '<button class="btn btn-primary btn-sm" data-action="edit" data-id="' + t.id + '">Edit</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        /* ---- Edit Modal ---- */
+        function openEditModal(id) {
+            var templates = loadTemplates();
+            var t = templates.find(function (x) { return x.id === id; });
+            if (!t) return;
+            document.getElementById('editTemplateId').value = t.id;
+            document.getElementById('editTemplateName').value = t.name;
+            document.getElementById('editTemplateSubject').value = t.subject;
+            document.getElementById('editTemplateBody').value = t.body;
+            document.getElementById('editModalBackdrop').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModalBackdrop').style.display = 'none';
+        }
+
+        function saveEdit() {
+            var id = document.getElementById('editTemplateId').value;
+            var templates = loadTemplates();
+            var idx = templates.findIndex(function (x) { return x.id === id; });
+            if (idx === -1) return;
+            templates[idx].name = document.getElementById('editTemplateName').value.trim() || templates[idx].name;
+            templates[idx].subject = document.getElementById('editTemplateSubject').value.trim() || templates[idx].subject;
+            templates[idx].body = document.getElementById('editTemplateBody').value;
+            saveTemplates(templates);
+            closeEditModal();
+            renderGrid();
+        }
+
+        /* ---- Preview Modal ---- */
+        var previewActiveId = null;
+
+        function openPreviewModal(id) {
+            var templates = loadTemplates();
+            var t = templates.find(function (x) { return x.id === id; });
+            if (!t) return;
+            previewActiveId = id;
+            document.getElementById('previewModalTitle').textContent = t.name + ' — Preview';
+            document.getElementById('previewSubject').textContent = t.subject;
+            document.getElementById('previewBody').textContent = t.body;
+            document.getElementById('previewModalBackdrop').style.display = 'flex';
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModalBackdrop').style.display = 'none';
+        }
+
+        /* ---- Event delegation ---- */
+        document.getElementById('templateGrid').addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            var action = btn.dataset.action;
+            var id = btn.dataset.id;
+            if (action === 'edit') openEditModal(id);
+            if (action === 'preview') openPreviewModal(id);
+        });
+
+        document.getElementById('editModalClose').addEventListener('click', closeEditModal);
+        document.getElementById('editModalCancel').addEventListener('click', closeEditModal);
+        document.getElementById('editModalSave').addEventListener('click', saveEdit);
+        document.getElementById('editModalBackdrop').addEventListener('click', function (e) {
+            if (e.target === this) closeEditModal();
+        });
+
+        document.getElementById('previewModalClose').addEventListener('click', closePreviewModal);
+        document.getElementById('previewModalClose2').addEventListener('click', closePreviewModal);
+        document.getElementById('previewModalBackdrop').addEventListener('click', function (e) {
+            if (e.target === this) closePreviewModal();
+        });
+        document.getElementById('previewUseTemplate').addEventListener('click', function () {
+            if (previewActiveId) {
+                window.location.href = 'emails.html?template=' + previewActiveId;
+            }
+        });
+
+        /* ---- Sidebar toggle ---- */
+        var toggle = document.getElementById('sidebarToggle');
+        if (toggle) {
+            toggle.addEventListener('click', function () {
+                document.getElementById('adminSidebar').classList.toggle('open');
+            });
+        }
+
+        renderGrid();
+    })();
+    </script>
+
+</body>
+</html>

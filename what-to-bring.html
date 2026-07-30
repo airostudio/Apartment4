@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What to Bring - Cascade Apartment 4</title>
+  <meta name="description" content="Everything you need to pack for your stay at Cascade Apartment 4, Mt Baw Baw. Linen, ski gear, food and essentials checklist.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .wtb-hero {
+      background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 100%);
+      padding: 80px 0 48px;
+    }
+    .wtb-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .wtb-hero p {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .wtb-body {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+    }
+
+    /* Linen alert banner */
+    .linen-alert {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: #fff7ed;
+      border: 2px solid #f97316;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 48px;
+    }
+    .linen-alert__icon {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: #f97316;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .linen-alert__body h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #9a3412;
+      margin: 0 0 6px;
+    }
+    .linen-alert__body p {
+      font-size: 0.9rem;
+      color: #7c2d12;
+      line-height: 1.6;
+      margin: 0 0 10px;
+    }
+    .linen-alert__body p:last-child { margin: 0; }
+    .linen-provided {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* Category cards */
+    .wtb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 640px) {
+      .wtb-grid { grid-template-columns: 1fr; }
+      .wtb-hero h1 { font-size: 1.8rem; }
+    }
+
+    .wtb-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .wtb-card__header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .wtb-card__icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .wtb-card__title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+    .wtb-card__body {
+      padding: 16px 20px 20px;
+    }
+    .wtb-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .wtb-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      font-size: 0.88rem;
+      color: #374151;
+      line-height: 1.5;
+      border-bottom: 1px solid #f9fafb;
+    }
+    .wtb-list li:last-child { border: none; }
+    .wtb-list li .check {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+    }
+    .wtb-list li .check--yes { color: #16a34a; }
+    .wtb-list li .check--warn { color: #f59e0b; }
+    .badge-must {
+      display: inline-block;
+      background: #fef2f2;
+      color: #dc2626;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 10px;
+      margin-left: 4px;
+      vertical-align: middle;
+      letter-spacing: .03em;
+    }
+    .badge-provided {
+      display: inline-block;
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 10px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .badge-optional {
+      display: inline-block;
+      background: #f9fafb;
+      color: #6b7280;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 10px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    /* Provided panel */
+    .provided-panel {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .provided-panel h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #15803d;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .provided-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .provided-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid #86efac;
+      color: #166534;
+      font-size: 0.83rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 20px;
+    }
+
+    /* No items panel */
+    .no-panel {
+      background: #fff1f2;
+      border: 1px solid #fda4af;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .no-panel h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #be123c;
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .no-panel ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .no-panel li {
+      font-size: 0.88rem;
+      color: #9f1239;
+      line-height: 1.7;
+    }
+
+    .wtb-tip {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 32px;
+    }
+    .wtb-tip p {
+      font-size: 0.88rem;
+      color: #1e40af;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .wtb-cta {
+      text-align: center;
+      padding: 40px 24px;
+      background: #0f2744;
+      border-radius: 12px;
+    }
+    .wtb-cta h3 {
+      font-family: 'Playfair Display', serif;
+      color: #fff;
+      font-size: 1.4rem;
+      margin: 0 0 8px;
+    }
+    .wtb-cta p {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.88rem;
+      margin: 0 0 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="images/logo25.png" alt="Cascade Apartment 4">
+        Cascade Apartment 4
+      </a>
+      <nav class="nav-main">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="property.html" class="nav-link">The Apartment</a>
+        <a href="property.html#gallery" class="nav-link">Gallery</a>
+        <a href="property.html#booking" class="nav-link">Book Now</a>
+        <a href="index.html#contact" class="nav-link">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <a href="property.html#booking" class="btn btn--sm btn--outline">Book Now</a>
+      </div>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" id="mobileNav">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="property.html" class="nav-link">The Apartment</a>
+    <a href="property.html#gallery" class="nav-link">Gallery</a>
+    <a href="property.html#booking" class="nav-link">Book Now</a>
+    <a href="index.html#contact" class="nav-link">Contact</a>
+    <a href="property.html#booking" class="btn btn--primary btn--block">Book Now</a>
+  </nav>
+
+  <!-- Hero -->
+  <div class="wtb-hero">
+    <div class="container container--narrow">
+      <h1>What to Bring</h1>
+      <p>Everything you need for the perfect alpine stay at Mt Baw Baw</p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="wtb-body">
+
+    <!-- Linen Alert -->
+    <div class="linen-alert">
+      <div class="linen-alert__icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="linen-alert__body">
+        <h3>Linen &amp; Towels — Hire Available</h3>
+        <p>Bed linen (fitted sheets &amp; pillowcases) and bath towels are <strong>not included</strong> in your booking. You can <strong>bring your own</strong> or <strong>hire linen sets</strong> at additional cost:</p>
+        <p style="margin:6px 0 10px;font-size:0.88rem;color:#9a3412;font-weight:600;">Queen/Double set — $40.00 &nbsp;·&nbsp; Single set — $20.00</p>
+        <p style="margin-bottom:6px;font-size:0.84rem;color:#7c2d12;">Please contact us when booking to arrange linen hire. Bring your own towels and toiletries.</p>
+        <p>
+          <span class="linen-provided">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            We provide: doonas, blankets &amp; pillows for all beds
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <!-- What's Provided -->
+    <div class="provided-panel">
+      <h3>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Already Provided — You Don't Need to Bring These
+      </h3>
+      <div class="provided-chips">
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Doonas (all beds)
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Blankets
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Pillows
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Full kitchen (pots, pans, plates, cutlery)
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          2 Toboggans
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Tea &amp; Coffee
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Toilet paper
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Hand soap
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Hairdryers
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Gas log fireplace
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          DVD player
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Washing machine &amp; dryer
+        </span>
+        <span class="provided-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Ski boot drying room
+        </span>
+      </div>
+    </div>
+
+    <!-- Packing Grid -->
+    <div class="wtb-grid">
+
+      <!-- Linen & Bedding -->
+      <div class="wtb-card">
+        <div class="wtb-card__header">
+          <div class="wtb-card__icon" style="background:#fff7ed;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/><path d="M2 13h20"/><path d="M2 17h20"/><path d="M2 21h20"/></svg>
+          </div>
+          <h3 class="wtb-card__title">Linen &amp; Bedding</h3>
+        </div>
+        <div class="wtb-card__body">
+          <ul class="wtb-list">
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Queen/Double linen set — BYO or hire for <strong>$40</strong></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Single linen set — BYO or hire for <strong>$20</strong></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Pillowcases — included in linen hire sets above</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Bath towels (1 per person) <span class="badge-must">BYO</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Hand towels &amp; face washers <span class="badge-must">BYO</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Tea towels <span class="badge-must">BYO</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Doonas, blankets &amp; pillows <span class="badge-provided">Provided ✓</span></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Snow & Ski Gear -->
+      <div class="wtb-card">
+        <div class="wtb-card__header">
+          <div class="wtb-card__icon" style="background:#eff6ff;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="wtb-card__title">Snow &amp; Ski Gear</h3>
+        </div>
+        <div class="wtb-card__body">
+          <ul class="wtb-list">
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Skis / snowboard (hire available at resort) <span class="badge-optional">Optional</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Ski boots (hire available at resort) <span class="badge-optional">Optional</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Waterproof ski jacket &amp; pants</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Thermal underlayers (top &amp; bottom)</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Ski gloves or mittens</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Beanie &amp; neck gaiter</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Ski goggles or sunglasses</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Warm snow boots / après-ski footwear</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>2 × toboggans <span class="badge-provided">Provided ✓</span> — extras available on request · missing toboggans charged at $120</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Food & Groceries -->
+      <div class="wtb-card">
+        <div class="wtb-card__header">
+          <div class="wtb-card__icon" style="background:#f0fdf4;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <h3 class="wtb-card__title">Food &amp; Groceries</h3>
+        </div>
+        <div class="wtb-card__body">
+          <ul class="wtb-list">
+            <li>
+              <svg class="check check--warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span><strong>Stock up before you head up</strong> — limited supplies at the resort shop</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Breakfast foods &amp; snacks for the mountain</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Dinners &amp; lunches for every day of your stay</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Drinks, wine, beer &amp; soft drinks</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Cooking oil, condiments &amp; spices</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Dish soap, sponge &amp; cleaning spray</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Laundry detergent (washing machine provided)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Personal Essentials -->
+      <div class="wtb-card">
+        <div class="wtb-card__header">
+          <div class="wtb-card__icon" style="background:#fdf4ff;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h3 class="wtb-card__title">Personal Essentials</h3>
+        </div>
+        <div class="wtb-card__body">
+          <ul class="wtb-list">
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Tea &amp; coffee <span class="badge-provided">Provided ✓</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Toilet paper <span class="badge-provided">Provided ✓</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Hand soap <span class="badge-provided">Provided ✓</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Hairdryers <span class="badge-provided">Provided ✓</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Toiletries (shampoo, conditioner, body wash) <span class="badge-must">BYO</span></span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Sunscreen (SPF 50+ — alpine UV is intense)</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Lip balm with SPF</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Any prescription medications</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>First aid kit (basic)</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Warm indoor clothing &amp; slippers</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Portable phone charger / power bank</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Getting There -->
+      <div class="wtb-card">
+        <div class="wtb-card__header">
+          <div class="wtb-card__icon" style="background:#fff7ed;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <h3 class="wtb-card__title">Getting There</h3>
+        </div>
+        <div class="wtb-card__body">
+          <ul class="wtb-list">
+            <li>
+              <svg class="check check--warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span><strong>No vehicle access to the village in winter</strong> — drop luggage at Carpark 1</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Snow chains (mandatory when required by VicRoads)</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>4WD or AWD vehicle recommended</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Oversnow transport from Carpark 1 — book with resort</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Easy-carry bags &amp; backpacks (not wheeled suitcases) for transport to apartment</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Mt Baw Baw Resort entry pass / lift tickets</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Entertainment & Kids -->
+      <div class="wtb-card">
+        <div class="wtb-card__header">
+          <div class="wtb-card__icon" style="background:#fefce8;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+          <h3 class="wtb-card__title">Entertainment &amp; Kids</h3>
+        </div>
+        <div class="wtb-card__body">
+          <ul class="wtb-list">
+            <li>
+              <svg class="check check--warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span><strong>No resort WiFi</strong> — download shows, movies &amp; music before you leave home</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>DVDs (DVD player provided)</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Books, magazines &amp; puzzles</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Board games &amp; card games</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Offline games &amp; entertainment on tablets</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Baby/toddler items (cot, high chair) — not provided, BYO if needed</span>
+            </li>
+            <li>
+              <svg class="check check--yes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Portable speaker (Bluetooth)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /.wtb-grid -->
+
+    <!-- Travel tip -->
+    <div class="wtb-tip">
+      <p><strong>Packing tip:</strong> Because there is no vehicle access to the village in winter, use soft bags and backpacks rather than hard suitcases — they're far easier to carry on the oversnow transport from Carpark 1 to the apartment. Pack heavier items like groceries in separate bags from clothing and gear.</p>
+    </div>
+
+    <!-- Not allowed -->
+    <div class="no-panel">
+      <h3>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        Please Do Not Bring
+      </h3>
+      <ul>
+        <li>Pets — no animals permitted at the property</li>
+        <li>Smoking — strictly no smoking inside the apartment</li>
+        <li>Party supplies — the apartment is a family-friendly property; large gatherings are not permitted</li>
+        <li>Additional guests beyond the 7-person maximum (unless a group booking has been arranged)</li>
+      </ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="wtb-cta">
+      <h3>Ready to Book?</h3>
+      <p>Check availability and secure your dates for the ski season.</p>
+      <a href="property.html#booking" class="btn btn--primary btn--lg">Check Availability</a>
+    </div>
+
+  </div><!-- /.wtb-body -->
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <img src="images/logo25.png" alt="Cascade Apartment 4">
+            Cascade Apartment 4
+          </a>
+          <p>Cosy alpine ski accommodation at Mt Baw Baw, Victoria. 2 bedrooms, 2 bathrooms, sleeps up to 7. Your perfect mountain retreat at Baw Baw Village, VIC 3833.</p>
+        </div>
+        <div>
+          <h4 class="footer-heading">Explore</h4>
+          <div class="footer-links">
+            <a href="property.html">The Apartment</a>
+            <a href="property.html#gallery">Gallery</a>
+            <a href="property.html#booking">Book Now</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Contact</h4>
+          <div class="footer-links">
+            <a href="mailto:hello@cascadeskiapartments.com">hello@cascadeskiapartments.com</a>
+            <a href="tel:+61351651200">+61 3 5165 1200</a>
+            <span style="color:rgba(255,255,255,0.6);font-size:0.85rem;">Baw Baw Village, Mt Baw Baw, VIC 3833</span>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Support</h4>
+          <div class="footer-links">
+            <a href="what-to-bring.html">What to Bring</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="cancellation.html">Cancellation Policy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Cascade Apartment 4. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

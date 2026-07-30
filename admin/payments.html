@@ -423,6 +423,14 @@
 
             <!-- INTEGRATIONS -->
             <div class="admin-sidebar__section">
+
+            <div class="admin-sidebar__section">
+                <span class="admin-sidebar__section-title">Communications</span>
+                <ul class="admin-sidebar__menu">
+                    <li><a href="emails.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span>Emails</span></a></li>
+                    <li><a href="email-templates.html" class="admin-sidebar__menu-link"><svg class="admin-sidebar__menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span>Email Templates</span></a></li>
+                </ul>
+            </div>
                 <span class="admin-sidebar__section-title">INTEGRATIONS</span>
                 <ul class="admin-sidebar__menu">
                     <li class="admin-sidebar__menu-item">
@@ -517,7 +525,7 @@
             <div class="admin-page-header">
                 <div class="admin-page-header__info">
                     <h1 class="admin-page-header__title">Stripe Settings</h1>
-                    <p class="admin-page-header__description">Configure your Stripe API keys to enable payment processing for guest bookings</p>
+                    <p class="admin-page-header__description">Stripe API keys are managed via Vercel environment variables</p>
                 </div>
                 <div id="globalStatusBadge"></div>
             </div>
@@ -528,120 +536,53 @@
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
                 </svg>
                 <p>
-                    Find your API keys in the <strong>Stripe Dashboard</strong> under
-                    Developers &rarr; API keys. Use <strong>live keys</strong> (pk_live_ / sk_live_) for real payments,
-                    or <strong>test keys</strong> (pk_test_ / sk_test_) while developing.
-                    Your secret key is never sent to guests &mdash; it is only used server-side to create payment intents.
+                    API keys are set as <strong>Vercel environment variables</strong> — they never appear in the browser or source code.
+                    Add <code>STRIPE_PUBLISHABLE_KEY</code> and <code>STRIPE_SECRET_KEY</code> in your
+                    Vercel project under <strong>Settings &rarr; Environment Variables</strong>.
+                    Use <strong>live keys</strong> (pk_live_ / sk_live_) for real payments, or <strong>test keys</strong> (pk_test_ / sk_test_) while developing.
                 </p>
             </div>
 
             <!-- ================================================
-                 API KEYS CARD
+                 CONNECTION STATUS CARD
             ================================================= -->
             <div class="stripe-settings-card">
                 <div class="stripe-settings-card__header">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/>
                     </svg>
-                    <h2 class="stripe-settings-card__title">API Keys</h2>
-                    <span class="stripe-status-badge stripe-status-badge--not-configured" id="keyStatusBadge">Not Configured</span>
-                </div>
-
-                <!-- Test / Live mode toggle row -->
-                <div class="stripe-mode-row">
-                    <div>
-                        <div class="stripe-mode-row__label">Live Mode</div>
-                        <div class="stripe-mode-row__sub" id="modeSubLabel">Currently using test keys (pk_test_ / sk_test_)</div>
-                    </div>
-                    <label class="toggle-switch" title="Toggle between test and live mode">
-                        <input type="checkbox" id="liveModeToggle">
-                        <span class="slider"></span>
-                    </label>
+                    <h2 class="stripe-settings-card__title">Connection Status</h2>
+                    <span class="stripe-status-badge stripe-status-badge--not-configured" id="keyStatusBadge">Checking…</span>
                 </div>
 
                 <div class="stripe-settings-card__body">
 
-                    <!-- Publishable Key -->
-                    <div class="stripe-field-group">
-                        <label class="stripe-field-label" for="publishableKey">
-                            Publishable Key
-                            <span class="stripe-field-hint">— safe to expose to guests in the browser</span>
-                        </label>
-                        <div style="margin-bottom:6px;">
-                            <span class="stripe-key-prefix test" id="pkPrefix">pk_test_</span>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+                        <div style="padding:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;">
+                            <div style="font-size:0.78rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">STRIPE_PUBLISHABLE_KEY</div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span id="pkStatusDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#d1d5db;flex-shrink:0;"></span>
+                                <span id="pkStatusLabel" style="font-size:0.88rem;color:#6b7280;">Checking…</span>
+                            </div>
                         </div>
-                        <div class="stripe-field-input-wrap">
-                            <input
-                                type="text"
-                                id="publishableKey"
-                                class="stripe-field-input"
-                                placeholder="pk_test_..."
-                                autocomplete="off"
-                                spellcheck="false"
-                            >
+                        <div style="padding:16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;">
+                            <div style="font-size:0.78rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">STRIPE_SECRET_KEY</div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span id="skStatusDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#d1d5db;flex-shrink:0;"></span>
+                                <span id="skStatusLabel" style="font-size:0.88rem;color:#6b7280;">Set via Vercel</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Secret Key -->
-                    <div class="stripe-field-group">
-                        <label class="stripe-field-label" for="secretKey">
-                            Secret Key
-                            <span class="stripe-field-hint">— keep private, never share publicly</span>
-                        </label>
-                        <div style="margin-bottom:6px;">
-                            <span class="stripe-key-prefix test" id="skPrefix">sk_test_</span>
-                        </div>
-                        <div class="stripe-field-input-wrap">
-                            <input
-                                type="password"
-                                id="secretKey"
-                                class="stripe-field-input"
-                                placeholder="sk_test_..."
-                                autocomplete="new-password"
-                                spellcheck="false"
-                            >
-                            <button class="stripe-field-toggle-btn" id="toggleSecretKey" type="button" aria-label="Toggle secret key visibility">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                                </svg>
-                            </button>
-                        </div>
+                    <div style="padding:14px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;font-size:0.82rem;color:#6b7280;line-height:1.7;margin-bottom:20px;">
+                        <strong style="color:#374151;">How to update keys:</strong><br>
+                        Go to <strong>Vercel Dashboard &rarr; Your Project &rarr; Settings &rarr; Environment Variables</strong>.
+                        Add or update <code>STRIPE_PUBLISHABLE_KEY</code> and <code>STRIPE_SECRET_KEY</code>, then
+                        trigger a new deployment for the changes to take effect.
                     </div>
 
-                    <div class="stripe-divider"></div>
-
-                    <!-- Webhook Signing Secret -->
-                    <div class="stripe-field-group">
-                        <label class="stripe-field-label" for="webhookSecret">
-                            Webhook Signing Secret
-                            <span class="stripe-field-hint">— optional, verifies Stripe webhook events</span>
-                        </label>
-                        <div style="margin-bottom:6px;">
-                            <span class="stripe-key-prefix" id="whPrefix" style="background:#f3f4f6;border-color:#e5e7eb;color:#6b7280;">whsec_</span>
-                        </div>
-                        <div class="stripe-field-input-wrap">
-                            <input
-                                type="password"
-                                id="webhookSecret"
-                                class="stripe-field-input"
-                                placeholder="whsec_..."
-                                autocomplete="new-password"
-                                spellcheck="false"
-                            >
-                            <button class="stripe-field-toggle-btn" id="toggleWebhookSecret" type="button" aria-label="Toggle webhook secret visibility">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="stripe-divider"></div>
-
-                    <!-- Actions -->
                     <div class="stripe-actions">
-                        <button class="btn-stripe-save" id="saveBtn" type="button">Save Keys</button>
-                        <button class="btn-stripe-test" id="testBtn" type="button">Test Connection</button>
+                        <button class="btn-stripe-test" id="testBtn" type="button">Check Connection</button>
                         <span class="stripe-save-status" id="saveStatus"></span>
                     </div>
 
@@ -708,78 +649,54 @@
 
         var LS_KEY = 'cascade_stripe_settings';
 
-        // ── Load saved settings ──────────────────────────────
-        function loadSettings() {
-            try {
-                var saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
-                if (saved.publishableKey) document.getElementById('publishableKey').value = saved.publishableKey;
-                if (saved.secretKey)      document.getElementById('secretKey').value = saved.secretKey;
-                if (saved.webhookSecret)  document.getElementById('webhookSecret').value = saved.webhookSecret;
-                if (saved.liveMode)       document.getElementById('liveModeToggle').checked = true;
-                if (saved.currency)       document.getElementById('currencySelect').value = saved.currency;
-                if (saved.capture)        document.getElementById('captureSelect').value = saved.capture;
-                updateUI();
-            } catch (e) {}
-        }
-
-        // ── Update prefix badges and status indicators ───────
-        function updateUI() {
-            var pk   = document.getElementById('publishableKey').value.trim();
-            var sk   = document.getElementById('secretKey').value.trim();
-            var live = document.getElementById('liveModeToggle').checked;
-
-            var pkPfx = document.getElementById('pkPrefix');
-            var skPfx = document.getElementById('skPrefix');
-
-            if (live) {
-                pkPfx.textContent = 'pk_live_';
-                pkPfx.className = 'stripe-key-prefix live';
-                skPfx.textContent = 'sk_live_';
-                skPfx.className = 'stripe-key-prefix live';
-                document.getElementById('modeSubLabel').textContent = 'Live mode active — real payments will be processed';
-            } else {
-                pkPfx.textContent = 'pk_test_';
-                pkPfx.className = 'stripe-key-prefix test';
-                skPfx.textContent = 'sk_test_';
-                skPfx.className = 'stripe-key-prefix test';
-                document.getElementById('modeSubLabel').textContent = 'Currently using test keys (pk_test_ / sk_test_)';
-            }
-
-            document.getElementById('publishableKey').placeholder = live ? 'pk_live_...' : 'pk_test_...';
-            document.getElementById('secretKey').placeholder      = live ? 'sk_live_...' : 'sk_test_...';
-
-            document.getElementById('publishableKey').classList.toggle('has-value', pk.length > 0);
-            document.getElementById('secretKey').classList.toggle('has-value', sk.length > 0);
-
+        // ── Check connection via /api/config ─────────────────
+        async function checkConnection() {
             var badge       = document.getElementById('keyStatusBadge');
             var globalBadge = document.getElementById('globalStatusBadge');
+            var pkDot       = document.getElementById('pkStatusDot');
+            var pkLabel     = document.getElementById('pkStatusLabel');
 
-            if (pk && sk) {
-                var label = live ? 'Live' : 'Test Mode';
-                var cls   = live ? 'stripe-status-badge--live' : 'stripe-status-badge--configured';
-                badge.textContent = label;
-                badge.className   = 'stripe-status-badge ' + cls;
-                globalBadge.innerHTML = '<span class="stripe-status-badge ' + cls + '">' + (live ? 'Live Payments Active' : 'Test Mode Active') + '</span>';
-            } else {
-                badge.textContent = 'Not Configured';
+            try {
+                var resp = await fetch('/api/config');
+                var data = await resp.json();
+                var pk   = data.publishableKey || '';
+                var live = pk.startsWith('pk_live_');
+
+                if (pk) {
+                    var modeLabel = live ? 'Live' : 'Test Mode';
+                    var cls = live ? 'stripe-status-badge--live' : 'stripe-status-badge--configured';
+                    badge.textContent = modeLabel;
+                    badge.className   = 'stripe-status-badge ' + cls;
+                    globalBadge.innerHTML = '<span class="stripe-status-badge ' + cls + '">' + (live ? 'Live Payments Active' : 'Test Mode Active') + '</span>';
+                    pkDot.style.background = '#10b981';
+                    pkLabel.style.color    = '#059669';
+                    pkLabel.textContent    = live ? 'Configured (live key)' : 'Configured (test key)';
+                } else {
+                    badge.textContent = 'Not Configured';
+                    badge.className   = 'stripe-status-badge stripe-status-badge--not-configured';
+                    globalBadge.innerHTML = '<span class="stripe-status-badge stripe-status-badge--not-configured">Keys Not Configured</span>';
+                    pkDot.style.background = '#ef4444';
+                    pkLabel.style.color    = '#dc2626';
+                    pkLabel.textContent    = 'Not set — add STRIPE_PUBLISHABLE_KEY to Vercel env vars';
+                }
+            } catch (e) {
+                badge.textContent = 'Unavailable';
                 badge.className   = 'stripe-status-badge stripe-status-badge--not-configured';
-                globalBadge.innerHTML = '<span class="stripe-status-badge stripe-status-badge--not-configured">Keys Not Configured</span>';
+                pkDot.style.background = '#f59e0b';
+                pkLabel.style.color    = '#d97706';
+                pkLabel.textContent    = 'Could not reach /api/config';
             }
         }
 
-        // ── Save keys ────────────────────────────────────────
-        document.getElementById('saveBtn').addEventListener('click', function() {
-            var current = {};
-            try { current = JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch(e) {}
-            current.publishableKey = document.getElementById('publishableKey').value.trim();
-            current.secretKey      = document.getElementById('secretKey').value.trim();
-            current.webhookSecret  = document.getElementById('webhookSecret').value.trim();
-            current.liveMode       = document.getElementById('liveModeToggle').checked;
-            current.currency       = document.getElementById('currencySelect').value;
-            current.capture        = document.getElementById('captureSelect').value;
-            try { localStorage.setItem(LS_KEY, JSON.stringify(current)); } catch(e) {}
-            updateUI();
-            showStatus('saveStatus', 'Saved \u2713', false);
+        // ── Test / re-check button ───────────────────────────
+        document.getElementById('testBtn').addEventListener('click', async function() {
+            var btn = this;
+            btn.textContent = 'Checking…';
+            btn.disabled = true;
+            await checkConnection();
+            btn.textContent = 'Check Connection';
+            btn.disabled = false;
+            showStatus('saveStatus', 'Status refreshed ✓', false);
         });
 
         // ── Save behaviour ───────────────────────────────────
@@ -789,49 +706,22 @@
             current.currency = document.getElementById('currencySelect').value;
             current.capture  = document.getElementById('captureSelect').value;
             try { localStorage.setItem(LS_KEY, JSON.stringify(current)); } catch(e) {}
-            showStatus('behaviourSaveStatus', 'Saved \u2713', false);
+            showStatus('behaviourSaveStatus', 'Saved ✓', false);
         });
 
-        // ── Test connection (client-side key format check) ───
-        document.getElementById('testBtn').addEventListener('click', function() {
-            var pk = document.getElementById('publishableKey').value.trim();
-            var sk = document.getElementById('secretKey').value.trim();
-            if (!pk || !sk) {
-                showStatus('saveStatus', 'Enter both keys first', true);
-                return;
-            }
-            var btn = this;
-            btn.textContent = 'Testing\u2026';
-            btn.disabled = true;
-            setTimeout(function() {
-                btn.textContent = 'Test Connection';
-                btn.disabled = false;
-                var valid = (pk.startsWith('pk_live_') || pk.startsWith('pk_test_')) &&
-                            (sk.startsWith('sk_live_') || sk.startsWith('sk_test_'));
-                showStatus('saveStatus', valid ? 'Keys look valid \u2713' : 'Check key prefixes — invalid format', !valid);
-            }, 800);
-        });
-
-        // ── Live mode toggle ─────────────────────────────────
-        document.getElementById('liveModeToggle').addEventListener('change', updateUI);
-
-        // ── Show/hide secret + webhook keys ─────────────────
-        document.getElementById('toggleSecretKey').addEventListener('click', function() {
-            var inp = document.getElementById('secretKey');
-            inp.type = inp.type === 'password' ? 'text' : 'password';
-        });
-        document.getElementById('toggleWebhookSecret').addEventListener('click', function() {
-            var inp = document.getElementById('webhookSecret');
-            inp.type = inp.type === 'password' ? 'text' : 'password';
-        });
-
-        // ── Live update on key input ─────────────────────────
-        document.getElementById('publishableKey').addEventListener('input', updateUI);
-        document.getElementById('secretKey').addEventListener('input', updateUI);
+        // ── Load behaviour settings from localStorage ────────
+        function loadSettings() {
+            try {
+                var saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+                if (saved.currency) document.getElementById('currencySelect').value = saved.currency;
+                if (saved.capture)  document.getElementById('captureSelect').value  = saved.capture;
+            } catch (e) {}
+        }
 
         // ── Helper: flash status message ─────────────────────
         function showStatus(elId, msg, isError) {
             var el = document.getElementById(elId);
+            if (!el) return;
             el.textContent = msg;
             el.style.color = isError ? '#ef4444' : '#10b981';
             el.classList.add('visible');
@@ -848,6 +738,7 @@
         }
 
         loadSettings();
+        checkConnection();
 
     })();
     </script>

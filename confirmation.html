@@ -348,8 +348,8 @@
           </svg>
         </div>
         <h1>Booking Confirmed!</h1>
-        <div class="confirmation-success__ref">TRA-2026-00847</div>
-        <p>A confirmation email has been sent to your email address.</p>
+        <div class="confirmation-success__ref" id="confRef">–</div>
+        <p>A confirmation email will be sent to your email address.</p>
       </div>
 
       <!-- Booking Details Card -->
@@ -363,15 +363,15 @@
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Check-in</div>
-              <div class="booking-detail-item__value">Friday, 27 March 2026</div>
+              <div class="booking-detail-item__value" id="confCheckin">–</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Check-out</div>
-              <div class="booking-detail-item__value">Sunday, 29 March 2026</div>
+              <div class="booking-detail-item__value" id="confCheckout">–</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Guests</div>
-              <div class="booking-detail-item__value">2 Adults</div>
+              <div class="booking-detail-item__value" id="confGuests">–</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Room Type</div>
@@ -381,7 +381,7 @@
           <div class="booking-details-right">
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Booking Reference</div>
-              <div class="booking-detail-item__value">TRA-2026-00847</div>
+              <div class="booking-detail-item__value" id="confRefDetail">–</div>
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Payment Status</div>
@@ -391,9 +391,25 @@
             </div>
             <div class="booking-detail-item">
               <div class="booking-detail-item__label">Total Paid</div>
-              <div class="booking-detail-item__value total-paid-amount">$489.00</div>
+              <div class="booking-detail-item__value total-paid-amount" id="confTotal">–</div>
+            </div>
+            <div class="booking-detail-item" id="confPiRow" style="display:none">
+              <div class="booking-detail-item__label">Payment ID</div>
+              <div class="booking-detail-item__value" id="confPi" style="font-size:0.8rem;word-break:break-all;color:#6b7280;"></div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Linen reminder -->
+      <div style="background:#fff7ed;border:2px solid #f97316;border-radius:12px;padding:20px 24px;margin-bottom:32px;display:flex;gap:16px;align-items:flex-start;">
+        <div style="flex-shrink:0;width:40px;height:40px;background:#f97316;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <p style="font-size:0.9rem;font-weight:700;color:#9a3412;margin:0 0 4px;">Remember to Pack Your Linen &amp; Towels</p>
+          <p style="font-size:0.85rem;color:#7c2d12;margin:0 0 6px;line-height:1.5;">Bed linen (sheets &amp; pillowcases) and bath towels are <strong>not provided</strong> — please bring your own for all guests. Doonas, blankets and pillows are provided for all beds.</p>
+          <a href="what-to-bring.html" style="font-size:0.83rem;font-weight:600;color:#1d4ed8;">View full packing list &rarr;</a>
         </div>
       </div>
 
@@ -475,9 +491,10 @@
         <div>
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cancellation Policy</a>
+            <a href="what-to-bring.html">What to Bring</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+            <a href="cancellation.html">Cancellation Policy</a>
           </div>
         </div>
       </div>
@@ -499,5 +516,54 @@
   </footer>
 
   <script src="js/app.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    function fmtAUD(cents) {
+      return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(cents / 100);
+    }
+
+    function fmtDate(str) {
+      if (!str) return '–';
+      var d = new Date(str + 'T12:00:00');
+      return d.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function set(id, val) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = val || '–';
+    }
+
+    var params  = new URLSearchParams(window.location.search);
+    var ref     = params.get('ref') || '';
+    var pi      = params.get('pi')  || '';
+
+    var summary = {};
+    try { summary = JSON.parse(localStorage.getItem('lastBookingSummary') || '{}'); } catch (_) {}
+
+    var displayRef = ref || summary.ref || '–';
+    set('confRef',       displayRef);
+    set('confRefDetail', displayRef);
+
+    set('confCheckin',  fmtDate(summary.checkin));
+    set('confCheckout', fmtDate(summary.checkout));
+
+    var guestCount = parseInt(summary.guests, 10) || 0;
+    set('confGuests', guestCount > 0 ? guestCount + ' Guest' + (guestCount !== 1 ? 's' : '') : '–');
+
+    if (summary.amountCents) {
+      set('confTotal', fmtAUD(summary.amountCents));
+    }
+
+    var piValue = pi || summary.paymentIntentId || '';
+    if (piValue && !piValue.startsWith('pi_demo_')) {
+      var piRow = document.getElementById('confPiRow');
+      var piEl  = document.getElementById('confPi');
+      if (piRow) piRow.style.display = '';
+      if (piEl)  piEl.textContent = piValue;
+    }
+  })();
+  </script>
 </body>
 </html>
