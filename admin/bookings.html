@@ -1344,10 +1344,36 @@
     }
 
     /* ──────────────────────────────────────────────
-       INIT
+       INIT — load local admin bookings, then merge Stripe bookings from API
     ────────────────────────────────────────────── */
     loadFromStorage();
-    renderTable();
+    renderTable(); // show local bookings immediately while API fetches
+
+    (async function fetchStripeBookings() {
+        var token = sessionStorage.getItem('adminToken') || '';
+        if (!token) return;
+        try {
+            var resp = await fetch('../api/list-bookings', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!resp.ok) return;
+            var data = await resp.json();
+            var online = data.bookings || [];
+            if (!online.length) return;
+
+            // Merge: skip IDs already in local list to avoid duplicates
+            var seen = {};
+            bookings.forEach(function(b) { seen[b.id] = true; });
+            online.forEach(function(b) {
+                if (!seen[b.id]) {
+                    bookings.push(b);
+                    seen[b.id] = true;
+                }
+            });
+            saveToStorage(); // persist merged state
+            renderTable();
+        } catch (_) {}
+    })();
 
     // Populate topbar via AdminAuth if available
     if (window.AdminAuth && window.AdminAuth.populateTopbar) {

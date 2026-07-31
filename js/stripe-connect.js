@@ -124,19 +124,32 @@
       var billingDetails = {
         name: bookingData.cardholderName,
         address: {
-          line1:       bookingData.address,
-          city:        bookingData.city,
-          state:       bookingData.state,
-          postal_code: bookingData.postcode,
-          country:     bookingData.country || 'AU'
+          line1:   bookingData.address,
+          city:    bookingData.city,
+          state:   bookingData.state,
+          country: bookingData.country || 'AU'
         }
       };
 
-      // Create PaymentIntent server-side
+      // Create PaymentIntent server-side with booking metadata so it persists in Stripe
       var piResp = await fetch('/api/create-payment-intent', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ amountCents: bookingData.amountCents, currency: 'aud' })
+        body:    JSON.stringify({
+          amountCents: bookingData.amountCents,
+          currency: 'aud',
+          booking: {
+            ref:          bookingData.ref,
+            name:         bookingData.cardholderName,
+            email:        bookingData.email,
+            phone:        bookingData.phone,
+            checkin:      bookingData.checkin,
+            checkout:     bookingData.checkout,
+            guests:       bookingData.guests,
+            earlyCheckin: bookingData.earlyCheckin,
+            lateCheckout: bookingData.lateCheckout,
+          }
+        })
       });
 
       if (!piResp.ok) {
@@ -213,9 +226,8 @@
     var fields = [
       { id: 'cardHolderName', errId: 'err-cardHolderName' },
       { id: 'billingStreet',  errId: 'err-billingStreet'  },
-      { id: 'billingCity',    errId: 'err-billingCity'    },
-      { id: 'billingState',   errId: 'err-billingState'   },
-      { id: 'billingPostcode',errId: 'err-billingPostcode' }
+      { id: 'billingCity',  errId: 'err-billingCity'  },
+      { id: 'billingState', errId: 'err-billingState' }
     ];
     fields.forEach(function (f) {
       var el = document.getElementById(f.id);
@@ -249,9 +261,8 @@
       var requiredFields = [
         { id: 'cardHolderName', errId: 'err-cardHolderName' },
         { id: 'billingStreet',  errId: 'err-billingStreet'  },
-        { id: 'billingCity',    errId: 'err-billingCity'    },
-        { id: 'billingState',   errId: 'err-billingState'   },
-        { id: 'billingPostcode',errId: 'err-billingPostcode' }
+        { id: 'billingCity',  errId: 'err-billingCity'  },
+        { id: 'billingState', errId: 'err-billingState' }
       ];
 
       var firstInvalid = null;
@@ -317,27 +328,51 @@
       try {
         var amountCents = parseInt(form.dataset.amountCents, 10) || 0;
 
+        // Pre-generate ref so it can be stored in Stripe metadata
+        var ref = 'TRA-' + new Date().getFullYear() + '-' +
+          String(Math.floor(Math.random() * 90000) + 10000);
+
+        // Read booking context from URL params
+        var pageParams   = new URLSearchParams(window.location.search);
+        var checkin      = pageParams.get('checkin')      || '';
+        var checkout     = pageParams.get('checkout')     || '';
+        var guests       = pageParams.get('guests')       || '';
+        var earlyCheckin = pageParams.get('earlyCheckin') || '0';
+        var lateCheckout = pageParams.get('lateCheckout') || '0';
+
+        // Read guest contact details saved by booking.html
+        var guestEmail = '';
+        var guestPhone = '';
+        try {
+          var savedGuests = JSON.parse(localStorage.getItem('guestData') || '[]');
+          if (savedGuests.length) {
+            var lastGuest = savedGuests[savedGuests.length - 1];
+            guestEmail = lastGuest.email || '';
+            guestPhone = lastGuest.phone || '';
+          }
+        } catch (_) {}
+
         var data = {
           cardholderName: document.getElementById('cardHolderName').value.trim(),
           address:        document.getElementById('billingStreet').value.trim(),
-          city:           document.getElementById('billingCity').value.trim(),
-          state:          document.getElementById('billingState').value.trim(),
-          postcode:       document.getElementById('billingPostcode').value.trim(),
-          country:        (document.getElementById('billingCountry') || {}).value || 'AU',
-          amountCents:    amountCents
+          city:    document.getElementById('billingCity').value.trim(),
+          state:   document.getElementById('billingState').value.trim(),
+          country: (document.getElementById('billingCountry') || {}).value || 'AU',
+          amountCents:    amountCents,
+          ref:            ref,
+          email:          guestEmail,
+          phone:          guestPhone,
+          checkin:        checkin,
+          checkout:       checkout,
+          guests:         guests,
+          earlyCheckin:   earlyCheckin,
+          lateCheckout:   lateCheckout,
         };
 
         var result = await StripePayment.processPayment(data);
 
         if (result.success) {
-          var ref = 'TRA-' + new Date().getFullYear() + '-' +
-            String(Math.floor(Math.random() * 90000) + 10000);
-
-          // Carry URL params (dates/guests) forward to confirmation
-          var pageParams = new URLSearchParams(window.location.search);
-          var checkin  = pageParams.get('checkin')  || '';
-          var checkout = pageParams.get('checkout') || '';
-          var guests   = pageParams.get('guests')   || '';
+          // (ref and pageParams already defined above)
 
           try {
             localStorage.setItem('lastBookingSummary', JSON.stringify({
@@ -374,11 +409,6 @@
 
           // Fire booking confirmation email (non-blocking)
           try {
-            var guestEmail = '';
-            var savedGuests = JSON.parse(localStorage.getItem('guestData') || '[]');
-            if (savedGuests.length) {
-              guestEmail = savedGuests[savedGuests.length - 1].email || '';
-            }
             if (guestEmail) {
               var totalAUD = (amountCents / 100).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
               var fmtDate = function(str) {

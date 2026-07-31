@@ -34,6 +34,9 @@
         .cal-event.admin-booking { background:#fed7aa; color:#7c2d12; border-left:3px solid #f97316; }
         .cal-event.user-paid    { background:#bbf7d0; color:#14532d; border-left:3px solid #16a34a; }
         .cal-event.cancelled    { background:#f3f4f6; color:#9ca3af; border-left:3px solid #d1d5db; text-decoration:line-through; }
+        /* Half-day arrival/departure bars */
+        .cal-event--checkin  { margin-left:50%; border-radius:0 4px 4px 0; border-left:none !important; }
+        .cal-event--checkout { width:50%; border-radius:4px 0 0 4px; }
         /* Legacy iCal types (kept for future iCal import feature) */
         .cal-event.confirmed { background:#dcfce7; color:#166534; border-left:3px solid #16a34a; }
         .cal-event.pending   { background:#fef9c3; color:#854d0e; border-left:3px solid #ca8a04; }
@@ -313,15 +316,20 @@
             return 'admin-booking';
         }
 
-        /* ── Which bookings cover a given calendar day ── */
+        /* ── Which bookings touch a given calendar day, with arrival/departure typing ── */
         function eventsForDay(allBookings, year, month, day) {
             var date = new Date(year, month, day);
-            return allBookings.filter(function(bk) {
-                if (!bk.checkin || !bk.checkout) return false;
-                var ci = new Date(bk.checkin  + 'T12:00:00');
-                var co = new Date(bk.checkout + 'T12:00:00');
-                return date >= ci && date < co; // check-out day is not shown (guest gone)
+            var t    = date.getTime();
+            var results = [];
+            allBookings.forEach(function(bk) {
+                if (!bk.checkin || !bk.checkout) return;
+                var ci = new Date(bk.checkin  + 'T12:00:00').getTime();
+                var co = new Date(bk.checkout + 'T12:00:00').getTime();
+                if      (t === ci)          results.push({ bk: bk, dayType: 'checkin' });
+                else if (t === co)          results.push({ bk: bk, dayType: 'checkout' });
+                else if (t > ci && t < co)  results.push({ bk: bk, dayType: 'middle' });
             });
+            return results;
         }
 
         /* ── Popup ── */
@@ -442,10 +450,15 @@
                     numEl.textContent = d;
                     cell.appendChild(numEl);
 
-                    eventsForDay(allBookings, year, month, d).forEach(function(bk) {
+                    eventsForDay(allBookings, year, month, d).forEach(function(item) {
+                        var bk = item.bk;
                         var ev = document.createElement('div');
-                        ev.className = 'cal-event ' + eventClass(bk);
-                        ev.textContent = bk.name;
+                        var cls = 'cal-event ' + eventClass(bk);
+                        if (item.dayType === 'checkin')  cls += ' cal-event--checkin';
+                        if (item.dayType === 'checkout') cls += ' cal-event--checkout';
+                        ev.className = cls;
+                        // Show guest name on arrival and middle days; checkout bar is a silent indicator
+                        ev.textContent = item.dayType !== 'checkout' ? bk.name : '';
 
                         ev.addEventListener('mouseenter', function() {
                             clearTimeout(hideTimer);
