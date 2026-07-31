@@ -61,6 +61,7 @@ module.exports = async (req, res) => {
         earlyCheckin: pi.metadata.earlyCheckin === '1',
         lateCheckout: pi.metadata.lateCheckout === '1',
         notes:       'Paid online via Stripe. Payment ID: ' + pi.id,
+        createdAt:   pi.metadata.createdAt || new Date(pi.created * 1000).toISOString(),
         paidAt:      new Date(pi.created * 1000).toISOString(),
       }));
 

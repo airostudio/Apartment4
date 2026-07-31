@@ -1351,6 +1351,41 @@
         document.getElementById('checkout').setAttribute('min', t);
       })();
 
+      // Availability
+      var bookedRanges = [];
+      fetch('/api/booked-dates').then(function(r) { return r.json(); }).then(function(d) {
+        bookedRanges = d.ranges || [];
+      }).catch(function() {});
+
+      function overlapsBooked(ciStr, coStr) {
+        if (!ciStr || !coStr) return false;
+        var ciT = new Date(ciStr + 'T12:00:00').getTime();
+        var coT = new Date(coStr + 'T12:00:00').getTime();
+        if (coT <= ciT) return false;
+        return bookedRanges.some(function(r) {
+          var rCI = new Date(r.checkin  + 'T12:00:00').getTime();
+          var rCO = new Date(r.checkout + 'T12:00:00').getTime();
+          return ciT < rCO && coT > rCI;
+        });
+      }
+
+      function showWidgetAvailabilityCallout(show) {
+        var existing = document.getElementById('widgetAvailabilityCallout');
+        if (show) {
+          if (!existing) {
+            var callout = document.createElement('div');
+            callout.id = 'widgetAvailabilityCallout';
+            callout.style.cssText = 'margin:10px 0 0;padding:12px 14px;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;';
+            callout.innerHTML = '<p style="margin:0 0 4px;font-size:0.85rem;font-weight:600;color:#991b1b;">These dates are already booked.</p>'
+              + '<p style="margin:0;font-size:0.82rem;color:#7f1d1d;">Please choose different dates or <a href="#contact" style="color:#dc2626;font-weight:600;">contact us</a>.</p>';
+            var btnEl = document.getElementById('btnBook');
+            btnEl.parentNode.insertBefore(callout, btnEl);
+          }
+        } else {
+          if (existing) existing.remove();
+        }
+      }
+
       function isAllowedCheckinDay(dateStr) {
         if (!dateStr) return true;
         var d = new Date(dateStr + 'T12:00:00');
@@ -1376,6 +1411,12 @@
       document.getElementById('checkin').addEventListener('change', function() {
         var val = this.value;
         showWidgetContactCallout(val && !isAllowedCheckinDay(val));
+        var co = document.getElementById('checkout').value;
+        showWidgetAvailabilityCallout(overlapsBooked(val, co));
+      });
+      document.getElementById('checkout').addEventListener('change', function() {
+        var ci = document.getElementById('checkin').value;
+        showWidgetAvailabilityCallout(overlapsBooked(ci, this.value));
       });
       document.getElementById('btnBook').addEventListener('click', function() {
         var ci = document.getElementById('checkin').value;
@@ -1388,6 +1429,10 @@
         }
         if (!isAllowedCheckinDay(ci)) {
           showWidgetContactCallout(true);
+          return;
+        }
+        if (overlapsBooked(ci, co)) {
+          showWidgetAvailabilityCallout(true);
           return;
         }
         var url = 'booking.html?checkin=' + encodeURIComponent(ci)

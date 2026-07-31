@@ -706,6 +706,7 @@
                                 <th>Check-out</th>
                                 <th>Guests</th>
                                 <th>Amount</th>
+                                <th>Booked On</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -770,6 +771,10 @@
                 <div class="detail-item">
                     <div class="detail-label">Guests</div>
                     <div class="detail-value" id="vGuests"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Booked On</div>
+                    <div class="detail-value" id="vBookedAt"></div>
                 </div>
                 <div class="detail-item detail-item--full">
                     <div class="detail-label">Notes</div>
@@ -1034,7 +1039,7 @@
         });
 
         if (list.length === 0) {
-            tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No bookings found for this filter.</td></tr>';
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No bookings found for this filter.</td></tr>';
             updateStats();
             return;
         }
@@ -1051,6 +1056,7 @@
             html += '<td class="date-range">' + formatDate(b.checkout) + '<br><span class="nights-badge">' + nights + ' night' + (nights !== 1 ? 's' : '') + '</span></td>';
             html += '<td>' + b.guests + '</td>';
             html += '<td class="amount-cell">' + formatAUD(total) + '</td>';
+            html += '<td style="font-size:0.78rem;color:#6b7280;white-space:nowrap;">' + formatTimestamp(b.createdAt || b.paidAt) + '</td>';
             html += '<td>' + statusBadge(b.status) + '</td>';
             html += '<td><div class="action-btns">';
             html += '<button class="btn-action btn-view" data-action="view" data-id="' + b.id + '">View</button>';
@@ -1062,6 +1068,13 @@
 
         tbody.innerHTML = html;
         updateStats();
+    }
+
+    function formatTimestamp(iso) {
+        if (!iso) return '—';
+        var d = new Date(iso);
+        return d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' })
+             + ', ' + d.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit', hour12:true });
     }
 
     function escapeHtml(s) {
@@ -1161,6 +1174,7 @@
         document.getElementById('vNights').textContent      = nights + ' night' + (nights !== 1 ? 's' : '');
         document.getElementById('vGuests').textContent      = bk.guests + ' guest' + (bk.guests !== 1 ? 's' : '');
         document.getElementById('vNotes').textContent       = bk.notes || '—';
+        document.getElementById('vBookedAt').textContent    = formatTimestamp(bk.createdAt || bk.paidAt);
         document.getElementById('vStatus').innerHTML        = statusBadge(bk.status);
         document.getElementById('vRate').textContent        = formatAUD(bk.rate) + '/night';
         document.getElementById('vNightsLabel').textContent = nights + ' night' + (nights !== 1 ? 's' : '') + ' ×  ' + formatAUD(bk.rate);
@@ -1308,6 +1322,7 @@
             rate: rate,
             status: 'Pending',
             source: 'admin',
+            createdAt: new Date().toISOString(),
             notes: document.getElementById('createNotes').value.trim()
         });
 
