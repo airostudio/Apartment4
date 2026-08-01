@@ -1268,6 +1268,24 @@
         }
         saveToStorage();
         renderTable();
+
+        // For Stripe bookings, mark cancelled in Stripe metadata so the dates
+        // are immediately freed in the guest-facing availability check.
+        if (bk.source === 'stripe') {
+            var stripeId = bk.stripeId;
+            if (!stripeId && bk.notes) {
+                var m = (bk.notes || '').match(/Payment ID: (pi_\w+)/);
+                if (m) stripeId = m[1];
+            }
+            if (stripeId) {
+                var token = sessionStorage.getItem('adminToken') || '';
+                fetch('/api/cancel-booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ paymentIntentId: stripeId })
+                }).catch(function () {});
+            }
+        }
     }
 
     /* ──────────────────────────────────────────────

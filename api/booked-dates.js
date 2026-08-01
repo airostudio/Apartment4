@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     const stripe  = new Stripe(secretKey, { apiVersion: '2023-10-16' });
     const intents = await stripe.paymentIntents.list({ limit: 100 });
     const ranges  = intents.data
-      .filter(pi => pi.status === 'succeeded' && pi.metadata && pi.metadata.checkin && pi.metadata.checkout)
+      .filter(pi => pi.status === 'succeeded' && pi.metadata && pi.metadata.checkin && pi.metadata.checkout && pi.metadata.cancelled !== '1')
       .map(pi => ({ checkin: pi.metadata.checkin, checkout: pi.metadata.checkout }));
     return res.json({ ranges });
   } catch (_) {
