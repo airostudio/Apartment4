@@ -72,6 +72,7 @@
       this.elements = this.stripe.elements({ appearance: this.config.appearance });
 
       this.cardElement = this.elements.create('card', {
+        hidePostalCode: true,
         style: {
           base: {
             fontSize:        '16px',

@@ -28,6 +28,7 @@ module.exports = async (req, res) => {
       guests:       String(booking.guests   || ''),
       earlyCheckin: String(booking.earlyCheckin || '0'),
       lateCheckout: String(booking.lateCheckout || '0'),
+      createdAt:    new Date().toISOString(),
     } : {};
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountCents,

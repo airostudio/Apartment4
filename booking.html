@@ -656,6 +656,51 @@
     document.getElementById('checkinDate').setAttribute('min', todayStr);
     document.getElementById('checkoutDate').setAttribute('min', todayStr);
 
+    // Availability — load booked ranges once, validate on date change
+    var bookedRanges = [];
+    fetch('/api/booked-dates').then(function(r) { return r.json(); }).then(function(d) {
+      bookedRanges = d.ranges || [];
+      validateAvailability(); // re-check if dates were pre-filled via URL params
+    }).catch(function() {});
+
+    function overlapsBooked(ciStr, coStr) {
+      if (!ciStr || !coStr) return false;
+      var ciT = new Date(ciStr + 'T12:00:00').getTime();
+      var coT = new Date(coStr + 'T12:00:00').getTime();
+      if (coT <= ciT) return false;
+      return bookedRanges.some(function(r) {
+        var rCI = new Date(r.checkin  + 'T12:00:00').getTime();
+        var rCO = new Date(r.checkout + 'T12:00:00').getTime();
+        return ciT < rCO && coT > rCI;
+      });
+    }
+
+    function showAvailabilityCallout(show) {
+      var existing = document.getElementById('availabilityCallout');
+      var btn = document.getElementById('continueToPayment');
+      if (show) {
+        if (!existing) {
+          var callout = document.createElement('div');
+          callout.id = 'availabilityCallout';
+          callout.style.cssText = 'margin:10px 0 0;padding:14px 16px;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;';
+          callout.innerHTML = '<p style="margin:0 0 6px;font-size:0.88rem;font-weight:600;color:#991b1b;">These dates are already booked.</p>'
+            + '<p style="margin:0;font-size:0.85rem;color:#7f1d1d;">Please choose different dates, or <a href="index.html#contact" style="color:#dc2626;font-weight:600;">contact us</a> for help.</p>';
+          document.getElementById('checkoutDate').parentNode.appendChild(callout);
+        }
+        if (btn) btn.style.display = 'none';
+      } else {
+        if (existing) existing.remove();
+        var contactOut = document.getElementById('checkinContactCallout');
+        if (!contactOut && btn) btn.style.display = '';
+      }
+    }
+
+    function validateAvailability() {
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      showAvailabilityCallout(overlapsBooked(ci, co));
+    }
+
     updateSummary();
 
     // Live updates
@@ -707,7 +752,9 @@
     }
     document.getElementById('checkinDate').addEventListener('change', function() {
       showContactCallout(this.value && !isAllowedCheckinDay(this.value));
+      validateAvailability();
     });
+    document.getElementById('checkoutDate').addEventListener('change', validateAvailability);
 
     // Form validation
     document.getElementById('continueToPayment').addEventListener('click', function(e) {
@@ -731,6 +778,13 @@
       var ciVal = document.getElementById('checkinDate').value;
       if (ciVal && !isAllowedCheckinDay(ciVal)) {
         showContactCallout(true);
+        if (!firstError) firstError = document.getElementById('checkinDate');
+        return;
+      }
+      // Validate availability
+      var coVal = document.getElementById('checkoutDate').value;
+      if (overlapsBooked(ciVal, coVal)) {
+        showAvailabilityCallout(true);
         if (!firstError) firstError = document.getElementById('checkinDate');
         return;
       }

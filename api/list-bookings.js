@@ -48,6 +48,7 @@ module.exports = async (req, res) => {
       .filter(pi => pi.status === 'succeeded' && pi.metadata && pi.metadata.checkin)
       .map(pi => ({
         id:          pi.metadata.ref || pi.id,
+        stripeId:    pi.id,
         name:        pi.metadata.name     || 'Unknown',
         email:       pi.metadata.email    || '',
         phone:       pi.metadata.phone    || '',
@@ -55,12 +56,13 @@ module.exports = async (req, res) => {
         checkout:    pi.metadata.checkout || '',
         guests:      parseInt(pi.metadata.guests) || 1,
         rate:        855,
-        status:      'Confirmed',
+        status:      pi.metadata.cancelled === '1' ? 'Cancelled' : 'Confirmed',
         source:      'stripe',
         amountCents: pi.amount,
         earlyCheckin: pi.metadata.earlyCheckin === '1',
         lateCheckout: pi.metadata.lateCheckout === '1',
         notes:       'Paid online via Stripe. Payment ID: ' + pi.id,
+        createdAt:   pi.metadata.createdAt || new Date(pi.created * 1000).toISOString(),
         paidAt:      new Date(pi.created * 1000).toISOString(),
       }));
 

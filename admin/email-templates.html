@@ -388,7 +388,74 @@
         @media (max-width: 640px) {
             .template-grid { grid-template-columns: 1fr; }
         }
+
+        /* Automation badge per template */
+        .template-automation-badge {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .template-automation-badge.on  { background: #dcfce7; color: #15803d; }
+        .template-automation-badge.off { background: #f1f5f9; color: #94a3b8; }
+
+        /* Toggle switch */
+        .toggle-track {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: #d1d5db; border-radius: 24px; cursor: pointer; transition: background .2s;
+        }
+        .toggle-track::before {
+            content: ''; position: absolute; width: 18px; height: 18px;
+            left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: transform .2s;
+        }
+        input:checked + .toggle-track { background: #16a34a; }
+        input:checked + .toggle-track::before { transform: translateX(20px); }
     </style>
+
+    <!-- AUTOMATION MODAL -->
+    <div class="admin-modal-backdrop" id="automationModalBackdrop" style="display:none;" role="dialog" aria-modal="true">
+        <div class="admin-modal">
+            <div class="admin-modal-header">
+                <h2 class="admin-modal-title" id="automationModalTitle">Automation Settings</h2>
+                <button class="admin-modal-close" id="automationModalClose" aria-label="Close">&times;</button>
+            </div>
+            <div class="admin-modal-body">
+                <input type="hidden" id="automationTemplateId">
+                <div class="admin-form-group" style="display:flex;align-items:center;gap:12px;">
+                    <label class="admin-label" style="margin:0;">Enable automation for this template</label>
+                    <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;">
+                        <input type="checkbox" id="automationEnabled" style="opacity:0;width:0;height:0;">
+                        <span class="toggle-track"></span>
+                    </label>
+                </div>
+                <div id="automationFields">
+                    <div class="admin-form-group">
+                        <label class="admin-label" for="automationTrigger">When to send</label>
+                        <select id="automationTrigger" class="admin-input">
+                            <option value="on_booking">Immediately when booking is made</option>
+                            <option value="days_before_checkin">N days before check-in</option>
+                            <option value="on_checkin_day">On the morning of check-in</option>
+                            <option value="day_before_checkout">Evening before check-out</option>
+                            <option value="days_after_checkout">N days after check-out</option>
+                            <option value="on_cancel">When booking is cancelled</option>
+                        </select>
+                    </div>
+                    <div class="admin-form-group" id="automationOffsetRow" style="display:none;">
+                        <label class="admin-label" for="automationOffset">Number of days</label>
+                        <input type="number" id="automationOffset" class="admin-input" min="0" max="30" value="1" style="max-width:120px;">
+                    </div>
+                    <p class="admin-form-hint" id="automationPreview"></p>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button class="btn btn-secondary" id="automationModalCancel">Cancel</button>
+                <button class="btn btn-primary" id="automationModalSave">Save</button>
+            </div>
+        </div>
+    </div>
 
     <script>
     (function () {
@@ -681,6 +748,95 @@
                 .replace(/>/g, '&gt;');
         }
 
+        /* ── Automation Rules ── */
+        var DEFAULT_RULES = {
+            'booking-confirmation':      { trigger: 'on_booking',          offset: 0, enabled: true },
+            'pre-arrival':               { trigger: 'days_before_checkin', offset: 3, enabled: true },
+            'check-in-instructions':     { trigger: 'on_checkin_day',      offset: 0, enabled: true },
+            'checkout-reminder':         { trigger: 'day_before_checkout', offset: 0, enabled: true },
+            'post-stay-thankyou':        { trigger: 'days_after_checkout', offset: 1, enabled: true },
+            'review-request':            { trigger: 'days_after_checkout', offset: 3, enabled: true },
+            'cancellation-confirmation': { trigger: 'on_cancel',           offset: 0, enabled: true },
+            'payment-receipt':           { trigger: 'on_booking',          offset: 0, enabled: false }
+        };
+
+        function loadRules() {
+            var saved = localStorage.getItem('emailAutomationRules');
+            if (!saved) return JSON.parse(JSON.stringify(DEFAULT_RULES));
+            var rules = JSON.parse(saved);
+            // Merge defaults for any new template ids
+            Object.keys(DEFAULT_RULES).forEach(function (id) { if (!rules[id]) rules[id] = JSON.parse(JSON.stringify(DEFAULT_RULES[id])); });
+            return rules;
+        }
+
+        function saveRules(rules) {
+            localStorage.setItem('emailAutomationRules', JSON.stringify(rules));
+        }
+
+        var TRIGGER_LABELS = {
+            'on_booking':          'On booking',
+            'days_before_checkin': '{n} days before check-in',
+            'on_checkin_day':      'Check-in morning',
+            'day_before_checkout': 'Eve of check-out',
+            'days_after_checkout': '{n} days after check-out',
+            'on_cancel':           'On cancellation'
+        };
+
+        function buildAutomationBadge(templateId) {
+            var rules = loadRules();
+            var rule  = rules[templateId];
+            if (!rule || !rule.enabled) {
+                return '<span class="template-automation-badge off">' +
+                    '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="8" x2="16" y2="16"/><line x1="16" y1="8" x2="8" y2="16"/></svg>' +
+                    'Automation off</span>';
+            }
+            var label = (TRIGGER_LABELS[rule.trigger] || rule.trigger).replace('{n}', rule.offset || 0);
+            return '<span class="template-automation-badge on">' +
+                '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>' +
+                'Auto: ' + label + '</span>';
+        }
+
+        function updateAutomationPreview() {
+            var trigger = document.getElementById('automationTrigger').value;
+            var offset  = parseInt(document.getElementById('automationOffset').value, 10) || 0;
+            var needsOffset = trigger === 'days_before_checkin' || trigger === 'days_after_checkout';
+            document.getElementById('automationOffsetRow').style.display = needsOffset ? '' : 'none';
+            var label = (TRIGGER_LABELS[trigger] || trigger).replace('{n}', offset);
+            document.getElementById('automationPreview').textContent = 'Will send: ' + label;
+        }
+
+        function openAutomationModal(id) {
+            var templates = loadTemplates();
+            var t = templates.find(function (x) { return x.id === id; });
+            if (!t) return;
+            var rules = loadRules();
+            var rule  = rules[id] || { trigger: 'on_booking', offset: 0, enabled: false };
+            document.getElementById('automationTemplateId').value        = id;
+            document.getElementById('automationModalTitle').textContent  = t.name + ' — Automation';
+            document.getElementById('automationEnabled').checked         = !!rule.enabled;
+            document.getElementById('automationTrigger').value           = rule.trigger || 'on_booking';
+            document.getElementById('automationOffset').value            = rule.offset  || 0;
+            updateAutomationPreview();
+            document.getElementById('automationModalBackdrop').style.display = 'flex';
+        }
+
+        function closeAutomationModal() {
+            document.getElementById('automationModalBackdrop').style.display = 'none';
+        }
+
+        function saveAutomation() {
+            var id    = document.getElementById('automationTemplateId').value;
+            var rules = loadRules();
+            rules[id] = {
+                trigger: document.getElementById('automationTrigger').value,
+                offset:  parseInt(document.getElementById('automationOffset').value, 10) || 0,
+                enabled: document.getElementById('automationEnabled').checked
+            };
+            saveRules(rules);
+            closeAutomationModal();
+            renderGrid();
+        }
+
         function renderGrid() {
             var templates = loadTemplates();
             var grid = document.getElementById('templateGrid');
@@ -695,8 +851,10 @@
                     '</div>' +
                     '<div class="template-card-subject"><strong>Subject:</strong> ' + escapeHtml(t.subject) + '</div>' +
                     '<p class="template-card-excerpt">' + escapeHtml(t.body.split('\n').slice(0, 4).join(' ')) + '</p>' +
+                    buildAutomationBadge(t.id) +
                     '<div class="template-card-actions">' +
                         '<button class="btn btn-secondary btn-sm" data-action="preview" data-id="' + t.id + '">Preview</button>' +
+                        '<button class="btn btn-secondary btn-sm" data-action="automation" data-id="' + t.id + '">Automation</button>' +
                         '<button class="btn btn-primary btn-sm" data-action="edit" data-id="' + t.id + '">Edit</button>' +
                     '</div>' +
                 '</div>';
@@ -758,6 +916,7 @@
             var id = btn.dataset.id;
             if (action === 'edit') openEditModal(id);
             if (action === 'preview') openPreviewModal(id);
+            if (action === 'automation') openAutomationModal(id);
         });
 
         document.getElementById('editModalClose').addEventListener('click', closeEditModal);
@@ -785,6 +944,13 @@
                 document.getElementById('adminSidebar').classList.toggle('open');
             });
         }
+
+        document.getElementById('automationModalClose').addEventListener('click', closeAutomationModal);
+        document.getElementById('automationModalCancel').addEventListener('click', closeAutomationModal);
+        document.getElementById('automationModalSave').addEventListener('click', saveAutomation);
+        document.getElementById('automationModalBackdrop').addEventListener('click', function (e) { if (e.target === this) closeAutomationModal(); });
+        document.getElementById('automationTrigger').addEventListener('change', updateAutomationPreview);
+        document.getElementById('automationOffset').addEventListener('input', updateAutomationPreview);
 
         renderGrid();
     })();
