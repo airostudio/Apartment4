@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
     const intents = await stripe.paymentIntents.list({ limit: 100 });
 
     const bookings = intents.data
-      .filter(pi => pi.status === 'succeeded' && pi.metadata && pi.metadata.checkin)
+      .filter(pi => pi.status === 'succeeded' && pi.metadata && pi.metadata.checkin && pi.metadata.cancelled !== '1')
       .map(pi => ({
         id:          pi.metadata.ref || pi.id,
         stripeId:    pi.id,
@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
         checkout:    pi.metadata.checkout || '',
         guests:      parseInt(pi.metadata.guests) || 1,
         rate:        855,
-        status:      pi.metadata.cancelled === '1' ? 'Cancelled' : 'Confirmed',
+        status:      'Confirmed',
         source:      'stripe',
         amountCents: pi.amount,
         earlyCheckin: pi.metadata.earlyCheckin === '1',

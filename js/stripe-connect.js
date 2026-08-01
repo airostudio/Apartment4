@@ -393,6 +393,7 @@
             var adminBookings = JSON.parse(localStorage.getItem('adminBookings') || '[]');
             adminBookings.push({
               id:          ref,
+              stripeId:    result.paymentIntentId,
               name:        data.cardholderName,
               email:       guestEmail,
               phone:       '',
@@ -403,6 +404,8 @@
               status:      'Confirmed',
               source:      'stripe',
               amountCents: amountCents,
+              createdAt:   new Date().toISOString(),
+              paidAt:      new Date().toISOString(),
               notes:       'Paid online via Stripe. Payment ID: ' + result.paymentIntentId
             });
             localStorage.setItem('adminBookings', JSON.stringify(adminBookings));

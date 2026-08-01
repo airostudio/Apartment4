@@ -1394,13 +1394,20 @@
             var online = data.bookings || [];
             if (!online.length) return;
 
-            // Merge: skip IDs already in local list to avoid duplicates
-            var seen = {};
-            bookings.forEach(function(b) { seen[b.id] = true; });
+            // Merge Stripe bookings into local list
+            var localById = {};
+            bookings.forEach(function(b) { localById[b.id] = b; });
             online.forEach(function(b) {
-                if (!seen[b.id]) {
+                var local = localById[b.id];
+                if (!local) {
+                    // Not in localStorage — add it (Stripe is the source of truth here)
                     bookings.push(b);
-                    seen[b.id] = true;
+                    localById[b.id] = b;
+                } else {
+                    // Already in localStorage — backfill stripeId if the local entry
+                    // was written by stripe-connect.js before this field was added
+                    if (b.stripeId && !local.stripeId) local.stripeId = b.stripeId;
+                    if (b.paidAt  && !local.paidAt)   local.paidAt   = b.paidAt;
                 }
             });
             saveToStorage(); // persist merged state
