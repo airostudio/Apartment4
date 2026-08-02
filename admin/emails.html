@@ -823,6 +823,29 @@
             if (!subject)  { showToast('Please enter a subject line.'); return; }
             if (!body)     { showToast('Please write a message.'); return; }
 
+            // Always apply booking variables at send time (catches cases where the
+            // admin loaded a template before selecting a booking, or the UI failed
+            // to substitute in a prior step).
+            var linkedBooking = getSelectedBooking();
+            if (linkedBooking) {
+                subject = applyBookingVars(subject, linkedBooking);
+                body    = applyBookingVars(body,    linkedBooking);
+                // Reflect the substituted text back into the form so what was sent
+                // matches what the admin sees.
+                document.getElementById('composeSubject').value = subject;
+                document.getElementById('composeBody').value    = body;
+            }
+
+            // Warn if any {{variables}} are still unresolved (no booking linked)
+            if (/\{\{[^}]+\}\}/.test(subject) || /\{\{[^}]+\}\}/.test(body)) {
+                var ok = window.confirm(
+                    'This email still contains unfilled template variables like {{guest_name}}.\n\n' +
+                    'Select a booking from "Link to Booking" to fill them in automatically.\n\n' +
+                    'Send now with the placeholder text?'
+                );
+                if (!ok) return;
+            }
+
             var toOpt   = toSel.options[toSel.selectedIndex];
             var toLabel = toSel.value === 'all' ? 'All Guests'
                 : (toOpt && toOpt.dataset.name ? toOpt.dataset.name + ' <' + emailVal + '>' : emailVal);
