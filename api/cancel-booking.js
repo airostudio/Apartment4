@@ -1,38 +1,16 @@
-const crypto = require('crypto');
-const Stripe  = require('stripe');
-
-function verifyToken(token, adminPassword) {
-  try {
-    const decoded   = Buffer.from(token, 'base64').toString('utf8');
-    const lastColon = decoded.lastIndexOf(':');
-    if (lastColon < 0) return false;
-    const payload  = decoded.slice(0, lastColon);
-    const hmac     = decoded.slice(lastColon + 1);
-    const parts    = payload.split(':');
-    const ts       = parseInt(parts[parts.length - 1], 10);
-    if (isNaN(ts) || Date.now() - ts > 86400000) return false;
-    const expected = crypto.createHmac('sha256', adminPassword).update(payload).digest('hex');
-    const bufA     = Buffer.from(expected);
-    const bufB     = Buffer.from(hmac);
-    if (bufA.length !== bufB.length) return false;
-    return crypto.timingSafeEqual(bufA, bufB);
-  } catch (_) { return false; }
-}
+const Stripe = require('stripe');
+const { requireAdmin } = require('./_lib/auth');
+const { normalizeBooking } = require('./_lib/booking-store');
+const { readConfig } = require('./_lib/github-config-store');
+const { computeDueItems, todayInPropertyTz } = require('./_lib/automation-engine');
+const { sendAllDue } = require('./_lib/run-automation');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const adminPassword = process.env.ADMIN_PASSWORD || '';
-  if (!adminPassword) {
-    return res.status(500).json({ error: 'Server not configured.' });
-  }
-
-  const auth = (req.headers['authorization'] || '').replace(/^Bearer\s+/i, '').trim();
-  if (!auth || !verifyToken(auth, adminPassword)) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  if (!requireAdmin(req, res)) return;
 
   const { paymentIntentId } = req.body || {};
   if (!paymentIntentId || !/^pi_/.test(paymentIntentId)) {
@@ -46,10 +24,23 @@ module.exports = async (req, res) => {
 
   try {
     const stripe = new Stripe(secretKey, { apiVersion: '2023-10-16' });
-    await stripe.paymentIntents.update(paymentIntentId, {
+    const pi = await stripe.paymentIntents.update(paymentIntentId, {
       metadata: { cancelled: '1' },
     });
-    return res.json({ success: true });
+
+    // Fire any enabled "on cancel" automated emails right away. Best-effort —
+    // a failure here must never undo or mask the cancellation itself.
+    let automationResults = [];
+    try {
+      const booking = normalizeBooking(pi);
+      const { config } = await readConfig();
+      const due = computeDueItems([booking], config, todayInPropertyTz());
+      automationResults = await sendAllDue(due);
+    } catch (_) {
+      // swallow — cancellation already succeeded
+    }
+
+    return res.json({ success: true, automationResults });
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
