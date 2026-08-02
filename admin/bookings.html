@@ -1321,9 +1321,11 @@
 
         if (!valid) return;
 
-        // Guess a rate based on month
-        var month = parseInt(checkin.split('-')[1], 10);
-        var skiSeason = month >= 6 && month <= 9;
+        // Guess a rate based on date (ski season: June 1 – October 4)
+        var checkinParts = checkin.split('-');
+        var month = parseInt(checkinParts[1], 10);
+        var day   = parseInt(checkinParts[2], 10);
+        var skiSeason = month >= 6 && (month <= 9 || (month === 10 && day <= 4));
         var rate = skiSeason ? 855 : 295;
 
         var newId = 'BK-2026-' + String(idCounter).padStart(3, '0');

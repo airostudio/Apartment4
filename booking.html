@@ -499,7 +499,7 @@
             <img src="images/logo25.png" alt="Cascade Apartment 4">
       Cascade Apartment 4
           </a>
-          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Ski season only — open June through August.</p>
+          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Ski season only — open June 1 through October 4.</p>
         </div>
         <div>
           <h4 class="footer-heading">Explore</h4>
@@ -581,9 +581,10 @@
     function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
+      var dom = date.getDate();
       var hol = isVicSchoolHoliday(date);
-      // Ski season: June–August
-      if (m >= 5 && m <= 7) {
+      // Ski season: June 1 – October 4
+      if (m >= 5 && (m <= 8 || (m === 9 && dom <= 4))) {
         var isMidweek = (d !== 5 && d !== 6);
         var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;

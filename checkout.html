@@ -743,16 +743,17 @@
     function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
+      var dom = date.getDate();
       var hol = isVicSchoolHoliday(date);
-      // Ski season: June–August
-      if (m >= 5 && m <= 7) {
+      // Ski season: June 1 – October 4
+      if (m >= 5 && (m <= 8 || (m === 9 && dom <= 4))) {
         // Weekend nights (Fri=5, Sat=6): $855 flat
         // Midweek (Sun–Thu): $985 for single night, $855 for 2+ nights
         var isMidweek = (d !== 5 && d !== 6);
         var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;
       }
-      // Green Season (Sep–May): property closed, return 0
+      // Green Season (Oct 5 – May): property closed, return 0
       return 0;
     }
 
