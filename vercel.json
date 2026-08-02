@@ -3,5 +3,11 @@
   "devCommand": null,
   "installCommand": null,
   "framework": null,
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "crons": [
+    {
+      "path": "/api/cron/send-due-emails",
+      "schedule": "0 20 * * *"
+    }
+  ]
 }

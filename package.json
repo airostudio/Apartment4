@@ -2,6 +2,9 @@
   "name": "cascade-apartment-4",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "resend": "^3.0.0",
     "stripe": "^14.0.0"
