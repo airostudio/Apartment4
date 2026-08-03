@@ -828,7 +828,7 @@
                 if (!resp.ok) throw new Error(s.error || 'Status check failed.');
                 var problems = [];
                 if (!s.resendConfigured)        problems.push('sending any emails at all (RESEND_API_KEY)');
-                if (!s.databaseConfigured)      problems.push('saving templates/automation changes (connect Vercel KV to this project)');
+                if (!s.databaseConfigured)      problems.push('saving templates/automation changes (connect a Redis database, e.g. Upstash, from the Vercel Marketplace)');
                 if (!s.cronSecretConfigured)    problems.push('daily scheduled emails (CRON_SECRET)');
                 if (!s.webhookSecretConfigured) problems.push('instant booking-confirmation emails (STRIPE_WEBHOOK_SECRET)');
                 if (!problems.length) {
