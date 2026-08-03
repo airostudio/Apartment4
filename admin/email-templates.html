@@ -538,12 +538,13 @@
         }
 
         /* ── Server-backed config (templates + automation rules) ──
-           Single source of truth lives server-side (GitHub-committed JSON),
-           so the cron job, the Stripe webhook and this admin UI always agree
-           on what's configured. We keep an in-memory cache here and only
-           round-trip to the server on load and on save. */
+           Single source of truth lives in Vercel KV (a real database), so
+           the cron job, the Stripe webhook and this admin UI always agree
+           on what's configured, and saves are instant and durable — no git
+           commits, no branch mismatches, no redeploy lag. We keep an
+           in-memory cache here and only round-trip to the server on load
+           and on save. */
         var _config = { templates: [], automationRules: {} };
-        var _configSha = null;
 
         function findTemplate(id) {
             return _config.templates.find(function (x) { return x.id === id; });
@@ -554,7 +555,6 @@
             var data = await resp.json();
             if (!resp.ok) throw new Error(data.error || 'Could not load email configuration.');
             _config = data.config;
-            _configSha = data.sha;
             return data;
         }
 
@@ -562,19 +562,12 @@
             var resp = await fetch('/api/email-config', {
                 method: 'PUT',
                 headers: authHeaders(),
-                body: JSON.stringify({ config: _config, sha: _configSha })
+                body: JSON.stringify({ config: _config })
             });
             var data = await resp.json();
             if (!resp.ok) {
-                if (data.code === 'NOT_CONFIGURED') {
-                    throw new Error('Automated saving isn\'t set up yet — add a GITHUB_TOKEN in Vercel’s project settings first. Your change was not saved.');
-                }
-                if (resp.status === 409) {
-                    throw new Error('Someone else saved changes at the same moment. Reloading the latest version — please re-apply your change.');
-                }
                 throw new Error(data.error || 'Could not save.');
             }
-            _configSha = data.sha;
             return data;
         }
 
@@ -635,9 +628,6 @@
                 showToast('✓ Automation settings saved.');
             } catch (e) {
                 _config.automationRules[id] = prevRule;
-                if (/Reloading the latest/.test(e.message)) {
-                    try { await loadConfigFromServer(); renderGrid(); } catch (_) {}
-                }
                 alert(e.message);
             }
             btn.disabled = false; btn.textContent = 'Save';
@@ -700,9 +690,6 @@
                 showToast('✓ Template saved.');
             } catch (e) {
                 _config.templates[idx] = prev;
-                if (/Reloading the latest/.test(e.message)) {
-                    try { await loadConfigFromServer(); renderGrid(); } catch (_) {}
-                }
                 alert(e.message);
             }
             btn.disabled = false; btn.textContent = 'Save Template';
@@ -735,7 +722,7 @@
                 if (!resp.ok) throw new Error(s.error || 'Status check failed.');
                 var problems = [];
                 if (!s.resendConfigured)        problems.push('sending any emails at all (RESEND_API_KEY)');
-                if (!s.githubConfigured)        problems.push('saving templates/automation changes (GITHUB_TOKEN)');
+                if (!s.databaseConfigured)      problems.push('saving templates/automation changes (connect Vercel KV to this project)');
                 if (!s.cronSecretConfigured)    problems.push('daily scheduled emails — pre-arrival, check-in, check-out, review requests (CRON_SECRET)');
                 if (!s.webhookSecretConfigured) problems.push('instant emails right when a booking is made (STRIPE_WEBHOOK_SECRET)');
                 if (!problems.length) {

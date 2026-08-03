@@ -1,6 +1,6 @@
 const Stripe = require('stripe');
 const { normalizeBooking } = require('../_lib/booking-store');
-const { readConfig } = require('../_lib/github-config-store');
+const { readConfig } = require('../_lib/kv-config-store');
 const { computeDueItems, todayInPropertyTz } = require('../_lib/automation-engine');
 const { sendAllDue } = require('../_lib/run-automation');
 

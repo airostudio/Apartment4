@@ -1,5 +1,5 @@
 const { requireAdmin } = require('./_lib/auth');
-const { githubEnv } = require('./_lib/github-config-store');
+const { kvConfigured } = require('./_lib/kv-config-store');
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
@@ -9,9 +9,7 @@ module.exports = async (req, res) => {
   if (!requireAdmin(req, res)) return;
 
   return res.json({
-    githubConfigured:        githubEnv().configured,
-    githubRepo:              githubEnv().repo,
-    githubBranch:            githubEnv().branch,
+    databaseConfigured:      kvConfigured(),
     cronSecretConfigured:    !!process.env.CRON_SECRET,
     webhookSecretConfigured: !!process.env.STRIPE_WEBHOOK_SECRET,
     resendConfigured:        !!process.env.RESEND_API_KEY,

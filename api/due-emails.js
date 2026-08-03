@@ -1,6 +1,6 @@
 const { requireAdmin } = require('./_lib/auth');
 const { listBookings } = require('./_lib/booking-store');
-const { readConfig } = require('./_lib/github-config-store');
+const { readConfig } = require('./_lib/kv-config-store');
 const { computeDueItems, todayInPropertyTz } = require('./_lib/automation-engine');
 
 module.exports = async (req, res) => {

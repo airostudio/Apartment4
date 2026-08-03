@@ -1,28 +1,28 @@
 const { requireAdmin } = require('./_lib/auth');
-const { readConfig, writeConfig, githubEnv } = require('./_lib/github-config-store');
+const { readConfig, writeConfig, kvConfigured } = require('./_lib/kv-config-store');
 
 module.exports = async (req, res) => {
   if (!requireAdmin(req, res)) return;
 
   if (req.method === 'GET') {
     try {
-      const { config, sha, source } = await readConfig();
-      return res.json({ config, sha, editable: githubEnv().configured, source });
+      const { config, source } = await readConfig();
+      return res.json({ config, editable: kvConfigured(), source });
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
   }
 
   if (req.method === 'PUT') {
-    const { config, sha } = req.body || {};
+    const { config } = req.body || {};
     if (!config || !Array.isArray(config.templates) || typeof config.automationRules !== 'object') {
       return res.status(400).json({ error: 'Invalid config payload.' });
     }
     try {
-      const result = await writeConfig(config, sha);
-      return res.json({ success: true, sha: result.sha });
+      await writeConfig(config);
+      return res.json({ success: true });
     } catch (e) {
-      const status = e.code === 'NOT_CONFIGURED' ? 501 : (e.status === 409 ? 409 : 500);
+      const status = e.code === 'NOT_CONFIGURED' ? 501 : 500;
       return res.status(status).json({ error: e.message, code: e.code });
     }
   }
