@@ -72,6 +72,7 @@
       this.elements = this.stripe.elements({ appearance: this.config.appearance });
 
       this.cardElement = this.elements.create('card', {
+        hidePostalCode: true,
         style: {
           base: {
             fontSize:        '16px',
@@ -124,19 +125,32 @@
       var billingDetails = {
         name: bookingData.cardholderName,
         address: {
-          line1:       bookingData.address,
-          city:        bookingData.city,
-          state:       bookingData.state,
-          postal_code: bookingData.postcode,
-          country:     bookingData.country || 'AU'
+          line1:   bookingData.address,
+          city:    bookingData.city,
+          state:   bookingData.state,
+          country: bookingData.country || 'AU'
         }
       };
 
-      // Create PaymentIntent server-side
+      // Create PaymentIntent server-side with booking metadata so it persists in Stripe
       var piResp = await fetch('/api/create-payment-intent', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ amountCents: bookingData.amountCents, currency: 'aud' })
+        body:    JSON.stringify({
+          amountCents: bookingData.amountCents,
+          currency: 'aud',
+          booking: {
+            ref:          bookingData.ref,
+            name:         bookingData.cardholderName,
+            email:        bookingData.email,
+            phone:        bookingData.phone,
+            checkin:      bookingData.checkin,
+            checkout:     bookingData.checkout,
+            guests:       bookingData.guests,
+            earlyCheckin: bookingData.earlyCheckin,
+            lateCheckout: bookingData.lateCheckout,
+          }
+        })
       });
 
       if (!piResp.ok) {
@@ -166,17 +180,6 @@
       };
     }
   };
-
-  /* ─────────────────────────────────────────────
-     Shared helpers
-  ───────────────────────────────────────────── */
-  function escHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
 
   /* ─────────────────────────────────────────────
      Inline validation helpers
@@ -213,9 +216,8 @@
     var fields = [
       { id: 'cardHolderName', errId: 'err-cardHolderName' },
       { id: 'billingStreet',  errId: 'err-billingStreet'  },
-      { id: 'billingCity',    errId: 'err-billingCity'    },
-      { id: 'billingState',   errId: 'err-billingState'   },
-      { id: 'billingPostcode',errId: 'err-billingPostcode' }
+      { id: 'billingCity',  errId: 'err-billingCity'  },
+      { id: 'billingState', errId: 'err-billingState' }
     ];
     fields.forEach(function (f) {
       var el = document.getElementById(f.id);
@@ -249,9 +251,8 @@
       var requiredFields = [
         { id: 'cardHolderName', errId: 'err-cardHolderName' },
         { id: 'billingStreet',  errId: 'err-billingStreet'  },
-        { id: 'billingCity',    errId: 'err-billingCity'    },
-        { id: 'billingState',   errId: 'err-billingState'   },
-        { id: 'billingPostcode',errId: 'err-billingPostcode' }
+        { id: 'billingCity',  errId: 'err-billingCity'  },
+        { id: 'billingState', errId: 'err-billingState' }
       ];
 
       var firstInvalid = null;
@@ -317,27 +318,51 @@
       try {
         var amountCents = parseInt(form.dataset.amountCents, 10) || 0;
 
+        // Pre-generate ref so it can be stored in Stripe metadata
+        var ref = 'TRA-' + new Date().getFullYear() + '-' +
+          String(Math.floor(Math.random() * 90000) + 10000);
+
+        // Read booking context from URL params
+        var pageParams   = new URLSearchParams(window.location.search);
+        var checkin      = pageParams.get('checkin')      || '';
+        var checkout     = pageParams.get('checkout')     || '';
+        var guests       = pageParams.get('guests')       || '';
+        var earlyCheckin = pageParams.get('earlyCheckin') || '0';
+        var lateCheckout = pageParams.get('lateCheckout') || '0';
+
+        // Read guest contact details saved by booking.html
+        var guestEmail = '';
+        var guestPhone = '';
+        try {
+          var savedGuests = JSON.parse(localStorage.getItem('guestData') || '[]');
+          if (savedGuests.length) {
+            var lastGuest = savedGuests[savedGuests.length - 1];
+            guestEmail = lastGuest.email || '';
+            guestPhone = lastGuest.phone || '';
+          }
+        } catch (_) {}
+
         var data = {
           cardholderName: document.getElementById('cardHolderName').value.trim(),
           address:        document.getElementById('billingStreet').value.trim(),
-          city:           document.getElementById('billingCity').value.trim(),
-          state:          document.getElementById('billingState').value.trim(),
-          postcode:       document.getElementById('billingPostcode').value.trim(),
-          country:        (document.getElementById('billingCountry') || {}).value || 'AU',
-          amountCents:    amountCents
+          city:    document.getElementById('billingCity').value.trim(),
+          state:   document.getElementById('billingState').value.trim(),
+          country: (document.getElementById('billingCountry') || {}).value || 'AU',
+          amountCents:    amountCents,
+          ref:            ref,
+          email:          guestEmail,
+          phone:          guestPhone,
+          checkin:        checkin,
+          checkout:       checkout,
+          guests:         guests,
+          earlyCheckin:   earlyCheckin,
+          lateCheckout:   lateCheckout,
         };
 
         var result = await StripePayment.processPayment(data);
 
         if (result.success) {
-          var ref = 'TRA-' + new Date().getFullYear() + '-' +
-            String(Math.floor(Math.random() * 90000) + 10000);
-
-          // Carry URL params (dates/guests) forward to confirmation
-          var pageParams = new URLSearchParams(window.location.search);
-          var checkin  = pageParams.get('checkin')  || '';
-          var checkout = pageParams.get('checkout') || '';
-          var guests   = pageParams.get('guests')   || '';
+          // (ref and pageParams already defined above)
 
           try {
             localStorage.setItem('lastBookingSummary', JSON.stringify({
@@ -352,67 +377,34 @@
             }));
           } catch (_) {}
 
-          // Fire booking confirmation email (non-blocking)
+          // Push to adminBookings so calendar and bookings list reflect this payment
           try {
-            var guestEmail = '';
-            var savedGuests = JSON.parse(localStorage.getItem('guestData') || '[]');
-            if (savedGuests.length) {
-              guestEmail = savedGuests[savedGuests.length - 1].email || '';
-            }
-            if (guestEmail) {
-              var totalAUD = (amountCents / 100).toLocaleString('en-AU', { style: 'currency', currency: 'AUD' });
-              var fmtDate = function(str) {
-                if (!str) return '—';
-                var d = new Date(str + 'T12:00:00');
-                return d.toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-              };
-              var confHtml = [
-                '<div style="font-family:Inter,Arial,sans-serif;max-width:600px;margin:0 auto;color:#1e293b;">',
-                '<div style="background:#0f2744;padding:32px 28px;border-radius:12px 12px 0 0;">',
-                '<h1 style="color:#fff;font-size:22px;margin:0 0 4px;">Booking Confirmed</h1>',
-                '<p style="color:rgba(255,255,255,0.7);margin:0;font-size:14px;">Cascade Apartment 4 — Mt Baw Baw Alpine Resort</p>',
-                '</div>',
-                '<div style="background:#fff;border:1px solid #e2e8f0;border-top:none;padding:28px;border-radius:0 0 12px 12px;">',
-                '<p style="font-size:15px;margin:0 0 20px;">Hi ' + escHtml(data.cardholderName) + ',</p>',
-                '<p style="font-size:15px;margin:0 0 24px;">Great news — your booking at Cascade Apartment 4 is confirmed!</p>',
-                '<table style="width:100%;border-collapse:collapse;margin-bottom:24px;">',
-                '<tr style="background:#f8fafc;"><td style="padding:10px 14px;font-size:13px;color:#64748b;width:38%;">Booking Reference</td><td style="padding:10px 14px;font-size:13px;font-weight:600;">' + escHtml(ref) + '</td></tr>',
-                '<tr><td style="padding:10px 14px;font-size:13px;color:#64748b;">Check-in</td><td style="padding:10px 14px;font-size:13px;">' + escHtml(fmtDate(checkin)) + ' from 3:00 PM</td></tr>',
-                '<tr style="background:#f8fafc;"><td style="padding:10px 14px;font-size:13px;color:#64748b;">Check-out</td><td style="padding:10px 14px;font-size:13px;">' + escHtml(fmtDate(checkout)) + ' by 10:00 AM</td></tr>',
-                '<tr><td style="padding:10px 14px;font-size:13px;color:#64748b;">Guests</td><td style="padding:10px 14px;font-size:13px;">' + escHtml(guests) + ' adult' + (parseInt(guests) !== 1 ? 's' : '') + '</td></tr>',
-                '<tr style="background:#f8fafc;"><td style="padding:10px 14px;font-size:13px;color:#64748b;">Total Paid</td><td style="padding:10px 14px;font-size:13px;font-weight:700;color:#0f2744;">' + escHtml(totalAUD) + '</td></tr>',
-                '</table>',
-                '<div style="background:#fff7ed;border:1.5px solid #f97316;border-radius:8px;padding:14px 16px;margin-bottom:20px;">',
-                '<p style="font-size:13px;font-weight:700;color:#9a3412;margin:0 0 6px;">Linen &amp; Towels</p>',
-                '<p style="font-size:13px;color:#7c2d12;margin:0;">Bed linen and bath towels are not included. Bring your own or hire: <strong>Queen/Double $40 · Single $20</strong>. Contact us to arrange hire before your stay.</p>',
-                '</div>',
-                '<p style="font-size:13px;color:#475569;margin:0 0 6px;">Questions? Reply to this email or contact us at <a href="mailto:hello@cascadeskiapartments.com" style="color:#0f2744;">hello@cascadeskiapartments.com</a></p>',
-                '<p style="font-size:13px;color:#475569;margin:0;">We look forward to welcoming you!</p>',
-                '<p style="font-size:13px;color:#475569;margin:20px 0 0;">Warm regards,<br><strong>Cascade Apartment 4</strong></p>',
-                '</div></div>'
-              ].join('');
-
-              var confText = 'Hi ' + data.cardholderName + ',\n\nYour booking at Cascade Apartment 4 is confirmed!\n\n'
-                + 'Reference:  ' + ref + '\n'
-                + 'Check-in:   ' + fmtDate(checkin) + ' from 3:00 PM\n'
-                + 'Check-out:  ' + fmtDate(checkout) + ' by 10:00 AM\n'
-                + 'Guests:     ' + guests + '\n'
-                + 'Total Paid: ' + totalAUD + '\n\n'
-                + 'Linen & Towels: not included. Bring your own or hire (Queen/Double $40, Single $20).\n\n'
-                + 'Questions? Email hello@cascadeskiapartments.com\n\nWarm regards,\nCascade Apartment 4';
-
-              fetch('/api/send-email', {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  to:      guestEmail,
-                  subject: 'Booking Confirmed — Cascade Apartment 4 (' + ref + ')',
-                  text:    confText,
-                  html:    confHtml
-                })
-              }).catch(function() {});
-            }
+            var adminBookings = JSON.parse(localStorage.getItem('adminBookings') || '[]');
+            adminBookings.push({
+              id:          ref,
+              stripeId:    result.paymentIntentId,
+              name:        data.cardholderName,
+              email:       guestEmail,
+              phone:       '',
+              checkin:     checkin,
+              checkout:    checkout,
+              guests:      parseInt(guests) || 1,
+              rate:        855,
+              status:      'Confirmed',
+              source:      'stripe',
+              amountCents: amountCents,
+              createdAt:   new Date().toISOString(),
+              paidAt:      new Date().toISOString(),
+              notes:       'Paid online via Stripe. Payment ID: ' + result.paymentIntentId
+            });
+            localStorage.setItem('adminBookings', JSON.stringify(adminBookings));
           } catch (_) {}
+
+          // Booking confirmation / payment-receipt emails are sent reliably
+          // server-side via the Stripe webhook (api/webhooks/stripe.js) once
+          // payment_intent.succeeded is confirmed — not from here. A client-side
+          // fetch this late in the flow is easily lost if the guest closes the
+          // tab, and duplicates the automation system's own send.
 
           window.location.href = 'confirmation.html?ref=' + encodeURIComponent(ref) +
             '&pi=' + encodeURIComponent(result.paymentIntentId);

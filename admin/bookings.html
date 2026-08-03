@@ -706,6 +706,7 @@
                                 <th>Check-out</th>
                                 <th>Guests</th>
                                 <th>Amount</th>
+                                <th>Booked On</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -770,6 +771,10 @@
                 <div class="detail-item">
                     <div class="detail-label">Guests</div>
                     <div class="detail-value" id="vGuests"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Booked On</div>
+                    <div class="detail-value" id="vBookedAt"></div>
                 </div>
                 <div class="detail-item detail-item--full">
                     <div class="detail-label">Notes</div>
@@ -960,8 +965,26 @@
        BOOKING DATA
     ────────────────────────────────────────────── */
     var bookings = [];
+    var idCounter = 1;
 
-    var idCounter = 1; // next booking number
+    var STORAGE_KEY = 'adminBookings';
+
+    function saveToStorage() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings)); } catch(_) {}
+    }
+
+    function loadFromStorage() {
+        try {
+            var saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) return;
+            bookings = JSON.parse(saved);
+            // Restore idCounter from highest BK number seen
+            bookings.forEach(function(b) {
+                var n = parseInt((b.id || '').replace(/\D/g, ''), 10);
+                if (!isNaN(n) && n >= idCounter) idCounter = n + 1;
+            });
+        } catch(_) {}
+    }
 
     /* ──────────────────────────────────────────────
        HELPERS
@@ -1016,7 +1039,7 @@
         });
 
         if (list.length === 0) {
-            tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No bookings found for this filter.</td></tr>';
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No bookings found for this filter.</td></tr>';
             updateStats();
             return;
         }
@@ -1033,6 +1056,7 @@
             html += '<td class="date-range">' + formatDate(b.checkout) + '<br><span class="nights-badge">' + nights + ' night' + (nights !== 1 ? 's' : '') + '</span></td>';
             html += '<td>' + b.guests + '</td>';
             html += '<td class="amount-cell">' + formatAUD(total) + '</td>';
+            html += '<td style="font-size:0.78rem;color:#6b7280;white-space:nowrap;">' + formatTimestamp(b.createdAt || b.paidAt) + '</td>';
             html += '<td>' + statusBadge(b.status) + '</td>';
             html += '<td><div class="action-btns">';
             html += '<button class="btn-action btn-view" data-action="view" data-id="' + b.id + '">View</button>';
@@ -1044,6 +1068,13 @@
 
         tbody.innerHTML = html;
         updateStats();
+    }
+
+    function formatTimestamp(iso) {
+        if (!iso) return '—';
+        var d = new Date(iso);
+        return d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' })
+             + ', ' + d.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit', hour12:true });
     }
 
     function escapeHtml(s) {
@@ -1143,6 +1174,7 @@
         document.getElementById('vNights').textContent      = nights + ' night' + (nights !== 1 ? 's' : '');
         document.getElementById('vGuests').textContent      = bk.guests + ' guest' + (bk.guests !== 1 ? 's' : '');
         document.getElementById('vNotes').textContent       = bk.notes || '—';
+        document.getElementById('vBookedAt').textContent    = formatTimestamp(bk.createdAt || bk.paidAt);
         document.getElementById('vStatus').innerHTML        = statusBadge(bk.status);
         document.getElementById('vRate').textContent        = formatAUD(bk.rate) + '/night';
         document.getElementById('vNightsLabel').textContent = nights + ' night' + (nights !== 1 ? 's' : '') + ' ×  ' + formatAUD(bk.rate);
@@ -1210,6 +1242,7 @@
         bk.rate     = parseFloat(document.getElementById('editRate').value) || bk.rate;
         bk.notes    = document.getElementById('editNotes').value.trim();
 
+        saveToStorage();
         renderTable();
         closeModal('editModal');
         showToast('Booking updated successfully.', 'success');
@@ -1227,14 +1260,32 @@
         if (!window.confirm(msg)) return;
 
         if (isAlreadyCancelled) {
-            // Remove from array
             bookings = bookings.filter(function (b) { return b.id !== bk.id; });
             showToast('Booking ' + bk.id + ' deleted.', 'warning');
         } else {
             bk.status = 'Cancelled';
             showToast('Booking ' + bk.id + ' has been cancelled.', 'warning');
         }
+        saveToStorage();
         renderTable();
+
+        // For Stripe bookings, mark cancelled in Stripe metadata so the dates
+        // are immediately freed in the guest-facing availability check.
+        if (bk.source === 'stripe') {
+            var stripeId = bk.stripeId;
+            if (!stripeId && bk.notes) {
+                var m = (bk.notes || '').match(/Payment ID: (pi_\w+)/);
+                if (m) stripeId = m[1];
+            }
+            if (stripeId) {
+                var token = sessionStorage.getItem('adminToken') || '';
+                fetch('/api/cancel-booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ paymentIntentId: stripeId })
+                }).catch(function () {});
+            }
+        }
     }
 
     /* ──────────────────────────────────────────────
@@ -1270,10 +1321,12 @@
 
         if (!valid) return;
 
-        // Guess a rate based on month
-        var month = parseInt(checkin.split('-')[1], 10);
-        var skiSeason = month >= 6 && month <= 9;
-        var rate = skiSeason ? 415 : 295;
+        // Guess a rate based on date (ski season: June 1 – October 4)
+        var checkinParts = checkin.split('-');
+        var month = parseInt(checkinParts[1], 10);
+        var day   = parseInt(checkinParts[2], 10);
+        var skiSeason = month >= 6 && (month <= 9 || (month === 10 && day <= 4));
+        var rate = skiSeason ? 855 : 295;
 
         var newId = 'BK-2026-' + String(idCounter).padStart(3, '0');
         idCounter++;
@@ -1288,9 +1341,12 @@
             guests: parseInt(guests, 10),
             rate: rate,
             status: 'Pending',
+            source: 'admin',
+            createdAt: new Date().toISOString(),
             notes: document.getElementById('createNotes').value.trim()
         });
 
+        saveToStorage();
         renderTable();
         closeModal('createModal');
         showToast('Booking ' + newId + ' created for ' + name + '.', 'success');
@@ -1323,9 +1379,43 @@
     }
 
     /* ──────────────────────────────────────────────
-       INIT
+       INIT — load local admin bookings, then merge Stripe bookings from API
     ────────────────────────────────────────────── */
-    renderTable();
+    loadFromStorage();
+    renderTable(); // show local bookings immediately while API fetches
+
+    (async function fetchStripeBookings() {
+        var token = sessionStorage.getItem('adminToken') || '';
+        if (!token) return;
+        try {
+            var resp = await fetch('../api/list-bookings', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!resp.ok) return;
+            var data = await resp.json();
+            var online = data.bookings || [];
+            if (!online.length) return;
+
+            // Merge Stripe bookings into local list
+            var localById = {};
+            bookings.forEach(function(b) { localById[b.id] = b; });
+            online.forEach(function(b) {
+                var local = localById[b.id];
+                if (!local) {
+                    // Not in localStorage — add it (Stripe is the source of truth here)
+                    bookings.push(b);
+                    localById[b.id] = b;
+                } else {
+                    // Already in localStorage — backfill stripeId if the local entry
+                    // was written by stripe-connect.js before this field was added
+                    if (b.stripeId && !local.stripeId) local.stripeId = b.stripeId;
+                    if (b.paidAt  && !local.paidAt)   local.paidAt   = b.paidAt;
+                }
+            });
+            saveToStorage(); // persist merged state
+            renderTable();
+        } catch (_) {}
+    })();
 
     // Populate topbar via AdminAuth if available
     if (window.AdminAuth && window.AdminAuth.populateTopbar) {

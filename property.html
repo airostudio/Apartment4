@@ -256,6 +256,13 @@
       color: #1a73a7;
       flex-shrink: 0;
     }
+    .amenity-item--unavailable {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+    }
+    .amenity-item--unavailable:hover { background: #fef3c7; }
+    .amenity-item--unavailable svg { color: #d97706; }
 
     /* Rates Tab */
     .rates-grid {
@@ -868,7 +875,7 @@
           <div class="property-description">
             <p>Cascade Apartment 4 is a self-contained, family-friendly unit located on the lower level at the back of the Cascade complex in Baw Baw Village, Mt Baw Baw. Its private position gives it a quiet, cosy atmosphere away from the main building, with its own private entrance and a dedicated snow play area — three toboggans are included for guests to enjoy.</p>
             <p>Sleeping up to 7, the apartment has two bedrooms: a main bedroom with a queen bed and single bunk, and a second bedroom with a tri-bunk. The living area features a cosy lounge with a gas log fireplace, couch, and DVD player. The fully equipped kitchen includes a stove/oven, dishwasher, fridge/freezer, and microwave. There is a private ensuite as well as a second bathroom, plus a washing machine and drying room for ski and snow gear.</p>
-            <p>Pillows and doonas are provided; guests must bring their own linen and towels, or arrange hire. Please note: there is no resort WiFi. During winter there is no vehicle access to the village — luggage drop is at Carpark 1 with oversnow transport available. Cascade Apartment 4 is open during ski season (June – August) only. Apartment 4 is your ideal ski-season base at Mt Baw Baw.</p>
+            <p>Pillows and doonas are provided; guests must bring their own linen and towels, or arrange hire. During winter there is no vehicle access to the village — luggage drop is at Carpark 1. Snow chains are mandatory during snow season. Cascade Apartment 4 is open during ski season (June 1 – October 4) only. Apartment 4 is your ideal ski-season base at Mt Baw Baw.</p>
           </div>
 
           <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:600;color:#1a1a2e;margin-bottom:16px;">Key Features</h3>
@@ -944,9 +951,9 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               Pillows &amp; Doonas Provided
             </div>
-            <div class="amenity-item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
-              No Resort WiFi
+            <div class="amenity-item amenity-item--unavailable">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6C1 6 5 2 12 2C15.5 2 18.6 3.3 21 5.5"/><path d="M5 10a7 7 0 0 1 9.9-1"/><path d="M10.7 13.4A3 3 0 0 1 15 16"/><circle cx="12" cy="20" r="1"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              No WiFi — 4G Available
             </div>
           </div>
         </div>
@@ -957,19 +964,19 @@
           <div class="rates-grid">
             <div class="rate-card featured">
               <div class="rate-season">Weekend</div>
-              <div class="rate-dates">Fri – Sun &nbsp;·&nbsp; Ski Season (Jun – Aug)</div>
+              <div class="rate-dates">Fri – Sun &nbsp;·&nbsp; Ski Season (Jun 1 – Oct 4)</div>
               <div class="rate-price">$855 <span>/ night</span></div>
               <div class="rate-note">Min 2 nights &nbsp;·&nbsp; Check-in Friday</div>
             </div>
             <div class="rate-card featured">
               <div class="rate-season">Mid-week</div>
-              <div class="rate-dates">Sun – Thu &nbsp;·&nbsp; Ski Season (Jun – Aug)</div>
+              <div class="rate-dates">Sun – Thu &nbsp;·&nbsp; Ski Season (Jun 1 – Oct 4)</div>
               <div class="rate-price">$855 <span>/ night</span></div>
               <div class="rate-note">2+ nights: $855 &nbsp;·&nbsp; 1 night: $985</div>
             </div>
             <div class="rate-card" style="opacity:0.6;cursor:default;">
               <div class="rate-season" style="color:#b91c1c;">Green Season</div>
-              <div class="rate-dates">September – May</div>
+              <div class="rate-dates">October 5 – May</div>
               <div class="rate-price" style="font-size:1.1rem;color:#b91c1c;">Closed</div>
               <div class="rate-note">Property not available outside ski season</div>
             </div>
@@ -1039,7 +1046,7 @@
                 <svg viewBox="0 0 24 24" fill="currentColor" opacity="0.3"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
             </div>
-            <p class="review-text">Fantastic spot at Mt Baw Baw. The apartment was clean, warm and well-equipped. Loved the privacy of being around the back. Only note - no WiFi, so bring your own entertainment!</p>
+            <p class="review-text">Fantastic spot at Mt Baw Baw. The apartment was clean, warm and well-equipped. Loved the privacy of being around the back. Cosy fireplace made the evenings perfect after a day on the slopes!</p>
           </div>
 
           <!-- Review 3 -->
@@ -1197,6 +1204,7 @@
           <h4 class="footer-heading">Support</h4>
           <div class="footer-links">
             <a href="what-to-bring.html">What to Bring</a>
+            <a href="faq.html">FAQs</a>
             <a href="terms.html">Terms of Service</a>
             <a href="privacy.html">Privacy Policy</a>
             <a href="cancellation.html">Cancellation Policy</a>
@@ -1260,16 +1268,17 @@
       function getNightlyRate(date, totalNights) {
         var m = date.getMonth(); // 0=Jan
         var d = date.getDay();   // 0=Sun, 5=Fri, 6=Sat
+        var dom = date.getDate();
         var hol = isVicSchoolHoliday(date);
-        if (m >= 5 && m <= 7) {
-          // Ski season: Jun–Aug
+        if (m >= 5 && (m <= 8 || (m === 9 && dom <= 4))) {
+          // Ski season: June 1 – October 4
           // Midweek (Sun–Thu): $985 single night, $855 for 2+ nights
           // Weekend (Fri–Sat): $855 flat
           var isMidweek = (d !== 5 && d !== 6);
           var base = (isMidweek && totalNights === 1) ? 985 : 855;
           return hol ? Math.round(base * 1.30) : base;
         }
-        // Green Season (Sep–May): closed
+        // Green Season (Oct 5 – May): closed
         return 0;
       }
 
@@ -1335,6 +1344,81 @@
       if (ci && co) updatePricing();
 
       // Book Now button
+      // Grey out past dates
+      (function() {
+        var n = new Date();
+        var t = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+        document.getElementById('checkin').setAttribute('min', t);
+        document.getElementById('checkout').setAttribute('min', t);
+      })();
+
+      // Availability
+      var bookedRanges = [];
+      fetch('/api/booked-dates').then(function(r) { return r.json(); }).then(function(d) {
+        bookedRanges = d.ranges || [];
+      }).catch(function() {});
+
+      function overlapsBooked(ciStr, coStr) {
+        if (!ciStr || !coStr) return false;
+        var ciT = new Date(ciStr + 'T12:00:00').getTime();
+        var coT = new Date(coStr + 'T12:00:00').getTime();
+        if (coT <= ciT) return false;
+        return bookedRanges.some(function(r) {
+          var rCI = new Date(r.checkin  + 'T12:00:00').getTime();
+          var rCO = new Date(r.checkout + 'T12:00:00').getTime();
+          return ciT < rCO && coT > rCI;
+        });
+      }
+
+      function showWidgetAvailabilityCallout(show) {
+        var existing = document.getElementById('widgetAvailabilityCallout');
+        if (show) {
+          if (!existing) {
+            var callout = document.createElement('div');
+            callout.id = 'widgetAvailabilityCallout';
+            callout.style.cssText = 'margin:10px 0 0;padding:12px 14px;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;';
+            callout.innerHTML = '<p style="margin:0 0 4px;font-size:0.85rem;font-weight:600;color:#991b1b;">These dates are already booked.</p>'
+              + '<p style="margin:0;font-size:0.82rem;color:#7f1d1d;">Please choose different dates or <a href="#contact" style="color:#dc2626;font-weight:600;">contact us</a>.</p>';
+            var btnEl = document.getElementById('btnBook');
+            btnEl.parentNode.insertBefore(callout, btnEl);
+          }
+        } else {
+          if (existing) existing.remove();
+        }
+      }
+
+      function isAllowedCheckinDay(dateStr) {
+        if (!dateStr) return true;
+        var d = new Date(dateStr + 'T12:00:00');
+        var day = d.getDay();
+        return day === 5 || day === 6;
+      }
+      function showWidgetContactCallout(show) {
+        var existing = document.getElementById('widgetContactCallout');
+        if (show) {
+          if (!existing) {
+            var callout = document.createElement('div');
+            callout.id = 'widgetContactCallout';
+            callout.style.cssText = 'margin:12px 0 0;padding:12px 14px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;';
+            callout.innerHTML = '<p style="margin:0 0 6px;font-size:0.85rem;font-weight:600;color:#92400e;">Online bookings are available for Friday &amp; Saturday check-ins only.</p>'
+              + '<a href="index.html#contact" style="display:inline-block;padding:7px 16px;background:#d97706;color:#fff;border-radius:6px;font-size:0.83rem;font-weight:600;text-decoration:none;">Contact Us to Book &rarr;</a>';
+            var btnEl = document.getElementById('btnBook');
+            btnEl.parentNode.insertBefore(callout, btnEl);
+          }
+        } else {
+          if (existing) existing.remove();
+        }
+      }
+      document.getElementById('checkin').addEventListener('change', function() {
+        var val = this.value;
+        showWidgetContactCallout(val && !isAllowedCheckinDay(val));
+        var co = document.getElementById('checkout').value;
+        showWidgetAvailabilityCallout(overlapsBooked(val, co));
+      });
+      document.getElementById('checkout').addEventListener('change', function() {
+        var ci = document.getElementById('checkin').value;
+        showWidgetAvailabilityCallout(overlapsBooked(ci, this.value));
+      });
       document.getElementById('btnBook').addEventListener('click', function() {
         var ci = document.getElementById('checkin').value;
         var co = document.getElementById('checkout').value;
@@ -1342,6 +1426,14 @@
         if (!ci || !co) {
           alert('Please select your check-in and check-out dates.');
           document.getElementById('checkin').focus();
+          return;
+        }
+        if (!isAllowedCheckinDay(ci)) {
+          showWidgetContactCallout(true);
+          return;
+        }
+        if (overlapsBooked(ci, co)) {
+          showWidgetAvailabilityCallout(true);
           return;
         }
         var url = 'booking.html?checkin=' + encodeURIComponent(ci)

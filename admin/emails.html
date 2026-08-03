@@ -174,6 +174,8 @@
                 </a>
             </div>
 
+            <div class="automation-status-banner" id="automationStatusBanner">Checking automation status…</div>
+
             <!-- Two-column layout -->
             <div class="emails-layout">
 
@@ -190,6 +192,14 @@
                                 <select id="composeTemplate" class="admin-input">
                                     <option value="">— Select a template (optional) —</option>
                                 </select>
+                            </div>
+
+                            <div class="admin-form-group">
+                                <label class="admin-label" for="composeBooking">Link to Booking</label>
+                                <select id="composeBooking" class="admin-input">
+                                    <option value="">— Select booking (auto-fills guest &amp; replaces variables) —</option>
+                                </select>
+                                <p class="compose-hint">Select a booking to auto-fill the guest email and replace template variables with real data.</p>
                             </div>
 
                             <div class="admin-form-group">
@@ -241,6 +251,18 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- Automation Due Panel -->
+            <div class="admin-card" id="dueEmailsCard" style="margin-top:24px;display:none;">
+                <div class="admin-card-header">
+                    <h2 class="admin-card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="margin-right:6px;vertical-align:-2px;color:#d97706"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Automated Emails Due
+                    </h2>
+                    <button class="btn btn-primary btn-sm" id="sendAllDueBtn">Send All Now</button>
+                </div>
+                <div class="admin-card-body" style="padding:0;" id="dueEmailsList"></div>
             </div>
 
         </main>
@@ -359,101 +381,84 @@
 
         .compose-toast.show { opacity: 1; pointer-events: auto; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Due emails panel */
+        .due-email-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--gray-100, #f1f5f9);
+        }
+        .due-email-row:last-child { border-bottom: none; }
+        .due-email-info { flex: 1; min-width: 0; }
+        .due-email-template { font-size: 13px; font-weight: 600; color: #1e293b; }
+        .due-email-guest { font-size: 12px; color: #64748b; margin-top: 2px; }
+        .due-email-trigger { font-size: 11px; color: #d97706; font-weight: 500; margin-top: 1px; }
+        .due-email-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+        /* Automation status banner (shared style with email-templates.html) */
+        .automation-status-banner {
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .automation-status-banner.ok   { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .automation-status-banner.warn { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
     </style>
 
     <script>
     (function () {
         'use strict';
 
-        /* ---- Default templates (mirrors email-templates.html) ---- */
-        var DEFAULT_TEMPLATES = [
-            {
-                id: 'booking-confirmation',
-                name: 'Booking Confirmation',
-                trigger: 'Sent immediately after a booking is made',
-                icon: 'confirm',
-                subject: 'Your booking is confirmed — {{property_name}}',
-                body: 'Hi {{guest_name}},\n\nGreat news — your booking at {{property_name}} is confirmed!\n\nBooking Details\n───────────────────────────\nReference:    {{booking_ref}}\nCheck-in:     {{check_in}} from 3:00 PM\nCheck-out:    {{check_out}} by 10:00 AM\nGuests:       {{guest_count}}\nTotal:        {{total_amount}}\n\nGetting Here\n───────────────────────────\nCascade Apartment 4 is located at Mt Baw Baw Alpine Resort, Victoria. Detailed directions and parking information will be sent 3 days before your arrival.\n\nQuestions?\n───────────────────────────\nReply to this email or contact us at hello@cascadeskiapartments.com.\n\nWe look forward to welcoming you!\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'pre-arrival',
-                name: 'Pre-Arrival Information',
-                trigger: 'Sent 3 days before check-in',
-                icon: 'prearr',
-                subject: 'Your stay is coming up — important arrival info',
-                body: 'Hi {{guest_name}},\n\nYour stay at {{property_name}} is just around the corner! Here\'s everything you need to know before you arrive.\n\nYour Stay\n───────────────────────────\nCheck-in:   {{check_in}} from 3:00 PM\nCheck-out:  {{check_out}} by 10:00 AM\n\nDirections to Mt Baw Baw\n───────────────────────────\nFrom Melbourne, take the M1 Freeway towards Traralgon, then follow signs to Mt Baw Baw via Rawson. The resort is approximately 2.5 hours from Melbourne CBD.\n\nIn winter, snow chains may be required on the mountain road. Check road conditions at vicroads.vic.gov.au before you travel.\n\nParking\n───────────────────────────\nUndercover parking is available at the apartment. Your parking bay is clearly marked. Please do not park in other bays.\n\nWhat to Bring\n───────────────────────────\n• Warm clothing and layers — it gets cold on the mountain!\n• Snow gear (ski/snowboard equipment can be hired at the resort)\n• Groceries — the nearest supermarket is in Moe or Drouin\n• Any personal toiletries you need\n\nThe apartment is fully equipped with linen, towels, a full kitchen, and a fireplace.\n\nWe\'re excited to have you — see you soon!\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'check-in-instructions',
-                name: 'Check-in Instructions',
-                trigger: 'Sent on the morning of check-in',
-                icon: 'checkin',
-                subject: 'Check-in instructions for today — {{property_name}}',
-                body: 'Hi {{guest_name}},\n\nWelcome to your ski getaway! Here are your check-in instructions for today.\n\nCheck-in: from 3:00 PM\nReference: {{booking_ref}}\n\nKey Collection\n───────────────────────────\nYour key is held in the lockbox located at the main apartment entrance.\n\nLockbox code: [CODE WILL BE PROVIDED BY HOST]\n\nPlease collect your key on arrival. The lockbox is on the right-hand side of the front door.\n\nApartment Location\n───────────────────────────\nCascade Apartment 4 is in the main Cascade Lodge building.\nFollow signs to Cascade Lodge from the resort entry.\nTake the lift or stairs to Level 1, turn left, Apartment 4 is at the end of the corridor.\n\nWi-Fi\n───────────────────────────\nNetwork: CascadeApt4\nPassword: [PROVIDED SEPARATELY]\n\nImportant Notes\n───────────────────────────\n• No smoking inside the apartment\n• No parties or excessive noise after 10:00 PM\n• Maximum {{guest_count}} guests as per your booking\n• Pets are not permitted\n\nEmergency contacts and resort info are displayed on the noticeboard inside the apartment.\n\nEnjoy your stay!\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'checkout-reminder',
-                name: 'Check-out Reminder',
-                trigger: 'Sent on the evening before check-out',
-                icon: 'checkout',
-                subject: 'Check-out reminder for tomorrow — {{property_name}}',
-                body: 'Hi {{guest_name}},\n\nJust a friendly reminder that your check-out is tomorrow, {{check_out}}, by 10:00 AM.\n\nCheck-out Checklist\n───────────────────────────\n✓  Return key to the lockbox and scramble the code\n✓  Remove all food from the fridge and pantry\n✓  Place used dishes in the dishwasher and start it\n✓  Put used towels and linen in the laundry basket (no need to remake beds)\n✓  Take all rubbish to the bin room at the end of the corridor\n✓  Turn off all lights, heaters, and the fireplace\n✓  Lock all windows and the front door behind you\n\nLate Check-out\n───────────────────────────\nIf you need a late check-out, please reply to this email as soon as possible. Late check-outs are subject to availability and may incur an additional fee.\n\nWe hope you\'ve had a wonderful stay! It\'s been a pleasure hosting you.\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'post-stay-thankyou',
-                name: 'Post-Stay Thank You',
-                trigger: 'Sent 1 day after check-out',
-                icon: 'thankyou',
-                subject: 'Thank you for staying at {{property_name}}!',
-                body: 'Hi {{guest_name}},\n\nThank you so much for choosing Cascade Apartment 4 for your mountain escape. We hope you had a fantastic time on the mountain!\n\nYour stay: {{check_in}} — {{check_out}}\n\nWe\'d love to hear how your stay went. If you have a moment, a review on our listing would mean the world to us — it helps other guests discover us and helps us continue improving.\n\nCome Back Soon\n───────────────────────────\nAs a returning guest, you\'ll receive priority access to our best rates. To book your next stay, visit our website or reply to this email.\n\nWe hope to see you back on the mountain soon!\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'review-request',
-                name: 'Review Request',
-                trigger: 'Sent 3 days after check-out',
-                icon: 'review',
-                subject: 'How was your stay at {{property_name}}?',
-                body: 'Hi {{guest_name}},\n\nWe hope you\'re settling back home after your stay at Cascade Apartment 4!\n\nYour feedback means a great deal to us. If you have 2 minutes, we\'d love it if you could leave a review of your recent stay ({{check_in}} — {{check_out}}).\n\nYour honest review helps other travellers discover the apartment, and gives us valuable insight into how we can make each stay better.\n\nIf anything about your stay fell short of expectations, please do let us know by replying to this email — we\'d love the chance to make it right.\n\nThank you again for staying with us, {{guest_name}}. It was a pleasure to host you.\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'cancellation-confirmation',
-                name: 'Cancellation Confirmation',
-                trigger: 'Sent when a booking is cancelled',
-                icon: 'cancel',
-                subject: 'Your booking cancellation — {{property_name}} ({{booking_ref}})',
-                body: 'Hi {{guest_name}},\n\nThis email confirms that your booking at {{property_name}} has been cancelled.\n\nCancelled Booking\n───────────────────────────\nReference:   {{booking_ref}}\nCheck-in:    {{check_in}}\nCheck-out:   {{check_out}}\n\nRefund Information\n───────────────────────────\nAny applicable refund will be processed according to our cancellation policy and returned to your original payment method within 5–10 business days.\n\nIf you did not request this cancellation or believe this is an error, please contact us immediately at hello@cascadeskiapartments.com.\n\nWe\'re sorry we won\'t be seeing you this time. We hope to welcome you to Cascade Apartment 4 in the future.\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            },
-            {
-                id: 'payment-receipt',
-                name: 'Payment Receipt',
-                trigger: 'Sent when a payment is received',
-                icon: 'payment',
-                subject: 'Payment received — {{property_name}} ({{booking_ref}})',
-                body: 'Hi {{guest_name}},\n\nWe\'ve received your payment. Here is your receipt.\n\nPayment Receipt\n───────────────────────────\nBooking Reference:  {{booking_ref}}\nProperty:           {{property_name}}\nCheck-in:           {{check_in}}\nCheck-out:          {{check_out}}\nAmount Paid:        {{total_amount}}\nPayment Date:       {{payment_date}}\nPayment Method:     {{payment_method}}\n\nPlease keep this email as your receipt.\n\nIf you have any questions about your payment, please contact us at hello@cascadeskiapartments.com.\n\nWarm regards,\nThe Cascade Apartment 4 Team'
-            }
-        ];
+        var PROPERTY_NAME = 'Cascade Apartment 4';
 
-        /* ---- Helpers ---- */
-        function getTemplates() {
-            var saved = localStorage.getItem('emailTemplates');
-            if (saved) return JSON.parse(saved);
-            return JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+        function getToken() { return sessionStorage.getItem('adminToken') || ''; }
+
+        function authHeaders() {
+            return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+        }
+
+        /* ── Server-backed state (loaded once at init, cached in memory) ── */
+        var _config   = { templates: [], automationRules: {} };
+        var _bookings = [];
+        var _dueItems = [];
+
+        function getTemplates() { return _config.templates; }
+        function getTemplateById(id) { return _config.templates.find(function (t) { return t.id === id; }); }
+        function getBookingById(id) { return _bookings.find(function (b) { return b.id === id; }); }
+
+        async function loadServerState() {
+            var [cfgResp, bookingsResp, dueResp] = await Promise.all([
+                fetch('/api/email-config', { headers: authHeaders() }),
+                fetch('/api/list-bookings', { headers: authHeaders() }),
+                fetch('/api/due-emails', { headers: authHeaders() }),
+            ]);
+            var cfgData      = await cfgResp.json();
+            var bookingsData = await bookingsResp.json();
+            var dueData       = await dueResp.json();
+
+            if (!cfgResp.ok)      throw new Error(cfgData.error || 'Could not load templates.');
+            if (!bookingsResp.ok) throw new Error(bookingsData.error || 'Could not load bookings.');
+            if (!dueResp.ok)      throw new Error(dueData.error || 'Could not load due emails.');
+
+            _config   = cfgData.config;
+            _bookings = bookingsData.bookings || [];
+            _dueItems = dueData.due || [];
         }
 
         function getSentLog() {
-            var saved = localStorage.getItem('sentEmailLog');
-            return saved ? JSON.parse(saved) : [];
+            return JSON.parse(localStorage.getItem('sentEmailLog') || '[]');
         }
 
         function saveSentLog(log) {
             localStorage.setItem('sentEmailLog', JSON.stringify(log));
         }
 
-        function getGuests() {
-            var saved = localStorage.getItem('guestData');
-            return saved ? JSON.parse(saved) : [];
-        }
-
+        /* ── UI helpers ── */
         function showToast(msg) {
             var t = document.getElementById('toast');
             t.textContent = msg;
@@ -467,94 +472,252 @@
         }
 
         function escapeHtml(str) {
-            return String(str || '')
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        /* ---- Populate template select ---- */
+        /* ── Variable substitution (client-side, for live preview as the
+             admin picks a template/booking — the server re-applies the same
+             logic at send time regardless, so this can never cause a guest
+             to receive an un-substituted email even if this code has a bug). ── */
+        function fmtBookingDate(dateStr) {
+            return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-AU', {
+                weekday: 'short', day: 'numeric', month: 'long', year: 'numeric'
+            });
+        }
+
+        function calcTotalStr(booking) {
+            if (booking.amountCents) {
+                return '$' + (booking.amountCents / 100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+            var nights = Math.round((new Date(booking.checkout + 'T12:00:00') - new Date(booking.checkin + 'T12:00:00')) / 86400000);
+            return '$' + (nights * (booking.rate || 855) + 150).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function applyBookingVars(text, booking) {
+            var nights = Math.round((new Date(booking.checkout + 'T12:00:00') - new Date(booking.checkin + 'T12:00:00')) / 86400000);
+            var guestCount = booking.guests || 1;
+            return text
+                .replace(/\{\{guest_name\}\}/g, booking.name || 'Guest')
+                .replace(/\{\{check_in\}\}/g, fmtBookingDate(booking.checkin))
+                .replace(/\{\{check_out\}\}/g, fmtBookingDate(booking.checkout))
+                .replace(/\{\{booking_ref\}\}/g, booking.id || '')
+                .replace(/\{\{property_name\}\}/g, PROPERTY_NAME)
+                .replace(/\{\{guest_count\}\}/g, guestCount + ' guest' + (guestCount !== 1 ? 's' : ''))
+                .replace(/\{\{total_amount\}\}/g, calcTotalStr(booking))
+                .replace(/\{\{nights\}\}/g, String(nights))
+                .replace(/\{\{payment_date\}\}/g, booking.paidAt ? new Date(booking.paidAt).toLocaleDateString('en-AU') : '')
+                .replace(/\{\{payment_method\}\}/g, booking.source === 'stripe' ? 'Credit Card (Stripe)' : 'Manual');
+        }
+
+        function getSelectedBooking() {
+            var sel = document.getElementById('composeBooking');
+            if (!sel || !sel.value) return null;
+            return getBookingById(sel.value);
+        }
+
+        function applyCurrentBookingToForm() {
+            var booking = getSelectedBooking();
+            if (!booking) return;
+            var tplId = document.getElementById('composeTemplate').value;
+            if (!tplId) return;
+            var t = getTemplateById(tplId);
+            if (!t) return;
+            document.getElementById('composeSubject').value = applyBookingVars(t.subject, booking);
+            document.getElementById('composeBody').value    = applyBookingVars(t.body,    booking);
+        }
+
+        /* ── Due panel rendering (data computed server-side by the same
+             engine the cron job and webhook use — this panel can't show
+             anything different from what will actually get sent). ── */
+        function buildDueLabel(rule) {
+            switch (rule.trigger) {
+                case 'on_booking':          return 'Due: on booking';
+                case 'days_before_checkin': return 'Due: ' + rule.offset + ' day' + (rule.offset !== 1 ? 's' : '') + ' before check-in';
+                case 'on_checkin_day':      return 'Due: check-in morning';
+                case 'day_before_checkout': return 'Due: evening before check-out';
+                case 'days_after_checkout': return 'Due: ' + rule.offset + ' day' + (rule.offset !== 1 ? 's' : '') + ' after check-out';
+                case 'on_cancel':           return 'Due: on cancellation';
+            }
+            return '';
+        }
+
+        function renderDuePanel() {
+            var card = document.getElementById('dueEmailsCard');
+            var list = document.getElementById('dueEmailsList');
+            if (!_dueItems.length) { card.style.display = 'none'; return; }
+            card.style.display = '';
+            list.innerHTML = _dueItems.map(function (item, idx) {
+                var b = item.booking;
+                var ci  = new Date(b.checkin  + 'T12:00:00').toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+                var co  = new Date(b.checkout + 'T12:00:00').toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+                return '<div class="due-email-row">' +
+                    '<div class="due-email-info">' +
+                        '<div class="due-email-template">' + escapeHtml(item.template.name) + '</div>' +
+                        '<div class="due-email-guest">' + escapeHtml(b.name) + ' &lt;' + escapeHtml(b.email) + '&gt; &nbsp;·&nbsp; ' + ci + ' → ' + co + '</div>' +
+                        '<div class="due-email-trigger">' + buildDueLabel(item.rule) + '</div>' +
+                    '</div>' +
+                    '<div class="due-email-actions">' +
+                        '<button class="btn btn-sm btn-secondary" onclick="window._fillDue(' + idx + ')">Fill Form</button>' +
+                        '<button class="btn btn-sm btn-primary" onclick="window._sendDue(' + idx + ')">Send Now</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        async function refreshDueItems() {
+            try {
+                var resp = await fetch('/api/due-emails', { headers: authHeaders() });
+                var data = await resp.json();
+                if (resp.ok) _dueItems = data.due || [];
+            } catch (_) {}
+            renderDuePanel();
+        }
+
+        window._fillDue = function (idx) {
+            var item = _dueItems[idx];
+            if (!item) return;
+            var b = item.booking, t = item.template;
+            document.getElementById('composeBooking').value  = b.id;
+            document.getElementById('composeEmail').value    = b.email || '';
+            document.getElementById('composeTemplate').value = t.id;
+            document.getElementById('composeSubject').value  = applyBookingVars(t.subject, b);
+            document.getElementById('composeBody').value     = applyBookingVars(t.body, b);
+            document.querySelector('.emails-compose-panel').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        window._sendDue = async function (idx) {
+            var item = _dueItems[idx];
+            if (!item) return;
+            var b = item.booking, t = item.template;
+            var subject = applyBookingVars(t.subject, b);
+            var body    = applyBookingVars(t.body, b);
+            try {
+                var resp = await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: JSON.stringify({
+                        to: b.email, subject: subject, text: body, html: textToHtml(body),
+                        bookingStripeId: b.stripeId, templateId: t.id
+                    })
+                });
+                var data = await resp.json();
+                if (!resp.ok) throw new Error(data.error || 'Send failed');
+                var log = getSentLog();
+                log.unshift({ to: b.name + ' <' + b.email + '>', email: b.email, subject: subject, body: body, sentAt: new Date().toISOString() });
+                saveSentLog(log);
+                renderLog();
+                await refreshDueItems();
+                showToast('✓ Sent "' + t.name + '" to ' + b.name);
+            } catch (e) {
+                showToast('Error: ' + (e.message || 'Could not send'));
+            }
+        };
+
+        document.getElementById('sendAllDueBtn').addEventListener('click', async function () {
+            var count = _dueItems.length;
+            for (var i = 0; i < count; i++) await window._sendDue(0); // list shrinks as each one sends
+        });
+
+        /* ── Populate dropdowns ── */
         function populateTemplates() {
             var sel = document.getElementById('composeTemplate');
-            var templates = getTemplates();
-            /* remove existing options past first */
             while (sel.options.length > 1) sel.remove(1);
-            templates.forEach(function (t) {
+            getTemplates().forEach(function (t) {
                 var opt = document.createElement('option');
-                opt.value = t.id;
-                opt.textContent = t.name;
+                opt.value = t.id; opt.textContent = t.name;
                 sel.appendChild(opt);
             });
         }
 
-        /* ---- Populate guest select ---- */
+        function populateBookings() {
+            var sel = document.getElementById('composeBooking');
+            while (sel.options.length > 1) sel.remove(1);
+            var bookings = _bookings.slice().sort(function (a, b) { return new Date(a.checkin) - new Date(b.checkin); });
+            bookings.forEach(function (b) {
+                var opt = document.createElement('option');
+                opt.value = b.id;
+                var ci = new Date(b.checkin  + 'T12:00:00').toLocaleDateString('en-AU', { day:'numeric', month:'short' });
+                var co = new Date(b.checkout + 'T12:00:00').toLocaleDateString('en-AU', { day:'numeric', month:'short' });
+                opt.textContent = (b.name || 'Guest') + ' — ' + ci + ' → ' + co + ' (' + b.id + ')';
+                if (b.status === 'Cancelled') opt.textContent += ' [Cancelled]';
+                sel.appendChild(opt);
+            });
+        }
+
         function populateGuests() {
             var sel = document.getElementById('composeTo');
-            var guests = getGuests();
-            /* remove existing options past first two */
+            if (!sel) return;
             while (sel.options.length > 2) sel.remove(2);
-            guests.forEach(function (g) {
+            JSON.parse(localStorage.getItem('guestData') || '[]').forEach(function (g) {
                 var opt = document.createElement('option');
                 opt.value = g.email || '';
-                opt.textContent = (g.name || g.firstName + ' ' + g.lastName || 'Guest') + (g.email ? ' <' + g.email + '>' : '');
+                opt.textContent = (g.name || ((g.firstName || '') + ' ' + (g.lastName || '')).trim() || 'Guest') + (g.email ? ' <' + g.email + '>' : '');
                 opt.dataset.name = g.name || ((g.firstName || '') + ' ' + (g.lastName || '')).trim() || 'Guest';
                 sel.appendChild(opt);
             });
         }
 
-        /* ---- Template select handler ---- */
+        /* ── Event handlers ── */
         document.getElementById('composeTemplate').addEventListener('change', function () {
             var id = this.value;
             if (!id) return;
-            var templates = getTemplates();
-            var t = templates.find(function (x) { return x.id === id; });
+            var t = getTemplateById(id);
             if (!t) return;
-            document.getElementById('composeSubject').value = t.subject;
-            document.getElementById('composeBody').value = t.body;
+            var booking = getSelectedBooking();
+            document.getElementById('composeSubject').value = booking ? applyBookingVars(t.subject, booking) : t.subject;
+            document.getElementById('composeBody').value    = booking ? applyBookingVars(t.body,    booking) : t.body;
         });
 
-        /* ---- Guest select handler ---- */
-        document.getElementById('composeTo').addEventListener('change', function () {
-            var sel = this;
-            var opt = sel.options[sel.selectedIndex];
-            var emailField = document.getElementById('composeEmail');
-            if (sel.value === 'all') {
-                emailField.value = '(all guests)';
-                emailField.disabled = true;
-            } else if (sel.value) {
-                emailField.value = sel.value;
-                emailField.disabled = false;
+        document.getElementById('composeBooking').addEventListener('change', function () {
+            var booking = getSelectedBooking();
+            var emailFld = document.getElementById('composeEmail');
+            var toSel    = document.getElementById('composeTo');
+            if (booking) {
+                emailFld.value    = booking.email || '';
+                emailFld.disabled = false;
+                if (toSel) toSel.value = '';
+                applyCurrentBookingToForm();
             } else {
-                emailField.value = '';
-                emailField.disabled = false;
+                emailFld.value = '';
             }
         });
 
-        /* ---- Clear ---- */
-        document.getElementById('composeClear').addEventListener('click', function () {
-            document.getElementById('composeTemplate').value = '';
-            document.getElementById('composeTo').value = '';
-            document.getElementById('composeEmail').value = '';
-            document.getElementById('composeEmail').disabled = false;
-            document.getElementById('composeSubject').value = '';
-            document.getElementById('composeBody').value = '';
+        document.getElementById('composeTo').addEventListener('change', function () {
+            var opt      = this.options[this.selectedIndex];
+            var emailFld = document.getElementById('composeEmail');
+            var bkSel    = document.getElementById('composeBooking');
+            if (this.value === 'all') {
+                emailFld.value = '(all guests)'; emailFld.disabled = true;
+            } else if (this.value) {
+                emailFld.value = this.value; emailFld.disabled = false;
+                if (bkSel) bkSel.value = '';
+            } else {
+                emailFld.value = ''; emailFld.disabled = false;
+            }
         });
 
-        /* ---- Convert plain text body to simple HTML ---- */
+        document.getElementById('composeClear').addEventListener('click', function () {
+            ['composeTemplate','composeBooking','composeTo'].forEach(function (id) {
+                var el = document.getElementById(id); if (el) el.value = '';
+            });
+            document.getElementById('composeEmail').value    = '';
+            document.getElementById('composeEmail').disabled = false;
+            document.getElementById('composeSubject').value  = '';
+            document.getElementById('composeBody').value     = '';
+        });
+
+        /* ── HTML email wrapper ── */
         function textToHtml(text) {
-            var escaped = text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+            var escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             return '<div style="font-family:Inter,Arial,sans-serif;font-size:15px;line-height:1.7;color:#1e293b;max-width:600px;margin:0 auto;padding:32px 24px;">' +
-                escaped.replace(/\n/g, '<br>') +
-                '</div>';
+                escaped.replace(/\n/g, '<br>') + '</div>';
         }
 
-        /* ---- Send ---- */
+        /* ── Send ── */
         document.getElementById('composeSend').addEventListener('click', async function () {
-            var btn   = this;
-            var toSel = document.getElementById('composeTo');
+            var btn      = this;
+            var toSel    = document.getElementById('composeTo');
+            var bkSel    = document.getElementById('composeBooking');
             var emailVal = document.getElementById('composeEmail').value.trim();
             var subject  = document.getElementById('composeSubject').value.trim();
             var body     = document.getElementById('composeBody').value.trim();
@@ -563,35 +726,55 @@
             if (!subject)  { showToast('Please enter a subject line.'); return; }
             if (!body)     { showToast('Please write a message.'); return; }
 
-            var toOpt  = toSel.options[toSel.selectedIndex];
+            // Always apply booking variables at send time (catches cases where the
+            // admin loaded a template before selecting a booking, or the UI failed
+            // to substitute in a prior step).
+            var linkedBooking = getSelectedBooking();
+            if (linkedBooking) {
+                subject = applyBookingVars(subject, linkedBooking);
+                body    = applyBookingVars(body,    linkedBooking);
+                document.getElementById('composeSubject').value = subject;
+                document.getElementById('composeBody').value    = body;
+            }
+
+            // Warn if any {{variables}} are still unresolved (no booking linked)
+            if (/\{\{[^}]+\}\}/.test(subject) || /\{\{[^}]+\}\}/.test(body)) {
+                var ok = window.confirm(
+                    'This email still contains unfilled template variables like {{guest_name}}.\n\n' +
+                    'Select a booking from "Link to Booking" to fill them in automatically.\n\n' +
+                    'Send now with the placeholder text?'
+                );
+                if (!ok) return;
+            }
+
+            var toOpt   = toSel.options[toSel.selectedIndex];
             var toLabel = toSel.value === 'all' ? 'All Guests'
                 : (toOpt && toOpt.dataset.name ? toOpt.dataset.name + ' <' + emailVal + '>' : emailVal);
 
-            /* Collect recipients */
             var recipients = [];
             if (toSel.value === 'all') {
-                var guests = getGuests();
-                guests.forEach(function(g) { if (g.email) recipients.push(g.email); });
-                if (!recipients.length) { showToast('No guest emails found in the guest list.'); return; }
+                JSON.parse(localStorage.getItem('guestData') || '[]').forEach(function (g) { if (g.email) recipients.push(g.email); });
+                if (!recipients.length) { showToast('No guest emails found.'); return; }
             } else {
                 recipients = [emailVal];
             }
 
-            /* Disable button while sending */
             var origHtml = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon" style="animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Sending…';
+
+            var selectedBooking = getSelectedBooking();
+            var selectedTplId   = document.getElementById('composeTemplate').value;
 
             var sendErr = null;
             try {
                 var resp = await fetch('/api/send-email', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: authHeaders(),
                     body: JSON.stringify({
-                        to:      recipients,
-                        subject: subject,
-                        text:    body,
-                        html:    textToHtml(body)
+                        to: recipients, subject: subject, text: body, html: textToHtml(body),
+                        bookingStripeId: (selectedBooking && selectedTplId) ? selectedBooking.stripeId : undefined,
+                        templateId:      (selectedBooking && selectedTplId) ? selectedTplId : undefined
                     })
                 });
                 var data = await resp.json();
@@ -602,84 +785,91 @@
 
             btn.disabled = false;
             btn.innerHTML = origHtml;
+            if (sendErr) { showToast('Error: ' + sendErr); return; }
 
-            if (sendErr) {
-                showToast('Error: ' + sendErr);
-                return;
-            }
-
-            /* Log to localStorage */
             var log = getSentLog();
-            log.unshift({
-                to: toLabel,
-                email: recipients.join(', '),
-                subject: subject,
-                body: body,
-                sentAt: new Date().toISOString()
-            });
+            log.unshift({ to: toLabel, email: recipients.join(', '), subject: subject, body: body, sentAt: new Date().toISOString() });
             saveSentLog(log);
             renderLog();
-
+            await refreshDueItems();
             document.getElementById('composeClear').click();
             showToast('✓ Email sent successfully!');
         });
 
-        /* ---- Render log ---- */
+        /* ── Sent log ── */
         function renderLog() {
             var log = getSentLog();
-            var el = document.getElementById('sentLog');
-            if (!log.length) {
-                el.innerHTML = '<p class="sent-log-empty">No emails sent yet.</p>';
-                return;
-            }
+            var el  = document.getElementById('sentLog');
+            if (!log.length) { el.innerHTML = '<p class="sent-log-empty">No emails sent yet.</p>'; return; }
             el.innerHTML = log.map(function (entry) {
                 return '<div class="sent-log-item">' +
                     '<div class="sent-log-row">' +
-                        '<span class="sent-log-to">' + escapeHtml(entry.to) + '</span>' +
-                        '<span class="sent-log-date">' + escapeHtml(formatDate(entry.sentAt)) + '</span>' +
+                        '<span class="sent-log-to">'    + escapeHtml(entry.to)               + '</span>' +
+                        '<span class="sent-log-date">'  + escapeHtml(formatDate(entry.sentAt)) + '</span>' +
                     '</div>' +
                     '<span class="sent-log-subject">' + escapeHtml(entry.subject) + '</span>' +
-                    '<span class="sent-log-badge">' +
-                        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-                        'Sent' +
-                    '</span>' +
+                    '<span class="sent-log-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Sent</span>' +
                 '</div>';
             }).join('');
         }
 
-        /* ---- Clear log ---- */
         document.getElementById('clearLogBtn').addEventListener('click', function () {
             if (!confirm('Clear the entire sent email log?')) return;
-            saveSentLog([]);
-            renderLog();
+            saveSentLog([]); renderLog();
         });
 
-        /* ---- Sidebar toggle ---- */
-        var toggle = document.getElementById('sidebarToggle');
-        if (toggle) {
-            toggle.addEventListener('click', function () {
-                document.getElementById('adminSidebar').classList.toggle('open');
-            });
+        /* ── Automation status banner ── */
+        async function renderAutomationBanner() {
+            var el = document.getElementById('automationStatusBanner');
+            if (!el) return;
+            try {
+                var resp = await fetch('/api/automation-status', { headers: authHeaders() });
+                var s = await resp.json();
+                if (!resp.ok) throw new Error(s.error || 'Status check failed.');
+                var problems = [];
+                if (!s.resendConfigured)        problems.push('sending any emails at all (RESEND_API_KEY)');
+                if (!s.databaseConfigured)      problems.push('saving templates/automation changes (connect Vercel KV to this project)');
+                if (!s.cronSecretConfigured)    problems.push('daily scheduled emails (CRON_SECRET)');
+                if (!s.webhookSecretConfigured) problems.push('instant booking-confirmation emails (STRIPE_WEBHOOK_SECRET)');
+                if (!problems.length) {
+                    el.className = 'automation-status-banner ok';
+                    el.innerHTML = '✓ Automated email sending is fully configured and live.';
+                } else {
+                    el.className = 'automation-status-banner warn';
+                    el.innerHTML = '⚠ Automation isn’t fully wired up yet. Still needed: ' + problems.map(escapeHtml).join('; ') + '. Manual sending below works regardless.';
+                }
+            } catch (e) {
+                el.className = 'automation-status-banner warn';
+                el.textContent = 'Could not check automation status: ' + e.message;
+            }
         }
 
-        /* ---- Handle ?template= query param (from email-templates.html "Use in Compose") ---- */
-        (function () {
-            var params = new URLSearchParams(window.location.search);
-            var tplId = params.get('template');
+        /* ── Sidebar toggle ── */
+        var toggle = document.getElementById('sidebarToggle');
+        if (toggle) toggle.addEventListener('click', function () { document.getElementById('adminSidebar').classList.toggle('open'); });
+
+        /* ── Init ── */
+        (async function init() {
+            renderLog();
+            try {
+                await loadServerState();
+            } catch (e) {
+                showToast('Error loading data: ' + e.message);
+            }
+            populateTemplates();
+            populateBookings();
+            populateGuests();
+            renderDuePanel();
+            renderAutomationBanner();
+
+            // Handle ?template= query param (from "Use in Compose" on the templates page)
+            var tplId = new URLSearchParams(window.location.search).get('template');
             if (tplId) {
-                populateTemplates();
                 var sel = document.getElementById('composeTemplate');
                 sel.value = tplId;
-                if (sel.value === tplId) {
-                    sel.dispatchEvent(new Event('change'));
-                }
+                if (sel.value === tplId) sel.dispatchEvent(new Event('change'));
             }
         })();
-
-        /* ---- Init ---- */
-        populateTemplates();
-        populateGuests();
-        renderLog();
 
     })();
     </script>

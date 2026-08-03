@@ -517,13 +517,7 @@
                 </div>
               </div>
 
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="billingPostcode">Postcode *</label>
-                  <input type="text" id="billingPostcode" name="billingPostcode" placeholder="2000" required autocomplete="postal-code">
-                  <span class="field-error" id="err-billingPostcode">Please enter your postcode.</span>
-                </div>
-                <div class="form-group">
+              <div class="form-group">
                   <label for="billingCountry">Country *</label>
                   <select id="billingCountry" name="billingCountry" required autocomplete="country">
                     <option value="" disabled>Select country</option>
@@ -548,7 +542,6 @@
                     <option value="MX">Mexico</option>
                     <option value="ZA">South Africa</option>
                   </select>
-                </div>
               </div>
             </div>
 
@@ -598,6 +591,14 @@
             <div class="price-row">
               <span>Cleaning fee</span>
               <span id="coCleaningFee">$150</span>
+            </div>
+            <div class="price-row" id="coEarlyCheckinRow" style="display:none">
+              <span>Early Check-in (10:00 AM)</span>
+              <span>$30</span>
+            </div>
+            <div class="price-row" id="coLateCheckoutRow" style="display:none">
+              <span>Late Checkout (4:00 PM)</span>
+              <span>$30</span>
             </div>
             <div class="price-row">
               <span>Stripe processing fee</span>
@@ -742,16 +743,17 @@
     function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
+      var dom = date.getDate();
       var hol = isVicSchoolHoliday(date);
-      // Ski season: June–August
-      if (m >= 5 && m <= 7) {
+      // Ski season: June 1 – October 4
+      if (m >= 5 && (m <= 8 || (m === 9 && dom <= 4))) {
         // Weekend nights (Fri=5, Sat=6): $855 flat
         // Midweek (Sun–Thu): $985 for single night, $855 for 2+ nights
         var isMidweek = (d !== 5 && d !== 6);
         var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;
       }
-      // Green Season (Sep–May): property closed, return 0
+      // Green Season (Oct 5 – May): property closed, return 0
       return 0;
     }
 
@@ -764,6 +766,10 @@
     var ciStr  = params.get('checkin');
     var coStr  = params.get('checkout');
     var guests = parseInt(params.get('guests')) || 2;
+    var earlyCheckinFee  = params.get('earlyCheckin')  === '1' ? 30 : 0;
+    var lateCheckoutFee  = params.get('lateCheckout')  === '1' ? 30 : 0;
+    if (earlyCheckinFee)  { var r = document.getElementById('coEarlyCheckinRow');  if (r) r.style.display = ''; }
+    if (lateCheckoutFee)  { var r = document.getElementById('coLateCheckoutRow');  if (r) r.style.display = ''; }
 
     if (ciStr && coStr) {
       var checkin  = new Date(ciStr);
@@ -779,7 +785,7 @@
           cur = new Date(cur.getTime() + msPerDay);
         }
         var avgRate  = Math.round(baseTotal / nights);
-        var subtotal = baseTotal + CLEANING_FEE;
+        var subtotal = baseTotal + CLEANING_FEE + earlyCheckinFee + lateCheckoutFee;
         var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
         var total    = Math.round((subtotal + stripeFee) * 100) / 100;
 

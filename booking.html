@@ -462,6 +462,14 @@
               <span>Cleaning fee</span>
               <span>$150</span>
             </div>
+            <div class="price-row" id="sumEarlyCheckinRow" style="display:none">
+              <span>Early Check-in (10:00 AM)</span>
+              <span>$30</span>
+            </div>
+            <div class="price-row" id="sumLateCheckoutRow" style="display:none">
+              <span>Late Checkout (4:00 PM)</span>
+              <span>$30</span>
+            </div>
             <div class="price-row">
               <span title="Stripe payment processing (1.75% + $0.30)">Stripe fee</span>
               <span id="sumStripeFee">—</span>
@@ -491,7 +499,7 @@
             <img src="images/logo25.png" alt="Cascade Apartment 4">
       Cascade Apartment 4
           </a>
-          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Ski season only — open June through August.</p>
+          <p>Fully self-contained alpine apartment at Baw Baw Village, Mt Baw Baw. Ski season only — open June 1 through October 4.</p>
         </div>
         <div>
           <h4 class="footer-heading">Explore</h4>
@@ -573,9 +581,10 @@
     function getNightlyRate(date, totalNights) {
       var m = date.getMonth();
       var d = date.getDay();
+      var dom = date.getDate();
       var hol = isVicSchoolHoliday(date);
-      // Ski season: June–August
-      if (m >= 5 && m <= 7) {
+      // Ski season: June 1 – October 4
+      if (m >= 5 && (m <= 8 || (m === 9 && dom <= 4))) {
         var isMidweek = (d !== 5 && d !== 6);
         var base = (isMidweek && totalNights === 1) ? 985 : 855;
         return hol ? Math.round(base * 1.30) : base;
@@ -609,7 +618,13 @@
         cur = new Date(cur.getTime() + msPerDay);
       }
       var avgRate = Math.round(baseTotal / nights);
-      var subtotal = baseTotal + CLEANING_FEE;
+
+      var earlyCheckinFee = document.getElementById('earlyCheckin').checked ? 30 : 0;
+      var lateCheckoutFee = document.getElementById('lateCheckout').checked ? 30 : 0;
+      document.getElementById('sumEarlyCheckinRow').style.display = earlyCheckinFee ? '' : 'none';
+      document.getElementById('sumLateCheckoutRow').style.display = lateCheckoutFee ? '' : 'none';
+
+      var subtotal = baseTotal + CLEANING_FEE + earlyCheckinFee + lateCheckoutFee;
       var stripeFee = Math.round((subtotal * 0.0175 + 0.30) * 100) / 100;
       var total = Math.round((subtotal + stripeFee) * 100) / 100;
 
@@ -634,46 +649,113 @@
         if (parseInt(adultSel.options[i].value) === adults) { adultSel.selectedIndex = i; break; }
       }
     }
+    // Grey out past dates
+    var todayStr = (function() {
+      var n = new Date();
+      return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+    })();
+    document.getElementById('checkinDate').setAttribute('min', todayStr);
+    document.getElementById('checkoutDate').setAttribute('min', todayStr);
+
+    // Availability — load booked ranges once, validate on date change
+    var bookedRanges = [];
+    fetch('/api/booked-dates').then(function(r) { return r.json(); }).then(function(d) {
+      bookedRanges = d.ranges || [];
+      validateAvailability(); // re-check if dates were pre-filled via URL params
+    }).catch(function() {});
+
+    function overlapsBooked(ciStr, coStr) {
+      if (!ciStr || !coStr) return false;
+      var ciT = new Date(ciStr + 'T12:00:00').getTime();
+      var coT = new Date(coStr + 'T12:00:00').getTime();
+      if (coT <= ciT) return false;
+      return bookedRanges.some(function(r) {
+        var rCI = new Date(r.checkin  + 'T12:00:00').getTime();
+        var rCO = new Date(r.checkout + 'T12:00:00').getTime();
+        return ciT < rCO && coT > rCI;
+      });
+    }
+
+    function showAvailabilityCallout(show) {
+      var existing = document.getElementById('availabilityCallout');
+      var btn = document.getElementById('continueToPayment');
+      if (show) {
+        if (!existing) {
+          var callout = document.createElement('div');
+          callout.id = 'availabilityCallout';
+          callout.style.cssText = 'margin:10px 0 0;padding:14px 16px;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;';
+          callout.innerHTML = '<p style="margin:0 0 6px;font-size:0.88rem;font-weight:600;color:#991b1b;">These dates are already booked.</p>'
+            + '<p style="margin:0;font-size:0.85rem;color:#7f1d1d;">Please choose different dates, or <a href="index.html#contact" style="color:#dc2626;font-weight:600;">contact us</a> for help.</p>';
+          document.getElementById('checkoutDate').parentNode.appendChild(callout);
+        }
+        if (btn) btn.style.display = 'none';
+      } else {
+        if (existing) existing.remove();
+        var contactOut = document.getElementById('checkinContactCallout');
+        if (!contactOut && btn) btn.style.display = '';
+      }
+    }
+
+    function validateAvailability() {
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      showAvailabilityCallout(overlapsBooked(ci, co));
+    }
+
     updateSummary();
 
     // Live updates
-    ['checkinDate','checkoutDate','numAdults','numChildren'].forEach(function(id) {
+    ['checkinDate','checkoutDate','numAdults','numChildren','earlyCheckin','lateCheckout'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('change', updateSummary);
     });
 
-    // Open days: Fri (5), Sat (6), Sun (0) — Mon (1) on long weekends by arrangement
-    // VIC public holiday Mondays (Queen's Birthday) relevant to ski season
-    var LONG_WEEKEND_MONDAYS = [
-      '2025-06-09', '2026-06-08', '2027-06-14', '2028-06-12',
-      '2025-04-21', '2026-04-06', '2027-03-29', '2028-04-17'  // Easter Monday
-    ];
+    // Open days: Friday (5) and Saturday (6) only
     function isAllowedCheckinDay(dateStr) {
       if (!dateStr) return true;
       var d = new Date(dateStr + 'T12:00:00');
       var day = d.getDay();
-      if (day === 5 || day === 6 || day === 0) return true;
-      if (day === 1 && LONG_WEEKEND_MONDAYS.indexOf(dateStr) !== -1) return true;
-      return false;
+      return day === 5 || day === 6;
     }
-    function showDayError(show) {
-      var existing = document.getElementById('checkinDayError');
+    function showContactCallout(show) {
+      var existing = document.getElementById('checkinContactCallout');
+      var btn = document.getElementById('continueToPayment');
+      var contactBtn = document.getElementById('contactUsBtn');
       if (show) {
         if (!existing) {
-          var msg = document.createElement('p');
-          msg.id = 'checkinDayError';
-          msg.style.cssText = 'margin:6px 0 0;font-size:0.82rem;color:#dc2626;font-weight:500;';
-          msg.textContent = 'Bookings are available for Friday, Saturday and Sunday check-ins. For other days (including Monday long weekends), please contact us to arrange.';
+          var callout = document.createElement('div');
+          callout.id = 'checkinContactCallout';
+          callout.style.cssText = 'margin:10px 0 0;padding:14px 16px;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;';
+          callout.innerHTML = '<p style="margin:0 0 8px;font-size:0.88rem;font-weight:600;color:#92400e;">We only take online bookings for Friday &amp; Saturday check-ins.</p>'
+            + '<p style="margin:0 0 10px;font-size:0.85rem;color:#78350f;">For other days, please reach out and we\'ll arrange a stay that works for you.</p>'
+            + '<a href="index.html#contact" style="display:inline-block;padding:8px 18px;background:#d97706;color:#fff;border-radius:6px;font-size:0.85rem;font-weight:600;text-decoration:none;">Contact Us to Book &rarr;</a>';
           var ciEl = document.getElementById('checkinDate');
-          ciEl.parentNode.appendChild(msg);
+          ciEl.parentNode.appendChild(callout);
+        }
+        if (btn) btn.style.display = 'none';
+        if (!contactBtn) {
+          var cb = document.createElement('a');
+          cb.id = 'contactUsBtn';
+          cb.href = 'index.html#contact';
+          cb.className = 'btn btn--primary btn--lg';
+          cb.style.cssText = 'background:#d97706;border-color:#d97706;display:block;text-align:center;';
+          cb.textContent = 'Contact Us to Book';
+          var summaryDiv = document.querySelector('.summary-cta');
+          if (summaryDiv) summaryDiv.appendChild(cb);
+        } else {
+          contactBtn.style.display = '';
         }
       } else {
         if (existing) existing.remove();
+        if (btn) btn.style.display = '';
+        if (contactBtn) contactBtn.style.display = 'none';
       }
     }
     document.getElementById('checkinDate').addEventListener('change', function() {
-      showDayError(!isAllowedCheckinDay(this.value));
+      showContactCallout(this.value && !isAllowedCheckinDay(this.value));
+      validateAvailability();
     });
+    document.getElementById('checkoutDate').addEventListener('change', validateAvailability);
 
     // Form validation
     document.getElementById('continueToPayment').addEventListener('click', function(e) {
@@ -696,11 +778,16 @@
       // Validate check-in day
       var ciVal = document.getElementById('checkinDate').value;
       if (ciVal && !isAllowedCheckinDay(ciVal)) {
-        var ciEl = document.getElementById('checkinDate');
-        ciEl.style.borderColor = '#ef4444';
-        ciEl.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
-        showDayError(true);
-        if (!firstError) firstError = ciEl;
+        showContactCallout(true);
+        if (!firstError) firstError = document.getElementById('checkinDate');
+        return;
+      }
+      // Validate availability
+      var coVal = document.getElementById('checkoutDate').value;
+      if (overlapsBooked(ciVal, coVal)) {
+        showAvailabilityCallout(true);
+        if (!firstError) firstError = document.getElementById('checkinDate');
+        return;
       }
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -735,9 +822,13 @@
       var ci = document.getElementById('checkinDate').value;
       var co = document.getElementById('checkoutDate').value;
       var adults = document.getElementById('numAdults').value;
+      var earlyCI = document.getElementById('earlyCheckin').checked ? '1' : '0';
+      var lateCO  = document.getElementById('lateCheckout').checked ? '1' : '0';
       var url = 'checkout.html?checkin=' + encodeURIComponent(ci)
         + '&checkout=' + encodeURIComponent(co)
-        + '&guests=' + encodeURIComponent(adults);
+        + '&guests=' + encodeURIComponent(adults)
+        + '&earlyCheckin=' + earlyCI
+        + '&lateCheckout=' + lateCO;
       window.location.href = url;
     });
   })();

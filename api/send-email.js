@@ -1,39 +1,29 @@
-const { Resend } = require('resend');
+const { requireAdmin } = require('./_lib/auth');
+const { sendEmail } = require('./_lib/send-email-core');
+const { markEmailSent } = require('./_lib/booking-store');
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Email service not configured. Add RESEND_API_KEY to Vercel environment variables.' });
-  }
+  if (!requireAdmin(req, res)) return;
 
-  const { to, subject, text, html, fromName } = req.body || {};
-
-  if (!to || !subject || (!text && !html)) {
-    return res.status(400).json({ error: 'Missing required fields: to, subject, and text or html.' });
-  }
-
-  const recipients = Array.isArray(to) ? to : [to];
-  const fromAddress = `${fromName || 'Cascade Apartment 4'} <hello@cascadeskiapartments.com>`;
+  const { to, subject, text, html, fromName, bookingStripeId, templateId } = req.body || {};
 
   try {
-    const resend = new Resend(apiKey);
-    const result = await resend.emails.send({
-      from: fromAddress,
-      to:   recipients,
-      subject,
-      text: text || '',
-      html: html  || undefined,
-    });
-    return res.json({ success: true, id: result.data ? result.data.id : result.id });
+    const result = await sendEmail({ to, subject, text, html, fromName });
+    if (bookingStripeId && templateId) {
+      // Best-effort — don't fail the whole request if the ledger write fails.
+      await markEmailSent(bookingStripeId, templateId).catch(() => {});
+    }
+    return res.json({ success: true, id: result.id });
   } catch (e) {
-    return res.status(500).json({ error: e.message || 'Could not send email.' });
+    const status = e.code === 'NOT_CONFIGURED' ? 500 : (e.code === 'BAD_REQUEST' ? 400 : 500);
+    return res.status(status).json({ error: e.message || 'Could not send email.' });
   }
 };

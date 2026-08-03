@@ -270,6 +270,7 @@
                 sessionStorage.setItem('adminLoggedIn', 'true');
                 sessionStorage.setItem('adminEmail', email);
                 sessionStorage.setItem('adminRole', role);
+                sessionStorage.setItem('adminToken', data.token || '');
                 var redirect = sessionStorage.getItem('adminRedirect') || 'index.html';
                 sessionStorage.removeItem('adminRedirect');
                 window.location.href = redirect;
