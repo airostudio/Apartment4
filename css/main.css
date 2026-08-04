@@ -826,20 +826,6 @@ h6 { font-size: var(--font-size-md); }
   border-top: 1px solid var(--color-light);
 }
 
-.card-rating {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  font-size: var(--font-size-sm);
-}
-
-.card-rating .stars {
-  color: var(--color-warning);
-}
-
-.card-rating .count {
-  color: var(--color-gray);
-}
 
 .card-price {
   text-align: right;
@@ -1222,22 +1208,6 @@ h6 { font-size: var(--font-size-md); }
   color: var(--color-dark);
 }
 
-/* --- Rating Stars --- */
-.stars {
-  display: inline-flex;
-  gap: 2px;
-}
-
-.stars svg {
-  width: 16px;
-  height: 16px;
-  fill: var(--color-muted);
-}
-
-.stars svg.filled {
-  fill: var(--color-gold);
-}
-
 /* --- Badges & Tags --- */
 .badge {
   display: inline-flex;
@@ -1496,56 +1466,6 @@ h6 { font-size: var(--font-size-md); }
   height: 20px;
   color: var(--color-primary-light);
   flex-shrink: 0;
-}
-
-/* --- Reviews --- */
-.review-card {
-  padding: var(--space-xl);
-  border-bottom: 1px solid var(--color-light);
-}
-
-.review-card:last-child {
-  border-bottom: none;
-}
-
-.review-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-
-.review-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-full);
-  background: var(--color-primary-light);
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-md);
-}
-
-.review-meta {
-  flex: 1;
-}
-
-.review-author {
-  font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-xs);
-}
-
-.review-date {
-  font-size: var(--font-size-xs);
-  color: var(--color-gray);
-}
-
-.review-text {
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-relaxed);
-  color: var(--color-dark);
 }
 
 /* --- Footer --- */

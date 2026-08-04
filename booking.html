@@ -200,16 +200,10 @@
       font-weight: 600;
       margin-bottom: var(--space-md);
     }
-    .booking-summary__rating {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
+    .booking-summary__location {
       font-size: var(--font-size-sm, 0.875rem);
       color: var(--color-text-muted, #6b7280);
       margin-bottom: var(--space-lg);
-    }
-    .booking-summary__rating svg {
-      color: #f59e0b;
     }
     .summary-divider {
       height: 1px;
@@ -378,6 +372,7 @@
                     <option value="4">4 Adults</option>
                     <option value="5">5 Adults</option>
                     <option value="6">6 Adults</option>
+                    <option value="7">7 Adults</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -388,7 +383,10 @@
                     <option value="2">2 Children</option>
                     <option value="3">3 Children</option>
                     <option value="4">4 Children</option>
+                    <option value="5">5 Children</option>
+                    <option value="6">6 Children</option>
                   </select>
+                  <p class="form-hint" id="guestCountHint" style="margin-top:6px;font-size:0.8rem;color:#6b7280;">Maximum 7 guests total (adults + children).</p>
                 </div>
               </div>
             </div>
@@ -402,7 +400,7 @@
                   <input type="checkbox" id="earlyCheckin" name="earlyCheckin" value="30">
                   <div>
                     <div class="addon-option__label">Early Check-in</div>
-                    <div class="addon-option__desc">Arrive from 10:00 AM instead of the standard 2:00 PM</div>
+                    <div class="addon-option__desc">Arrive from 10:00 AM instead of the standard 3:00 PM</div>
                   </div>
                 </div>
                 <span class="addon-option__price">+ $30</span>
@@ -413,7 +411,7 @@
                   <input type="checkbox" id="lateCheckout" name="lateCheckout" value="30">
                   <div>
                     <div class="addon-option__label">Late Checkout</div>
-                    <div class="addon-option__desc">Extend your stay until 4:00 PM instead of the standard 11:00 AM</div>
+                    <div class="addon-option__desc">Extend your stay until 4:00 PM instead of the standard 10:00 AM</div>
                   </div>
                 </div>
                 <span class="addon-option__price">+ $30</span>
@@ -427,10 +425,7 @@
         <!-- Right Column: Summary Sidebar -->
         <aside class="booking-summary">
           <div class="booking-summary__property">Cascade Apartment 4</div>
-          <div class="booking-summary__rating">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <strong>4.8</strong> (94 reviews) &middot; Baw Baw Village, Mt Baw Baw
-          </div>
+          <div class="booking-summary__location">Baw Baw Village, Mt Baw Baw</div>
 
           <div class="summary-divider"></div>
 
@@ -514,7 +509,7 @@
           <h4 class="footer-heading">Contact</h4>
           <div class="footer-links">
             <a href="mailto:hello@cascadeskiapartments.com">Email Us</a>
-            <a href="tel:+61351651200">+61 3 5165 1200</a>
+            <a href="tel:+61417525582">+61 417 525 582</a>
           </div>
         </div>
         <div>
@@ -657,6 +652,15 @@
     document.getElementById('checkinDate').setAttribute('min', todayStr);
     document.getElementById('checkoutDate').setAttribute('min', todayStr);
 
+    // Advance booking window: check-in must be within 60 days from today
+    var ADVANCE_BOOKING_DAYS = 60;
+    var maxDateStr = (function() {
+      var n = new Date();
+      n.setDate(n.getDate() + ADVANCE_BOOKING_DAYS);
+      return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+    })();
+    document.getElementById('checkinDate').setAttribute('max', maxDateStr);
+
     // Availability — load booked ranges once, validate on date change
     var bookedRanges = [];
     fetch('/api/booked-dates').then(function(r) { return r.json(); }).then(function(d) {
@@ -702,12 +706,81 @@
       showAvailabilityCallout(overlapsBooked(ci, co));
     }
 
+    // Minimum stay: 2 nights
+    var MIN_STAY_NIGHTS = 2;
+    function nightsSelected() {
+      var ci = document.getElementById('checkinDate').value;
+      var co = document.getElementById('checkoutDate').value;
+      if (!ci || !co) return null;
+      var n = Math.round((new Date(co + 'T12:00:00') - new Date(ci + 'T12:00:00')) / 86400000);
+      return n;
+    }
+    function belowMinStay() {
+      var n = nightsSelected();
+      return n !== null && n > 0 && n < MIN_STAY_NIGHTS;
+    }
+    function showMinStayCallout(show) {
+      var existing = document.getElementById('minStayCallout');
+      var btn = document.getElementById('continueToPayment');
+      if (show) {
+        if (!existing) {
+          var callout = document.createElement('div');
+          callout.id = 'minStayCallout';
+          callout.style.cssText = 'margin:10px 0 0;padding:14px 16px;background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;';
+          callout.innerHTML = '<p style="margin:0;font-size:0.88rem;font-weight:600;color:#991b1b;">A minimum stay of ' + MIN_STAY_NIGHTS + ' nights is required.</p>';
+          document.getElementById('checkoutDate').parentNode.appendChild(callout);
+        }
+        if (btn) btn.style.display = 'none';
+      } else {
+        if (existing) existing.remove();
+        var otherCallout = document.getElementById('availabilityCallout') || document.getElementById('checkinContactCallout');
+        if (!otherCallout && btn) btn.style.display = '';
+      }
+    }
+
+    // Maximum guests: 7 total (adults + children)
+    var MAX_GUESTS = 7;
+    function guestCount() {
+      var adults   = parseInt(document.getElementById('numAdults').value, 10)   || 0;
+      var children = parseInt(document.getElementById('numChildren').value, 10) || 0;
+      return adults + children;
+    }
+    function exceedsMaxGuests() {
+      return guestCount() > MAX_GUESTS;
+    }
+    function updateGuestCountHint() {
+      var hint = document.getElementById('guestCountHint');
+      if (!hint) return;
+      var count = guestCount();
+      if (count > MAX_GUESTS) {
+        hint.textContent = count + ' guests selected — maximum is ' + MAX_GUESTS + '. Please reduce adults or children.';
+        hint.style.color = '#dc2626';
+      } else {
+        hint.textContent = 'Maximum 7 guests total (adults + children).';
+        hint.style.color = '#6b7280';
+      }
+    }
+
+    function validateStayRules() {
+      showMinStayCallout(belowMinStay());
+      updateGuestCountHint();
+    }
+
     updateSummary();
+    validateStayRules();
 
     // Live updates
     ['checkinDate','checkoutDate','numAdults','numChildren','earlyCheckin','lateCheckout'].forEach(function(id) {
       var el = document.getElementById(id);
       if (el) el.addEventListener('change', updateSummary);
+    });
+    ['checkinDate','checkoutDate'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', validateStayRules);
+    });
+    ['numAdults','numChildren'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', updateGuestCountHint);
     });
 
     // Open days: Friday (5) and Saturday (6) only
@@ -789,6 +862,18 @@
         if (!firstError) firstError = document.getElementById('checkinDate');
         return;
       }
+      // Validate minimum stay
+      if (belowMinStay()) {
+        showMinStayCallout(true);
+        if (!firstError) firstError = document.getElementById('checkoutDate');
+        return;
+      }
+      // Validate guest count
+      if (exceedsMaxGuests()) {
+        updateGuestCountHint();
+        if (!firstError) firstError = document.getElementById('numAdults');
+        return;
+      }
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
         firstError.focus();
@@ -821,7 +906,7 @@
       // Carry booking data to checkout
       var ci = document.getElementById('checkinDate').value;
       var co = document.getElementById('checkoutDate').value;
-      var adults = document.getElementById('numAdults').value;
+      var adults = guestCount(); // total guests (adults + children) — checkout.html only has one guest-count field
       var earlyCI = document.getElementById('earlyCheckin').checked ? '1' : '0';
       var lateCO  = document.getElementById('lateCheckout').checked ? '1' : '0';
       var url = 'checkout.html?checkin=' + encodeURIComponent(ci)
