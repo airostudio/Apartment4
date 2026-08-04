@@ -38,15 +38,7 @@
       "trigger": "Sent 1 day after check-out",
       "icon": "thankyou",
       "subject": "Thank you for staying at {{property_name}}!",
-      "body": "Hi {{guest_name}},\n\nThank you so much for choosing Cascade Apartment 4 for your mountain escape. We hope you had a fantastic time on the mountain!\n\nYour stay: {{check_in}} — {{check_out}}\n\nWe'd love to hear how your stay went. If you have a moment, a review on our listing would mean the world to us — it helps other guests discover us and helps us continue improving.\n\nCome Back Soon\n───────────────────────────\nAs a returning guest, you'll receive priority access to our best rates. To book your next stay, visit our website or reply to this email.\n\nWe hope to see you back on the mountain soon!\n\nWarm regards,\nThe Cascade Apartment 4 Team"
-    },
-    {
-      "id": "review-request",
-      "name": "Review Request",
-      "trigger": "Sent 3 days after check-out",
-      "icon": "review",
-      "subject": "How was your stay at {{property_name}}?",
-      "body": "Hi {{guest_name}},\n\nWe hope you're settling back home after your stay at Cascade Apartment 4!\n\nYour feedback means a great deal to us. If you have 2 minutes, we'd love it if you could leave a review of your recent stay ({{check_in}} — {{check_out}}).\n\nYour honest review helps other travellers discover the apartment, and gives us valuable insight into how we can make each stay better.\n\nIf anything about your stay fell short of expectations, please do let us know by replying to this email — we'd love the chance to make it right.\n\nThank you again for staying with us, {{guest_name}}. It was a pleasure to host you.\n\nWarm regards,\nThe Cascade Apartment 4 Team"
+      "body": "Hi {{guest_name}},\n\nThank you so much for choosing Cascade Apartment 4 for your mountain escape. We hope you had a fantastic time on the mountain!\n\nYour stay: {{check_in}} — {{check_out}}\n\nCome Back Soon\n───────────────────────────\nAs a returning guest, you'll receive priority access to our best rates. To book your next stay, visit our website or reply to this email.\n\nWe hope to see you back on the mountain soon!\n\nWarm regards,\nThe Cascade Apartment 4 Team"
     },
     {
       "id": "cancellation-confirmation",
@@ -71,7 +63,6 @@
     "check-in-instructions":     { "trigger": "on_checkin_day",      "offset": 0, "enabled": true },
     "checkout-reminder":         { "trigger": "day_before_checkout", "offset": 0, "enabled": true },
     "post-stay-thankyou":        { "trigger": "days_after_checkout", "offset": 1, "enabled": true },
-    "review-request":            { "trigger": "days_after_checkout", "offset": 3, "enabled": true },
     "cancellation-confirmation": { "trigger": "on_cancel",           "offset": 0, "enabled": true },
     "payment-receipt":           { "trigger": "on_booking",          "offset": 0, "enabled": false }
   }

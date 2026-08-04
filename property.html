@@ -92,15 +92,6 @@
       align-items: center;
       gap: 4px;
     }
-    .property-rating {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      color: #f59e0b;
-    }
-    .property-rating .rating-count {
-      color: #555;
-    }
     .property-type-badge {
       display: inline-block;
       background: #e8f4fd;
@@ -336,101 +327,6 @@
       font-size: 0.85rem;
       color: #777;
       font-style: italic;
-    }
-
-    /* Reviews Tab */
-    .reviews-summary {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 24px;
-      background: #f8f9fa;
-      border-radius: 12px;
-      margin-bottom: 32px;
-    }
-    .reviews-score {
-      text-align: center;
-      min-width: 80px;
-    }
-    .reviews-score .score {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #1a73a7;
-      line-height: 1;
-    }
-    .reviews-score .label {
-      font-size: 0.8rem;
-      color: #777;
-      margin-top: 4px;
-    }
-    .reviews-bars {
-      flex: 1;
-    }
-    .review-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-      font-size: 0.85rem;
-      color: #555;
-    }
-    .review-bar-row .bar-label { width: 80px; }
-    .review-bar {
-      flex: 1;
-      height: 8px;
-      background: #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .review-bar-fill {
-      height: 100%;
-      background: #f59e0b;
-      border-radius: 4px;
-    }
-
-    .review-card {
-      padding: 24px 0;
-      border-bottom: 1px solid #eee;
-    }
-    .review-card:last-child { border-bottom: none; }
-    .review-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .review-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #fff;
-    }
-    .review-author-info { flex: 1; }
-    .review-author {
-      font-weight: 600;
-      color: #1a1a2e;
-      margin-bottom: 2px;
-    }
-    .review-date {
-      font-size: 0.8rem;
-      color: #999;
-    }
-    .review-stars {
-      color: #f59e0b;
-      display: flex;
-      gap: 2px;
-    }
-    .review-stars svg { width: 16px; height: 16px; }
-    .review-text {
-      font-size: 0.95rem;
-      line-height: 1.7;
-      color: #555;
     }
 
     /* Location Tab */
@@ -835,14 +731,6 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
               Baw Baw Village, Mt Baw Baw, VIC 3833
             </span>
-            <span class="property-rating">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <span class="rating-count">(94 reviews)</span>
-            </span>
             <span class="property-type-badge">Apartment</span>
           </div>
         </div>
@@ -866,7 +754,6 @@
           <button class="property-tab active" data-tab="overview">Overview</button>
           <button class="property-tab" data-tab="amenities">Amenities</button>
           <button class="property-tab" data-tab="rates">Rates</button>
-          <button class="property-tab" data-tab="reviews">Reviews</button>
           <button class="property-tab" data-tab="location">Location</button>
         </div>
 
@@ -981,92 +868,7 @@
               <div class="rate-note">Property not available outside ski season</div>
             </div>
           </div>
-          <p class="rates-footnote">* Rates shown are for the entire apartment (up to 6 guests). Cleaning fee of $150 applies per stay. No Saturday check-in. VIC school holiday premium (+30%) may apply. All rates in AUD.</p>
-        </div>
-
-        <!-- Reviews Tab -->
-        <div class="tab-content" id="tab-reviews">
-          <div class="reviews-summary">
-            <div class="reviews-score">
-              <div class="score">4.8</div>
-              <div class="label">out of 5</div>
-            </div>
-            <div class="reviews-bars">
-              <div class="review-bar-row">
-                <span class="bar-label">Cleanliness</span>
-                <div class="review-bar"><div class="review-bar-fill" style="width:96%"></div></div>
-              </div>
-              <div class="review-bar-row">
-                <span class="bar-label">Location</span>
-                <div class="review-bar"><div class="review-bar-fill" style="width:98%"></div></div>
-              </div>
-              <div class="review-bar-row">
-                <span class="bar-label">Value</span>
-                <div class="review-bar"><div class="review-bar-fill" style="width:88%"></div></div>
-              </div>
-              <div class="review-bar-row">
-                <span class="bar-label">Service</span>
-                <div class="review-bar"><div class="review-bar-fill" style="width:95%"></div></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Review 1 -->
-          <div class="review-card">
-            <div class="review-header">
-              <div class="review-avatar" style="background:linear-gradient(135deg,#1a73a7,#2196F3);">SM</div>
-              <div class="review-author-info">
-                <div class="review-author">Sarah Mitchell</div>
-                <div class="review-date">January 2026</div>
-              </div>
-              <div class="review-stars">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              </div>
-            </div>
-            <p class="review-text">Beautiful alpine apartment, perfectly set up for our ski trip. The gas fireplace was a highlight after cold days on the slopes. Kitchen had everything we needed. Great location in the village.</p>
-          </div>
-
-          <!-- Review 2 -->
-          <div class="review-card">
-            <div class="review-header">
-              <div class="review-avatar" style="background:linear-gradient(135deg,#e67e22,#f39c12);">JO</div>
-              <div class="review-author-info">
-                <div class="review-author">James O'Brien</div>
-                <div class="review-date">December 2025</div>
-              </div>
-              <div class="review-stars">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor" opacity="0.3"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              </div>
-            </div>
-            <p class="review-text">Fantastic spot at Mt Baw Baw. The apartment was clean, warm and well-equipped. Loved the privacy of being around the back. Cosy fireplace made the evenings perfect after a day on the slopes!</p>
-          </div>
-
-          <!-- Review 3 -->
-          <div class="review-card">
-            <div class="review-header">
-              <div class="review-avatar" style="background:linear-gradient(135deg,#2d6a4f,#40916c);">EW</div>
-              <div class="review-author-info">
-                <div class="review-author">Emma Walsh</div>
-                <div class="review-date">November 2025</div>
-              </div>
-              <div class="review-stars">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              </div>
-            </div>
-            <p class="review-text">We brought the whole family for a winter getaway and it was magical. Kids loved the snow right outside. Apartment fits 7 easily with the bunk setup. The drying room for wet ski gear was a lifesaver!</p>
-          </div>
+          <p class="rates-footnote">* Rates shown are for the entire apartment (up to 7 guests). Cleaning fee of $150 applies per stay. No Saturday check-in. VIC school holiday premium (+30%) may apply. All rates in AUD.</p>
         </div>
 
         <!-- Location Tab -->
@@ -1195,7 +997,7 @@
           <h4 class="footer-heading">Contact</h4>
           <div class="footer-links">
             <a href="mailto:hello@cascadeskiapartments.com">hello@cascadeskiapartments.com</a>
-            <a href="tel:+61351651200">+61 3 5165 1200</a>
+            <a href="tel:+61417525582">+61 417 525 582</a>
             <a href="#">Baw Baw Village, Mt Baw Baw</a>
             <a href="#">VIC 3833, Australia</a>
           </div>
@@ -1350,6 +1152,11 @@
         var t = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
         document.getElementById('checkin').setAttribute('min', t);
         document.getElementById('checkout').setAttribute('min', t);
+        // Advance booking window: check-in must be within 60 days from today
+        var maxN = new Date();
+        maxN.setDate(maxN.getDate() + 60);
+        var maxT = maxN.getFullYear() + '-' + String(maxN.getMonth()+1).padStart(2,'0') + '-' + String(maxN.getDate()).padStart(2,'0');
+        document.getElementById('checkin').setAttribute('max', maxT);
       })();
 
       // Availability
@@ -1434,6 +1241,12 @@
         }
         if (overlapsBooked(ci, co)) {
           showWidgetAvailabilityCallout(true);
+          return;
+        }
+        var nights = Math.round((new Date(co + 'T12:00:00') - new Date(ci + 'T12:00:00')) / 86400000);
+        if (nights > 0 && nights < 2) {
+          alert('A minimum stay of 2 nights is required.');
+          document.getElementById('checkout').focus();
           return;
         }
         var url = 'booking.html?checkin=' + encodeURIComponent(ci)

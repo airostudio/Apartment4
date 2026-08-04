@@ -10,12 +10,12 @@
   const BookingEngine = {
     // Default industry-standard settings (configurable per property)
     defaults: {
-      checkInTime: '14:00',
+      checkInTime: '15:00',
       checkOutTime: '10:00',
-      minStay: 1,
+      minStay: 2,
       maxStay: 30,
-      maxGuests: 10,
-      advanceBookingDays: 365,
+      maxGuests: 7,
+      advanceBookingDays: 60,
       bookingCutoffHours: 24,
       currency: 'AUD',
       depositPercent: 30,

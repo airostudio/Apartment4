@@ -4,7 +4,7 @@
     "description": "Cascade Apartment 4 - Alpine Ski Accommodation at Mt Baw Baw",
     "url": "https://www.cascadeskiapartments.com",
     "contactEmail": "hello@cascadeskiapartments.com",
-    "contactPhone": "+61 2 1234 5678",
+    "contactPhone": "+61 417 525 582",
     "timezone": "Australia/Sydney",
     "currency": "AUD",
     "locale": "en-AU"
@@ -16,13 +16,13 @@
   },
   "bookingRules": {
     "mode": "instant",
-    "defaultCheckIn": "14:00",
+    "defaultCheckIn": "15:00",
     "defaultCheckOut": "10:00",
-    "minStay": 1,
+    "minStay": 2,
     "maxStay": 30,
-    "advanceBookingDays": 365,
+    "advanceBookingDays": 60,
     "bookingCutoffHours": 24,
-    "maxGuestsPerBooking": 10
+    "maxGuestsPerBooking": 7
   },
   "cancellationPolicies": {
     "flexible": {
@@ -69,15 +69,13 @@
     "admin": {
       "newBooking": true,
       "cancellation": true,
-      "paymentReceived": true,
-      "reviewReceived": true
+      "paymentReceived": true
     },
     "guest": {
       "bookingConfirmation": true,
       "preArrival": { "enabled": true, "daysBefore": 3 },
       "checkInInstructions": true,
-      "postStayThankYou": true,
-      "reviewRequest": { "enabled": true, "daysAfter": 2 }
+      "postStayThankYou": true
     }
   },
   "icalSync": {

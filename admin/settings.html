@@ -716,12 +716,6 @@
                     Guests
                 </a>
 
-                <a href="reviews.html" class="nav-link">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                    Reviews
-                </a>
             </div>
 
             <!-- COMMUNICATIONS -->
@@ -974,7 +968,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="checkinTime">Default Check-in Time</label>
-                            <input type="time" id="checkinTime" value="14:00">
+                            <input type="time" id="checkinTime" value="15:00">
                         </div>
                         <div class="form-group">
                             <label for="checkoutTime">Default Check-out Time</label>
@@ -996,7 +990,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="advanceBooking">Advance Booking Window (days)</label>
-                            <input type="number" id="advanceBooking" value="365" min="1">
+                            <input type="number" id="advanceBooking" value="60" min="1">
                             <p class="form-hint">How far in advance guests can book</p>
                         </div>
                         <div class="form-group">
@@ -1101,7 +1095,7 @@
 
                     <div class="form-group" style="margin-top: 20px;">
                         <label for="maxGuests">Maximum Guests Per Booking</label>
-                        <input type="number" id="maxGuests" value="10" min="1" style="max-width: 200px;">
+                        <input type="number" id="maxGuests" value="7" min="1" style="max-width: 200px;">
                         <p class="form-hint">Default maximum for all properties. Can be overridden per property.</p>
                     </div>
                 </div>
@@ -1177,16 +1171,6 @@
                         </label>
                     </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Review Received</h4>
-                            <p>Receive an email when a guest leaves a review</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="notifyReview" checked>
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
                 </div>
 
                 <!-- Guest Emails -->
@@ -1246,25 +1230,6 @@
                         </label>
                     </div>
 
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>Review Request</h4>
-                            <p>Ask guests to leave a review after their stay</p>
-                        </div>
-                        <div class="toggle-controls">
-                            <select class="inline-select" name="reviewRequestDays">
-                                <option value="1">1 day after</option>
-                                <option value="2" selected>2 days after</option>
-                                <option value="3">3 days after</option>
-                                <option value="5">5 days after</option>
-                                <option value="7">7 days after</option>
-                            </select>
-                            <label class="toggle-switch">
-                                <input type="checkbox" name="guestReviewRequest" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
                 </div>
             </div>
 

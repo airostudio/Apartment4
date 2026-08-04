@@ -17,7 +17,7 @@
       },
       "contact": {
         "email": "hello@cascadeskiapartments.com",
-        "phone": "+61 3 5165 1200"
+        "phone": "+61 417 525 582"
       },
       "rooms": [
         {
@@ -32,8 +32,6 @@
         }
       ],
       "amenities": ["kitchen", "fireplace", "parking", "mountain-view", "ski-access", "tv", "washer-dryer", "dishwasher", "drying-room", "self-checkin"],
-      "rating": 4.8,
-      "reviewCount": 94,
       "images": [
         "images/cascade4-1.jpg",
         "images/cascade4-2.jpg",
@@ -45,7 +43,7 @@
         "images/cascade4-8.jpg"
       ],
       "policies": {
-        "checkIn": "14:00",
+        "checkIn": "15:00",
         "checkOut": "10:00",
         "cancellation": "moderate",
         "minStay": 2,
