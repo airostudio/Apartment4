@@ -538,7 +538,7 @@
         }
 
         /* ── Server-backed config (templates + automation rules) ──
-           Single source of truth lives in Vercel KV (a real database), so
+           Single source of truth lives in a connected Redis database, so
            the cron job, the Stripe webhook and this admin UI always agree
            on what's configured, and saves are instant and durable — no git
            commits, no branch mismatches, no redeploy lag. We keep an
@@ -722,7 +722,7 @@
                 if (!resp.ok) throw new Error(s.error || 'Status check failed.');
                 var problems = [];
                 if (!s.resendConfigured)        problems.push('sending any emails at all (RESEND_API_KEY)');
-                if (!s.databaseConfigured)      problems.push('saving templates/automation changes (connect Vercel KV to this project)');
+                if (!s.databaseConfigured)      problems.push('saving templates/automation changes (connect a Redis database, e.g. Upstash, from the Vercel Marketplace)');
                 if (!s.cronSecretConfigured)    problems.push('daily scheduled emails — pre-arrival, check-in, check-out, review requests (CRON_SECRET)');
                 if (!s.webhookSecretConfigured) problems.push('instant emails right when a booking is made (STRIPE_WEBHOOK_SECRET)');
                 if (!problems.length) {
